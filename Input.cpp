@@ -56,5 +56,11 @@ void Input::Update()
 
 bool Input::ifKeyPress(BYTE keyNum)
 {
+	//指定のキーを押していたら、trueを返す
+	if (key[keyNum])
+	{
+		return true;
+	}
+	//基本はfalse
 	return false;
 }
