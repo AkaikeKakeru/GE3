@@ -78,7 +78,7 @@ struct TextureData
 };
 
 //3Dオブジェクトの初期化
-void InitializeObject3d(Object3d* object,ID3D12Device* device)
+void InitializeObject3d(Object3d* object, ID3D12Device* device)
 {
 	HRESULT result;
 
@@ -116,7 +116,7 @@ void InitializeObject3d(Object3d* object,ID3D12Device* device)
 #pragma endregion
 }
 
-void InitializeTexture(TextureData* textureData,const wchar_t* szFile)
+void InitializeTexture(TextureData* textureData, const wchar_t* szFile)
 {
 	HRESULT result;
 
@@ -124,13 +124,13 @@ void InitializeTexture(TextureData* textureData,const wchar_t* szFile)
 	result = LoadFromWICFile(
 		szFile,
 		WIC_FLAGS_NONE,
-		&textureData->metadata, 
+		&textureData->metadata,
 		textureData->scratchImg);
 
 	//ミップマップ生成
 	result = GenerateMipMaps(
-		textureData->scratchImg.GetImages(), 
-		textureData->scratchImg.GetImageCount(), 
+		textureData->scratchImg.GetImages(),
+		textureData->scratchImg.GetImageCount(),
 		textureData->scratchImg.GetMetadata(),
 		TEX_FILTER_DEFAULT, 0, textureData->mipChine);
 	if (SUCCEEDED(result)) {
@@ -142,7 +142,7 @@ void InitializeTexture(TextureData* textureData,const wchar_t* szFile)
 
 };
 
-void TransferTextureBuffer(TextureData* textureData,ID3D12Device* device)
+void TransferTextureBuffer(TextureData* textureData, ID3D12Device* device)
 {
 	HRESULT result;
 
@@ -192,7 +192,7 @@ void TransferTextureBuffer(TextureData* textureData,ID3D12Device* device)
 }
 
 //3Dオブジェクトの初期化処理の呼び出し
-void SetIntializeObject3ds(Object3d* object,ID3D12Device* device, int objectNum)
+void SetIntializeObject3ds(Object3d* object, ID3D12Device* device, int objectNum)
 {
 	//初期化
 	InitializeObject3d(object, device);
@@ -243,7 +243,7 @@ void UpdateObject3d(Object3d* object, XMMATRIX& matView, XMMATRIX& matProjection
 
 }
 
-void DrawObject3d(Object3d* object,ID3D12GraphicsCommandList* commandList, D3D12_VERTEX_BUFFER_VIEW& vbView,
+void DrawObject3d(Object3d* object, ID3D12GraphicsCommandList* commandList, D3D12_VERTEX_BUFFER_VIEW& vbView,
 	D3D12_INDEX_BUFFER_VIEW& ibView, UINT numIndices) {
 	//頂点バッファの設定
 	commandList->IASetVertexBuffers(0, 1, &vbView);
@@ -254,46 +254,6 @@ void DrawObject3d(Object3d* object,ID3D12GraphicsCommandList* commandList, D3D12
 
 	//描画コマンド
 	commandList->DrawIndexedInstanced(numIndices, 1, 0, 0, 0);
-}
-
-
-//bool ifKeyPress(uint8_t key)
-//{
-//	if (key == 0x80)
-//	{
-//		return true;
-//	}
-//	return false;
-//}
-bool ifKeyRelease(uint8_t key)
-{
-	if (key == 0x00)
-	{
-		return true;
-	}
-	return false;
-}
-bool ifKeyPressTrigger(uint8_t key, uint8_t oldkey)
-{
-	if (key == 0x80)
-	{
-		if (oldkey == 0x00)
-		{
-			return true;
-		}
-	}
-	return false;
-}
-bool ifKeyReleaseTrigger(uint8_t key, uint8_t oldkey)
-{
-	if (key == 0x00)
-	{
-		if (oldkey == 0x80)
-		{
-			return true;
-		}
-	}
-	return false;
 }
 
 //座標操作
@@ -328,7 +288,7 @@ LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
-int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
+int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//------WindowsAPI初期化処理 ここから------
 	//サイズ
 	const int window_width = 1280;
@@ -488,7 +448,7 @@ int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
 		commandQueue.Get(),
 		hwnd,
 		&swapChainDesc,
-		nullptr, 
+		nullptr,
 		nullptr,
 		&swapChain1);
 	assert(SUCCEEDED(result));
@@ -602,7 +562,7 @@ int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
 	Input* input = nullptr;
 	//入力の初期化
 	input = new Input();
-	input->Initialize(w.hInstance,hwnd);
+	input->Initialize(w.hInstance, hwnd);
 
 #pragma endregion
 
@@ -1006,11 +966,11 @@ int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
 	result = D3D12SerializeRootSignature(
 		&rootSignatureDesc,
 		D3D_ROOT_SIGNATURE_VERSION_1_0,
-		&rootSigBlob, 
+		&rootSigBlob,
 		&errorBlob);
 	assert(SUCCEEDED(result));
 	result = device->CreateRootSignature(
-		0, 
+		0,
 		rootSigBlob->GetBufferPointer(),
 		rootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootSignature));
@@ -1247,9 +1207,9 @@ int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
 	ibView.SizeInBytes = sizeIB;
 
 	const int kTextureCount = 2;
-	TextureData textureDatas[kTextureCount] = {0};
+	TextureData textureDatas[kTextureCount] = { 0 };
 
-	const wchar_t* texImgs[kTextureCount] = 
+	const wchar_t* texImgs[kTextureCount] =
 	{
 		L"Resources/texture.png",
 		L"Resources/reimu.png",
@@ -1280,7 +1240,7 @@ int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
 	srvHeapDesc.NumDescriptors = kMaxSRVCount;
 
 	//設定を基にSRV用デスクリプタヒープを生成
-	ID3D12DescriptorHeap* srvHeap  = nullptr;
+	ID3D12DescriptorHeap* srvHeap = nullptr;
 	result = device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
 	assert(SUCCEEDED(result));
 
@@ -1560,7 +1520,7 @@ int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
 		assert(SUCCEEDED(result));
 
 		//コマンドリストの実行
-		ID3D12CommandList* commandLists[] = { commandList.Get()};
+		ID3D12CommandList* commandLists[] = { commandList.Get() };
 		commandQueue->ExecuteCommandLists(1, commandLists);
 
 		//画面に表示するバッファをフリップ(裏表の入れ替え)
@@ -1573,7 +1533,7 @@ int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
 		if (fence->GetCompletedValue() != fenceVal) {
 			_Post_ _Notnull_ HANDLE event = CreateEvent(nullptr, false, false, nullptr);
 
-			if(event != 0)
+			if (event != 0)
 			{
 				fence->SetEventOnCompletion(fenceVal, event);
 				WaitForSingleObject(event, INFINITE);

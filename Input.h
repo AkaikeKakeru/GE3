@@ -1,29 +1,23 @@
 #pragma once
 #include <windows.h>
 #include <wrl.h>
-//using namespace Microsoft::WRL;
 
 #define DIRECT_VERSION 0x0800	//DirectInputのバージョン指定
 #include <dinput.h>
 
 //入力
-class Input
-{
-	//namespaceの省略
-public:
+class Input {
+public: //namespaceの省略
 	template <class Type>
 	using ComPtr = Microsoft::WRL::ComPtr<Type>;
 
-	//基本的なメンバ関数
-public:
+public: //基本的なメンバ関数
 	//初期化
-	void Initialize(HINSTANCE hInstance,
-		HWND hwnd);
+	void Initialize(HINSTANCE hInstance, HWND hwnd);
 	//更新
 	void Update();
 
-	//Input固有のメンバ関数
-public:
+public: //Input固有のメンバ関数
 	/// <summary>
 	/// キーが押し込まれているかを確認
 	/// </summary>
@@ -38,13 +32,13 @@ public:
 	/// <returns>今押されたか</returns>
 	bool ifKeyTrigger(BYTE keyNum);
 
-	//よく使うメンバ変数
-private:
+private: //よく使うメンバ変数
 	//DirectInputのインスタンス
 	ComPtr<IDirectInput8> directInput = nullptr;
 	//キーボードデバイス
 	ComPtr<IDirectInputDevice8> keyboard = nullptr;
 
+	//入力されたキー番号
 	BYTE key[256] = {};
 	BYTE keyPre[256] = {};
 };
