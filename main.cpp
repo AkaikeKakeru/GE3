@@ -13,8 +13,6 @@
 
 #include <d3dcompiler.h>//シェーダ用コンパイラ
 
-#include <dinput.h>
-
 #include "Struct.h"
 
 #include <wrl.h>
@@ -24,8 +22,6 @@
 
 #pragma comment(lib, "d3dcompiler.lib")//シェーダ用コンパイラ
 
-#pragma comment(lib,"dinput8.lib")
-#pragma comment(lib,"dxguid.lib")
 
 #include "Input.h"
 
