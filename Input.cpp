@@ -9,7 +9,9 @@
 #pragma comment(lib,"dxguid.lib")
 using namespace Microsoft::WRL;
 
-void Input::Initialize()
+void Input::Initialize(
+	HINSTANCE hInstance,
+	HWND hwnd)
 {
 	HRESULT result;
 
