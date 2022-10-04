@@ -36,4 +36,6 @@ private:
 	//キーボードデバイス
 	ComPtr<IDirectInputDevice8> keyboard = nullptr;
 
+	BYTE key[256] = {};
+	BYTE oldkey[256] = {};
 };
