@@ -257,14 +257,14 @@ void DrawObject3d(Object3d* object,ID3D12GraphicsCommandList* commandList, D3D12
 }
 
 
-bool ifKeyPress(uint8_t key)
-{
-	if (key == 0x80)
-	{
-		return true;
-	}
-	return false;
-}
+//bool ifKeyPress(uint8_t key)
+//{
+//	if (key == 0x80)
+//	{
+//		return true;
+//	}
+//	return false;
+//}
 bool ifKeyRelease(uint8_t key)
 {
 	if (key == 0x00)
@@ -297,21 +297,21 @@ bool ifKeyReleaseTrigger(uint8_t key, uint8_t oldkey)
 }
 
 //座標操作
-void UpdateObjectPosition(Object3d* object, BYTE* key) {
-	if (key[DIK_UP]) { object->position.y += 1.0f; }
-	else if (key[DIK_DOWN]) { object->position.y -= 1.0f; }
-	if (key[DIK_RIGHT]) { object->position.x += 1.0f; }
-	else if (key[DIK_LEFT]) { object->position.x -= 1.0f; }
+void UpdateObjectPosition(Object3d* object, Input* input) {
+	if (input->ifKeyPress(DIK_UP)) { object->position.y += 1.0f; }
+	else if (input->ifKeyPress(DIK_DOWN)) { object->position.y -= 1.0f; }
+	if (input->ifKeyPress(DIK_RIGHT)) { object->position.x += 1.0f; }
+	else if (input->ifKeyPress(DIK_LEFT)) { object->position.x -= 1.0f; }
 }
 //回転操作
-void UpdateObjectRotation(Object3d* object, BYTE* key) {
-	if (key[DIK_Q]) { object->rotation.z += 0.1f; }
-	else if (key[DIK_E]) { object->rotation.z -= 0.1f; }
+void UpdateObjectRotation(Object3d* object, Input* input) {
+	if (input->ifKeyPress(DIK_Q)) { object->rotation.z += 0.1f; }
+	else if (input->ifKeyPress(DIK_E)) { object->rotation.z -= 0.1f; }
 }
 //オブジェクト操作
-void UpdateObjectControll(Object3d* object, BYTE* key) {
-	UpdateObjectRotation(object, key);
-	UpdateObjectPosition(object, key);
+void UpdateObjectControll(Object3d* object, Input* input) {
+	UpdateObjectRotation(object, input);
+	UpdateObjectPosition(object, input);
 }
 
 //ウィンドウプロシージャ
@@ -1374,19 +1374,19 @@ int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
 		input->Update();
 
 #pragma region ターゲットの周りを回るカメラ
-		//if (key[DIK_D] || key[DIK_A])
-		//{
-		//	if (key[DIK_D]) { angle += XMConvertToRadians(1.0f); }
-		//	else if (key[DIK_A]) { angle -= XMConvertToRadians(1.0f); }
+		if (input->ifKeyPress(DIK_D) || input->ifKeyPress(DIK_A))
+		{
+			if (input->ifKeyPress(DIK_D)) { angle += XMConvertToRadians(1.0f); }
+			else if (input->ifKeyPress(DIK_A)) { angle -= XMConvertToRadians(1.0f); }
 
-		//	//angleラジアンだけY軸周りに回転、半径は-100
-		//	eye.x = -100 * sinf(angle);
-		//	eye.z = -100 * cosf(angle);
-		//	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye),
-		//		XMLoadFloat3(&target), XMLoadFloat3(&up));
+			//angleラジアンだけY軸周りに回転、半径は-100
+			eye.x = -100 * sinf(angle);
+			eye.z = -100 * cosf(angle);
+			matView = XMMatrixLookAtLH(XMLoadFloat3(&eye),
+				XMLoadFloat3(&target), XMLoadFloat3(&up));
 
-		//	object3ds[0].constMapTransform->mat = matView * matProjection;
-		//}
+			object3ds[0].constMapTransform->mat = matView * matProjection;
+		}
 #pragma endregion
 
 #pragma region 連続移動
@@ -1397,7 +1397,7 @@ int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
 
 		}
 
-		//UpdateObjectControll(&object3ds[0], key);
+		UpdateObjectControll(&object3ds[0], input);
 
 #pragma region	トランスレーション
 
