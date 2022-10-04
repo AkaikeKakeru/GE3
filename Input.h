@@ -1,5 +1,10 @@
 #pragma once
 #include <windows.h>
+#include <wrl.h>
+using namespace Microsoft::WRL;
+
+#define DIRECT_VERSION 0x0800	//DirectInputのバージョン指定
+#include <dinput.h>
 
 //入力
 class Input

@@ -1,13 +1,13 @@
 #include "Input.h"
 #include <cassert>
 
-#include <wrl.h>
-#define DIRECT_VERSION 0x0800	//DirectInputのバージョン指定
-#include <dinput.h>
+//#define DIRECT_VERSION 0x0800	//DirectInputのバージョン指定
+//#include <dinput.h>
+//#include <wrl.h>
+//using namespace Microsoft::WRL;
 
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
-using namespace Microsoft::WRL;
 
 void Input::Initialize(
 	HINSTANCE hInstance,
