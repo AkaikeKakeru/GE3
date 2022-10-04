@@ -31,11 +31,19 @@ public:
 	/// <returns>押し込まれているか</returns>
 	bool ifKeyPress(BYTE keyNum);
 
+	/// <summary>
+	/// キーが今押されたかを確認
+	/// </summary>
+	/// <param name="keyNum">キーの番号</param>
+	/// <param name="keyPreNum">1F前のキーの番号</param>
+	/// <returns>今押されたか</returns>
+	bool ifKeyTrigger(BYTE keyNum, BYTE keyPreNum);
+
 	//よく使うメンバ変数
 private:
 	//キーボードデバイス
 	ComPtr<IDirectInputDevice8> keyboard = nullptr;
 
 	BYTE key[256] = {};
-	BYTE oldkey[256] = {};
+	BYTE keyPre[256] = {};
 };

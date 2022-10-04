@@ -39,15 +39,12 @@ void Input::Initialize(
 
 void Input::Update()
 {
-	//キーボード情報の取得開始
-	keyboard->Acquire();
-	//全キーの入力状態を取得する
-	for (int i = 0; i < 256; i++)
-	{
-		oldkey[i] = key[i];
-	}
+	HRESULT result;
 
-	keyboard->GetDeviceState(sizeof(key), key);
+	//キーボード情報の取得開始
+	result = keyboard->Acquire();
+	//全キーの入力状態を取得する
+	result = keyboard->GetDeviceState(sizeof(key), key);
 
 }
 
@@ -59,5 +56,10 @@ bool Input::ifKeyPress(BYTE keyNum)
 		return true;
 	}
 	//基本はfalse
+	return false;
+}
+
+bool Input::ifKeyTrigger(BYTE keyNum, BYTE oldkeyNum)
+{
 	return false;
 }
