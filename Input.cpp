@@ -23,7 +23,7 @@ void Input::Initialize(
 	assert(SUCCEEDED(result));
 
 	//キーボードデバイスの生成
-	ComPtr<IDirectInputDevice8> keyboard = nullptr;
+	//ComPtr<IDirectInputDevice8> keyboard = nullptr;
 	result = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
 	assert(SUCCEEDED(result));
 

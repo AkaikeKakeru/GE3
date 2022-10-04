@@ -12,4 +12,9 @@ public:
 	//更新
 	void Update();
 
+	//よく使うメンバ変数
+private:
+	//キーボードデバイス
+	ComPtr<IDirectInputDevice8> keyboard = nullptr;
+
 };
