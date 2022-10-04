@@ -1374,19 +1374,19 @@ int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
 		input->Update();
 
 #pragma region ターゲットの周りを回るカメラ
-		if (key[DIK_D] || key[DIK_A])
-		{
-			if (key[DIK_D]) { angle += XMConvertToRadians(1.0f); }
-			else if (key[DIK_A]) { angle -= XMConvertToRadians(1.0f); }
+		//if (key[DIK_D] || key[DIK_A])
+		//{
+		//	if (key[DIK_D]) { angle += XMConvertToRadians(1.0f); }
+		//	else if (key[DIK_A]) { angle -= XMConvertToRadians(1.0f); }
 
-			//angleラジアンだけY軸周りに回転、半径は-100
-			eye.x = -100 * sinf(angle);
-			eye.z = -100 * cosf(angle);
-			matView = XMMatrixLookAtLH(XMLoadFloat3(&eye),
-				XMLoadFloat3(&target), XMLoadFloat3(&up));
+		//	//angleラジアンだけY軸周りに回転、半径は-100
+		//	eye.x = -100 * sinf(angle);
+		//	eye.z = -100 * cosf(angle);
+		//	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye),
+		//		XMLoadFloat3(&target), XMLoadFloat3(&up));
 
-			object3ds[0].constMapTransform->mat = matView * matProjection;
-		}
+		//	object3ds[0].constMapTransform->mat = matView * matProjection;
+		//}
 #pragma endregion
 
 #pragma region 連続移動
@@ -1397,7 +1397,7 @@ int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
 
 		}
 
-		UpdateObjectControll(&object3ds[0], key);
+		//UpdateObjectControll(&object3ds[0], key);
 
 #pragma region	トランスレーション
 
@@ -1482,10 +1482,10 @@ int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
 		}
 #pragma endregion
 
-		if (ifKeyPressTrigger(key[DIK_SPACE], oldkey[DIK_SPACE]))
+		/*if (ifKeyPressTrigger(key[DIK_SPACE], oldkey[DIK_SPACE]))
 		{
 			ifOneTextureNum = !ifOneTextureNum;
-		}
+		}*/
 
 		//4.描画コマンドここから
 
