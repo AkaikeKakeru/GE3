@@ -62,7 +62,14 @@ bool Input::ifKeyPress(BYTE keyNum)
 	return false;
 }
 
-bool Input::ifKeyTrigger(BYTE keyNum, BYTE oldkeyNum)
+bool Input::ifKeyTrigger(BYTE keyNum)
 {
+	if (!keyPre[keyNum])
+	{
+		if (key[keyNum])
+		{
+			return true;
+		}
+	}
 	return false;
 }

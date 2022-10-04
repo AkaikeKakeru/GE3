@@ -35,9 +35,8 @@ public:
 	/// キーが今押されたかを確認
 	/// </summary>
 	/// <param name="keyNum">キーの番号</param>
-	/// <param name="keyPreNum">1F前のキーの番号</param>
 	/// <returns>今押されたか</returns>
-	bool ifKeyTrigger(BYTE keyNum, BYTE keyPreNum);
+	bool ifKeyTrigger(BYTE keyNum);
 
 	//よく使うメンバ変数
 private:
