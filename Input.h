@@ -40,6 +40,8 @@ public:
 
 	//よく使うメンバ変数
 private:
+	//DirectInputのインスタンス
+	ComPtr<IDirectInput8> directInput = nullptr;
 	//キーボードデバイス
 	ComPtr<IDirectInputDevice8> keyboard = nullptr;
 

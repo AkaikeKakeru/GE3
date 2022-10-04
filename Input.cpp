@@ -16,7 +16,7 @@ void Input::Initialize(
 	HRESULT result;
 
 	//DirectInput‚Ì‰Šú‰»
-	ComPtr<IDirectInput8> directInput = nullptr;
+	//ComPtr<IDirectInput8> directInput = nullptr;
 	result = DirectInput8Create(
 		hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
 		(void**)&directInput, nullptr);
