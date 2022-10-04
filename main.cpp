@@ -1335,8 +1335,7 @@ int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
 
 #pragma endregion
 	//------描画初期化処理 ここまで------
-	BYTE key[256] = {};
-	BYTE oldkey[256] = {};
+
 
 
 	//ゲームループ
@@ -1371,16 +1370,8 @@ int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
 		//深度バッファのクリアコマンドを追加
 		commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-		//キーボード情報の取得開始
-		keyboard->Acquire();
-		//全キーの入力状態を取得する
-
-		for (int i = 0; i < 256; i++)
-		{
-			oldkey[i] = key[i];
-		}
-
-		keyboard->GetDeviceState(sizeof(key), key);
+		//入力更新
+		input->Update();
 
 #pragma region ターゲットの周りを回るカメラ
 		if (key[DIK_D] || key[DIK_A])
