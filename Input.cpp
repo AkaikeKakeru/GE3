@@ -41,6 +41,9 @@ void Input::Update()
 {
 	HRESULT result;
 
+	//前回のキー入力を保存
+	memcpy(keyPre, key, sizeof(key));
+
 	//キーボード情報の取得開始
 	result = keyboard->Acquire();
 	//全キーの入力状態を取得する
