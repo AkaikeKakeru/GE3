@@ -22,6 +22,15 @@ public:
 	//更新
 	void Update();
 
+	//Input固有のメンバ関数
+public:
+	/// <summary>
+	/// キーが押し込まれているかを確認
+	/// </summary>
+	/// <param name="keyNum">キーの番号</param>
+	/// <returns>押し込まれているか</returns>
+	bool ifKeyPress(BYTE keyNum);
+
 	//よく使うメンバ変数
 private:
 	//キーボードデバイス

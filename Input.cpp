@@ -53,3 +53,8 @@ void Input::Update()
 	keyboard->GetDeviceState(sizeof(key), key);
 
 }
+
+bool Input::ifKeyPress(BYTE keyNum)
+{
+	return false;
+}
