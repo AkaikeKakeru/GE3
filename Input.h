@@ -1,7 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <wrl.h>
-using namespace Microsoft::WRL;
+//using namespace Microsoft::WRL;
 
 #define DIRECT_VERSION 0x0800	//DirectInputのバージョン指定
 #include <dinput.h>
@@ -9,6 +9,11 @@ using namespace Microsoft::WRL;
 //入力
 class Input
 {
+	//namespaceの省略
+public:
+	template <class Type>
+	using ComPtr = Microsoft::WRL::ComPtr<Type>;
+
 	//基本的なメンバ関数
 public:
 	//初期化
