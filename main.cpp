@@ -27,6 +27,7 @@
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 
+#include "Input.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -601,8 +602,11 @@ int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
 	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 
 	///入力関連の元あった位置
-
-	
+	//ポインタ
+	Input* input = nullptr;
+	//入力の初期化
+	input = new Input();
+	input->Initialize();
 
 #pragma endregion
 
@@ -1609,6 +1613,9 @@ int WINAPI WinMain(_In_ HINSTANCE,_In_opt_ HINSTANCE,_In_ LPSTR,_In_ int) {
 		}
 
 	}
+
+	//入力の解放
+	delete input;
 
 	//クラス登録を解除
 	UnregisterClass(w.lpszClassName, w.hInstance);
