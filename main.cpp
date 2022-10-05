@@ -1571,8 +1571,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	//WinApp‚Ì‰ð•ú
 	delete winApp;
+	winApp = nullptr;
+
 	//“ü—Í‚Ì‰ð•ú
 	delete input;
+	input = nullptr;
 
 	return 0;
 }
