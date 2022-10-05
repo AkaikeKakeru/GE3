@@ -19,6 +19,7 @@ public:
 
 //Getter
 public:
+	HINSTANCE GetHInstance() const { return w.hInstance; }
 	HWND GetHwnd() const {return hwnd;}
 
 //ŠO•”‚Åg‚¦‚é’è”

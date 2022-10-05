@@ -567,7 +567,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Input* input = nullptr;
 	//“ü—Í‚Ì‰Šú‰»
 	input = new Input();
-	input->Initialize(w.hInstance, winApp->GetHwnd());
+	input->Initialize(winApp->GetHInstance(), winApp->GetHwnd());
 
 #pragma endregion
 
@@ -1572,7 +1572,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	delete input;
 
 	//ƒNƒ‰ƒX“o˜^‚ð‰ðœ
-	UnregisterClass(w.lpszClassName, w.hInstance);
+	UnregisterClass(w.lpszClassName, winApp->GetHInstance());
 
 	return 0;
 }
