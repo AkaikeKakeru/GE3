@@ -1,6 +1,6 @@
 #define DIRECTINPUT_VERSION		0x0800 //DirectInputのバージョン指定
 
-#include <Windows.h>
+//#include <Windows.h>
 #include <DirectXMath.h>
 #include <DirectXTex.h>
 
