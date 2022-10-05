@@ -50,12 +50,22 @@ void WinApp::Update(){
 }
 
 void WinApp::Finalize(){
-
 	//クラス登録を解除
 	UnregisterClass(w_.lpszClassName, w_.hInstance);
 }
 
-bool WinApp::ProcessMsg()
-{
+bool WinApp::ProcessMessage(){
+	MSG msg{};
+
+	//メッセージはあるか？
+	if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+	//×で終了メッセージが来たらループを抜ける
+	if (msg.message == WM_QUIT) {
+		return true;
+	}
+
 	return false;
 }

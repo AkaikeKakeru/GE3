@@ -1553,17 +1553,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		result = commandList->Reset(commandAllocator.Get(), nullptr);
 		assert(SUCCEEDED(result));
 
-
-		//メッセージはあるか？
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-		//×で終了メッセージが来たらループを抜ける
-		if (msg.message == WM_QUIT) {
+		//windowsのメッセージ処理
+		if (winApp->ProcessMessage()) {
+			//ループを抜ける
 			break;
 		}
-
 	}
 
 	//WindowsAPI終了処理

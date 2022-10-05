@@ -22,7 +22,7 @@ public:
 //固有のメンバ関数
 public:
 	//アプリ終了メッセージがあるか
-	bool ProcessMsg();
+	bool ProcessMessage();
 
 //Getter
 public:
