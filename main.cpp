@@ -1571,8 +1571,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//“ü—Í‚Ì‰ğ•ú
 	delete input;
 
-	//ƒNƒ‰ƒX“o˜^‚ğ‰ğœ
-	UnregisterClass(w.lpszClassName, winApp->GetHInstance());
+	//WindowsAPII—¹ˆ—
+	winApp->Finalize();
 
 	return 0;
 }
