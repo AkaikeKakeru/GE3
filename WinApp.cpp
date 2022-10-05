@@ -50,3 +50,6 @@ void WinApp::Initialize(){
 
 void WinApp::Update(){
 }
+
+void WinApp::Finalize(){
+}

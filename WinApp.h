@@ -16,6 +16,8 @@ public:
 	void Initialize();
 	//XV
 	void Update();
+	//I—¹
+	void Finalize();
 
 //Getter
 public:
