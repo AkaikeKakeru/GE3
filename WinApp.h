@@ -1,4 +1,5 @@
 #pragma once
+#include <Windows.h>
 
 class WinApp {
 //Šî–{“I‚Èƒƒ“ƒoŠÖ”
