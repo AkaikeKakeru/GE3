@@ -2,6 +2,8 @@
 #include <windows.h>
 #include <wrl.h>
 
+#include "WinApp.h"
+
 #define DIRECT_VERSION 0x0800	//DirectInputのバージョン指定
 #include <dinput.h>
 
@@ -41,4 +43,7 @@ private: //よく使うメンバ変数
 	//入力されたキー番号
 	BYTE key[256] = {};
 	BYTE keyPre[256] = {};
+
+	//WindowsAPI
+	WinApp* winApp = nullptr;
 };
