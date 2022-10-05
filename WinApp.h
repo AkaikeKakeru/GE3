@@ -17,6 +17,10 @@ public:
 	//更新
 	void Update();
 
+//Getter
+public:
+	HWND GetHwnd() const {return hwnd;}
+
 //よく使うメンバ変数
 private:
 	//サイズ
