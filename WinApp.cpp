@@ -16,7 +16,6 @@ LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 
 void WinApp::Initialize(){
 	//ÉNÉâÉXê›íË
-	WNDCLASSEX w{};
 	w.cbSize = sizeof(WNDCLASSEX);
 	w.lpfnWndProc = (WNDPROC)WindowProc;
 	w.lpszClassName = L"DirectXGame";

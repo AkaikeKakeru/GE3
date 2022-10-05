@@ -29,6 +29,8 @@ public:
 
 //よく使うメンバ変数
 private:
+	//クラス設定
+	WNDCLASSEX w{};
 	//ウィンドウハンドル
 	HWND hwnd = nullptr;
 };
