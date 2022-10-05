@@ -23,7 +23,7 @@ public:
 public:
 	HINSTANCE GetHInstance() const { return w_.hInstance; }
 	HWND GetHwnd() const {return hwnd_;}
-
+	MSG GetMsg() const { return msg_; }
 
 //外部で使える定数
 public:
@@ -37,4 +37,6 @@ private:
 	WNDCLASSEX w_{};
 	//ウィンドウハンドル
 	HWND hwnd_ = nullptr;
+	//メッセージ
+	MSG msg_{};
 };
