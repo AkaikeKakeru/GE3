@@ -16,9 +16,13 @@ public:
 	void Initialize();
 	//更新
 	void Update();
+
 //よく使うメンバ変数
 private:
 	//サイズ
 	const int window_width = 1280;
 	const int window_height = 720;
+
+	//ウィンドウハンドル
+	HWND hwnd = nullptr;
 };

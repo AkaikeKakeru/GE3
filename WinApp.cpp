@@ -30,8 +30,9 @@ void WinApp::Initialize(){
 	//自動でサイズ修正
 	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
 
-	HWND hwnd = CreateWindow(w.lpszClassName,
-		L"LE2B_01_アカイケ_カケル_CG2",
+	//ウィンドウハンドル
+	hwnd = CreateWindow(w.lpszClassName,
+		L"LE2B_01_アカイケ_カケル_GE3",
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,

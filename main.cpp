@@ -1,6 +1,7 @@
 #define DIRECTINPUT_VERSION		0x0800 //DirectInputのバージョン指定
+#include "WinApp.h"
+#include "Input.h"
 
-//#include <Windows.h>
 #include <DirectXMath.h>
 #include <DirectXTex.h>
 
@@ -23,8 +24,7 @@
 #pragma comment(lib, "d3dcompiler.lib")//シェーダ用コンパイラ
 
 
-#include "Input.h"
-#include "WinApp.h"
+
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
