@@ -1,7 +1,7 @@
 #include "WinApp.h"
 
 //ウィンドウプロシージャ
-LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
+LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 	switch (msg) {
 		//ウィンドウ破棄されたなら
 	case WM_DESTROY:
@@ -14,10 +14,7 @@ LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
-void WinApp::Initialize()
-{
-	
-
+void WinApp::Initialize(){
 	//クラス設定
 	WNDCLASSEX w{};
 	w.cbSize = sizeof(WNDCLASSEX);
@@ -51,6 +48,5 @@ void WinApp::Initialize()
 	MSG msg{};//メッセージ
 }
 
-void WinApp::Update()
-{
+void WinApp::Update(){
 }

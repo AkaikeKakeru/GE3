@@ -2,6 +2,14 @@
 #include <Windows.h>
 
 class WinApp {
+//静的メンバ関数(static)
+public:
+	static LRESULT WindowProc(
+		HWND hwnd,
+		UINT msg,
+		WPARAM wparam,
+		LPARAM lparam);
+
 //基本的なメンバ関数
 public:
 	//初期化
