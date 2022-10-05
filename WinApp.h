@@ -19,6 +19,11 @@ public:
 	//終了
 	void Finalize();
 
+//固有のメンバ関数
+public:
+	//アプリ終了メッセージがあるか
+	bool ProcessMsg();
+
 //Getter
 public:
 	HINSTANCE GetHInstance() const { return w_.hInstance; }

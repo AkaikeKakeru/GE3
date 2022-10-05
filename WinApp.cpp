@@ -54,3 +54,8 @@ void WinApp::Finalize(){
 	//ƒNƒ‰ƒX“o˜^‚ğ‰ğœ
 	UnregisterClass(w_.lpszClassName, w_.hInstance);
 }
+
+bool WinApp::ProcessMsg()
+{
+	return false;
+}
