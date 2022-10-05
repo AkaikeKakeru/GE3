@@ -15,7 +15,7 @@ public: //namespaceの省略
 
 public: //基本的なメンバ関数
 	//初期化
-	void Initialize(HINSTANCE hInstance, HWND hwnd);
+	void Initialize(WinApp* winApp);
 	//更新
 	void Update();
 
