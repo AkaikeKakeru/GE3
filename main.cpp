@@ -24,6 +24,7 @@
 
 
 #include "Input.h"
+#include "WinApp.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -273,20 +274,20 @@ void UpdateObjectControll(Object3d* object, Input* input) {
 	UpdateObjectRotation(object, input);
 	UpdateObjectPosition(object, input);
 }
-
-//ウィンドウプロシージャ
-LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
-	switch (msg) {
-		//ウィンドウ破棄されたなら
-	case WM_DESTROY:
-		//OSに対してアプリ終了を通知
-		PostQuitMessage(0);
-		return 0;
-	}
-
-	//メッセージ処理
-	return DefWindowProc(hwnd, msg, wparam, lparam);
-}
+//
+////ウィンドウプロシージャ
+//LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
+//	switch (msg) {
+//		//ウィンドウ破棄されたなら
+//	case WM_DESTROY:
+//		//OSに対してアプリ終了を通知
+//		PostQuitMessage(0);
+//		return 0;
+//	}
+//
+//	//メッセージ処理
+//	return DefWindowProc(hwnd, msg, wparam, lparam);
+//}
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//------WindowsAPI初期化処理 ここから------
@@ -294,9 +295,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//const int window_width = 1280;
 	//const int window_height = 720;
 
-	//const float PI = 3.1415926535f;
+	const float PI = 3.1415926535f;
 
-
+	//ポインタ
+	WinApp* winApp = nullptr;
+	//WinApp初期化
+	winApp = new WinApp();
+	winApp->Initialize();
 
 	////クラス設定
 	//WNDCLASSEX w{};
@@ -1561,6 +1566,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	}
 
+	//WinAppの解放
+	delete winApp;
 	//入力の解放
 	delete input;
 

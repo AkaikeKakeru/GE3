@@ -1,14 +1,22 @@
 #include "WinApp.h"
 
+//ウィンドウプロシージャ
+LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
+	switch (msg) {
+		//ウィンドウ破棄されたなら
+	case WM_DESTROY:
+		//OSに対してアプリ終了を通知
+		PostQuitMessage(0);
+		return 0;
+	}
+
+	//メッセージ処理
+	return DefWindowProc(hwnd, msg, wparam, lparam);
+}
+
 void WinApp::Initialize()
 {
-	//サイズ
-	const int window_width = 1280;
-	const int window_height = 720;
-
-	const float PI = 3.1415926535f;
-
-
+	
 
 	//クラス設定
 	WNDCLASSEX w{};
