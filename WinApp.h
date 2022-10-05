@@ -21,19 +21,20 @@ public:
 
 //Getter
 public:
-	HINSTANCE GetHInstance() const { return w.hInstance; }
-	HWND GetHwnd() const {return hwnd;}
+	HINSTANCE GetHInstance() const { return w_.hInstance; }
+	HWND GetHwnd() const {return hwnd_;}
+
 
 //外部で使える定数
 public:
 	//サイズ
-	static const int window_width = 1280;
-	static const int window_height = 720;
+	static const int WinWidth = 1280;
+	static const int WinHeight = 720;
 
 //よく使うメンバ変数
 private:
 	//クラス設定
-	WNDCLASSEX w{};
+	WNDCLASSEX w_{};
 	//ウィンドウハンドル
-	HWND hwnd = nullptr;
+	HWND hwnd_ = nullptr;
 };

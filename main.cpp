@@ -501,8 +501,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//リソース設定
 	D3D12_RESOURCE_DESC depthResourceDesc{};
 	depthResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	depthResourceDesc.Width = WinApp::window_width;
-	depthResourceDesc.Height = WinApp::window_height;
+	depthResourceDesc.Width = WinApp::WinWidth;
+	depthResourceDesc.Height = WinApp::WinHeight;
 	depthResourceDesc.DepthOrArraySize = 1;
 	depthResourceDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	depthResourceDesc.SampleDesc.Count = 1;
@@ -1137,7 +1137,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	XMMATRIX matProjection =
 		XMMatrixPerspectiveFovLH(
 			XMConvertToRadians(45.0f),//上下画角45度
-			(float)WinApp::window_width / WinApp::window_height,//アスペクト比(画面横幅/画面縦幅)
+			(float)WinApp::WinWidth / WinApp::WinHeight,//アスペクト比(画面横幅/画面縦幅)
 			0.1f, 1000.0f
 		);//前端、奥端
 
@@ -1456,8 +1456,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		//ビューポート設定コマンド
 		D3D12_VIEWPORT viewport{};
-		viewport.Width = WinApp::window_width;				//横幅
-		viewport.Height = WinApp::window_height;			//縦幅
+		viewport.Width = WinApp::WinWidth;				//横幅
+		viewport.Height = WinApp::WinHeight;			//縦幅
 		viewport.TopLeftX = 0;		//左上x
 		viewport.TopLeftY = 0;						//左上y
 		viewport.MinDepth = 0.0f;					//最小深度(0でよい)
@@ -1468,9 +1468,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		//シザー矩形
 		D3D12_RECT scissorRect{};							//切り抜き座標
 		scissorRect.left = 0;								//左
-		scissorRect.right = scissorRect.left + WinApp::window_width;//右
+		scissorRect.right = scissorRect.left + WinApp::WinWidth;//右
 		scissorRect.top = 0;								//上
-		scissorRect.bottom = scissorRect.top + WinApp::window_height;//下
+		scissorRect.bottom = scissorRect.top + WinApp::WinHeight;//下
 
 															 //シザー矩形設定コマンドを、コマンドリストに積む
 		commandList->RSSetScissorRects(1, &scissorRect);

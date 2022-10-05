@@ -16,21 +16,21 @@ LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 
 void WinApp::Initialize(){
 	//クラス設定
-	w.cbSize = sizeof(WNDCLASSEX);
-	w.lpfnWndProc = (WNDPROC)WindowProc;
-	w.lpszClassName = L"DirectXGame";
-	w.hInstance = GetModuleHandle(nullptr);
-	w.hCursor = LoadCursor(NULL, IDC_ARROW);
+	w_.cbSize = sizeof(WNDCLASSEX);
+	w_.lpfnWndProc = (WNDPROC)WindowProc;
+	w_.lpszClassName = L"DirectXGame";
+	w_.hInstance = GetModuleHandle(nullptr);
+	w_.hCursor = LoadCursor(NULL, IDC_ARROW);
 
 	//OSに登録
-	RegisterClassEx(&w);
+	RegisterClassEx(&w_);
 	//サイズ
-	RECT wrc = { 0,0,window_width,window_height };
+	RECT wrc = { 0,0,WinWidth,WinHeight };
 	//自動でサイズ修正
 	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
 
 	//ウィンドウハンドル
-	hwnd = CreateWindow(w.lpszClassName,
+	hwnd_ = CreateWindow(w_.lpszClassName,
 		L"LE2B_01_アカイケ_カケル_GE3",
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
@@ -39,13 +39,11 @@ void WinApp::Initialize(){
 		wrc.bottom - wrc.top,
 		nullptr,
 		nullptr,
-		w.hInstance,
+		w_.hInstance,
 		nullptr);
 
 	//表示状態にする
-	ShowWindow(hwnd, SW_SHOW);
-
-	MSG msg{};//メッセージ
+	ShowWindow(hwnd_, SW_SHOW);
 }
 
 void WinApp::Update(){
@@ -53,5 +51,5 @@ void WinApp::Update(){
 
 void WinApp::Finalize(){
 	//クラス登録を解除
-	UnregisterClass(w.lpszClassName, w.hInstance);
+	UnregisterClass(w_.lpszClassName, w_.hInstance);
 }

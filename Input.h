@@ -41,9 +41,9 @@ private: //よく使うメンバ変数
 	ComPtr<IDirectInputDevice8> keyboard = nullptr;
 
 	//入力されたキー番号
-	BYTE key[256] = {};
-	BYTE keyPre[256] = {};
+	BYTE key_[256] = {};
+	BYTE keyPre_[256] = {};
 
 	//WindowsAPI
-	WinApp* winApp = nullptr;
+	WinApp* winApp_ = nullptr;
 };

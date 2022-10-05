@@ -7,7 +7,7 @@
 void Input::Initialize(WinApp* winApp) {
 	HRESULT result;
 
-	this->winApp = winApp;
+	winApp_ = winApp;
 
 	//DirectInputの初期化
 	result = DirectInput8Create(
@@ -35,17 +35,17 @@ void Input::Update() {
 	HRESULT result;
 
 	//前回のキー入力を保存
-	memcpy(keyPre, key, sizeof(key));
+	memcpy(keyPre_, key_, sizeof(key_));
 
 	//キーボード情報の取得開始
 	result = keyboard->Acquire();
 	//全キーの入力状態を取得する
-	result = keyboard->GetDeviceState(sizeof(key), key);
+	result = keyboard->GetDeviceState(sizeof(key_), key_);
 }
 
 bool Input::ifKeyPress(BYTE keyNum) {
 	//指定のキーを押していたら、trueを返す
-	if (key[keyNum]) {
+	if (key_[keyNum]) {
 		return true;
 	}
 	//基本はfalse
@@ -54,9 +54,9 @@ bool Input::ifKeyPress(BYTE keyNum) {
 
 bool Input::ifKeyTrigger(BYTE keyNum) {
 	//1F前にキーを押していないことを確認
-	if (!keyPre[keyNum]) {
+	if (!keyPre_[keyNum]) {
 		//指定のキーを押していたら、trueを返す
-		if (key[keyNum]) {
+		if (key_[keyNum]) {
 			return true;
 		}
 	}
