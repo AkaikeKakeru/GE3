@@ -50,6 +50,7 @@ void WinApp::Update(){
 }
 
 void WinApp::Finalize(){
+
 	//ƒNƒ‰ƒX“o˜^‚ğ‰ğœ
 	UnregisterClass(w_.lpszClassName, w_.hInstance);
 }

@@ -333,7 +333,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	////表示状態にする
 	//ShowWindow(hwnd, SW_SHOW);
 
-	//MSG msg{};//メッセージ
+	MSG msg{};//メッセージ
 			  //------WindowsAPI初期化処理 ここまで------
 
 			  //------DirectX初期化処理 ここから------
@@ -1566,13 +1566,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	}
 
+	//WindowsAPI終了処理
+	winApp->Finalize();
+
 	//WinAppの解放
 	delete winApp;
 	//入力の解放
 	delete input;
-
-	//WindowsAPI終了処理
-	winApp->Finalize();
 
 	return 0;
 }
