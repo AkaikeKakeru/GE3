@@ -21,12 +21,14 @@ public:
 public:
 	HWND GetHwnd() const {return hwnd;}
 
+//外部で使える定数
+public:
+	//サイズ
+	static const int window_width = 1280;
+	static const int window_height = 720;
+
 //よく使うメンバ変数
 private:
-	//サイズ
-	const int window_width = 1280;
-	const int window_height = 720;
-
 	//ウィンドウハンドル
 	HWND hwnd = nullptr;
 };
