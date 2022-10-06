@@ -20,9 +20,9 @@ void DirectXBasis::Initialize(WinApp* winApp){
 	//デスクリプタヒープの設定
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	rtvHeapDesc.NumDescriptors = swapChainDesc.BufferCount;
+	rtvHeapDesc.NumDescriptors = swapChainDesc_.BufferCount;
 	//デスクリプタヒープの生成
-	device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvHeap));
+	device_->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvHeap));
 
 #pragma region レンダァタァゲット
 
@@ -30,24 +30,24 @@ void DirectXBasis::Initialize(WinApp* winApp){
 	//std::vector<ID3D12Resource*> backBuffers(2);
 	std::vector<ComPtr<ID3D12Resource>> backBuffers(2);
 
-	backBuffers.resize(swapChainDesc.BufferCount);
+	backBuffers.resize(swapChainDesc_.BufferCount);
 
 
 	//スワップチェーンのすべてのバッファについて処理する
 	for (size_t i = 0; i < backBuffers.size(); i++) {
 		//スワップチェーンからバッファを取得
-		swapChain->GetBuffer((UINT)i, IID_PPV_ARGS(&backBuffers[i]));
+		swapChain_->GetBuffer((UINT)i, IID_PPV_ARGS(&backBuffers[i]));
 		//デスクリプタヒープのハンドルを取得
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
 		//裏か表化でアドレスがズレる
-		rtvHandle.ptr += i * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
+		rtvHandle.ptr += i * device_->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
 		//レンダ―ターゲットビューの設定
 		D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 		//シェーダーの計算結果をSRGBに変換して書き込む
 		rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 		rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 		//レンダ―ターゲットビューの生成
-		device->CreateRenderTargetView(backBuffers[i].Get(), &rtvDesc, rtvHandle);
+		device_->CreateRenderTargetView(backBuffers[i].Get(), &rtvDesc, rtvHandle);
 	}
 #pragma endregion
 
@@ -78,7 +78,7 @@ void DirectXBasis::Initialize(WinApp* winApp){
 #pragma region バッファの生成
 	//リソース生成
 	ComPtr<ID3D12Resource> depthBuff = nullptr;
-	result = device->CreateCommittedResource(
+	result = device_->CreateCommittedResource(
 		&depthHeapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&depthResourceDesc,
@@ -94,7 +94,7 @@ void DirectXBasis::Initialize(WinApp* winApp){
 	dsvHeapDesc.NumDescriptors = 1;
 	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 	ComPtr<ID3D12DescriptorHeap> dsvHeap = nullptr;
-	result = device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
+	result = device_->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
 #pragma endregion
 
 #pragma region 深度ステンシルビュ－の生成
@@ -102,7 +102,7 @@ void DirectXBasis::Initialize(WinApp* winApp){
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-	device->CreateDepthStencilView(
+	device_->CreateDepthStencilView(
 		depthBuff.Get(),
 		&dsvDesc,
 		dsvHeap->GetCPUDescriptorHandleForHeapStart()
@@ -116,7 +116,7 @@ void DirectXBasis::Initialize(WinApp* winApp){
 	ComPtr<ID3D12Fence> fence = nullptr;
 	UINT64 fenceVal = 0;
 
-	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
+	result = device_->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 #pragma endregion
 }
 
@@ -131,7 +131,7 @@ void DirectXBasis::InitDevice(){
 	HRESULT result;
 
 	//DXGIファクトリー生成
-	result = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
+	result = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory_));
 	assert(SUCCEEDED(result));
 
 	//アダプターの列挙用
@@ -142,7 +142,7 @@ void DirectXBasis::InitDevice(){
 
 	//パフォーマンスが高いものから順に、すべてのアダプターを列挙
 	for (UINT i = 0;
-		dxgiFactory->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&tmpAdapter)) != DXGI_ERROR_NOT_FOUND
+		dxgiFactory_->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&tmpAdapter)) != DXGI_ERROR_NOT_FOUND
 		; i++)
 	{
 		//動的配列に追加
@@ -176,7 +176,7 @@ void DirectXBasis::InitDevice(){
 	for (size_t i = 0; i < _countof(levels); i++) {
 		//採用したアダプターでデバイスを生成
 		result = D3D12CreateDevice(tmpAdapter.Get(), levels[i],
-			IID_PPV_ARGS(&device));
+			IID_PPV_ARGS(&device_));
 		if (result == S_OK) {
 			//デバイスを生成できた時点でループを抜ける
 			featureLevel = levels[i];
@@ -189,22 +189,22 @@ void DirectXBasis::InitCommand(){
 	HRESULT result;
 
 	//コマンドアロケータを生成
-	result = device->CreateCommandAllocator(
+	result = device_->CreateCommandAllocator(
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		IID_PPV_ARGS(&commandAllocator));
+		IID_PPV_ARGS(&commandAllocator_));
 	assert(SUCCEEDED(result));
 
 	//コマンドリストを生成
-	result = device->CreateCommandList(0,
+	result = device_->CreateCommandList(0,
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		commandAllocator.Get(), nullptr,
-		IID_PPV_ARGS(&commandList));
+		commandAllocator_.Get(), nullptr,
+		IID_PPV_ARGS(&commandList_));
 	assert(SUCCEEDED(result));
 
 	//コマンドキューを設定
 	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
 	//コマンドキューを生成
-	result = device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
+	result = device_->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue_));
 	assert(SUCCEEDED(result));
 }
 
@@ -215,25 +215,25 @@ void DirectXBasis::InitSwapChain(){
 	ComPtr<IDXGISwapChain1> swapChain1;
 
 	//スワップチェーンの設定
-	swapChainDesc.Width = 1280;
-	swapChainDesc.Height = 720;
-	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	swapChainDesc.SampleDesc.Count = 1;
-	swapChainDesc.BufferUsage = DXGI_USAGE_BACK_BUFFER;
-	swapChainDesc.BufferCount = 2;
-	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+	swapChainDesc_.Width = 1280;
+	swapChainDesc_.Height = 720;
+	swapChainDesc_.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	swapChainDesc_.SampleDesc.Count = 1;
+	swapChainDesc_.BufferUsage = DXGI_USAGE_BACK_BUFFER;
+	swapChainDesc_.BufferCount = 2;
+	swapChainDesc_.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swapChainDesc_.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	//スワップチェーンの生成
-	result = dxgiFactory->CreateSwapChainForHwnd(
-		commandQueue.Get(),
+	result = dxgiFactory_->CreateSwapChainForHwnd(
+		commandQueue_.Get(),
 		winApp_->GetHwnd(),
-		&swapChainDesc,
+		&swapChainDesc_,
 		nullptr,
 		nullptr,
 		&swapChain1);
 	assert(SUCCEEDED(result));
 
 	//生成したIDXGISwapChain1のオブジェクトをIDXGISwapChain4に変換する
-	swapChain1.As(&swapChain);
+	swapChain1.As(&swapChain_);
 }

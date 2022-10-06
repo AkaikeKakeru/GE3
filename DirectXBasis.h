@@ -32,20 +32,20 @@ private://よく使うメンバ変数
 
 	///デバイス関連
 	//DirectX12のデバイス
-	ComPtr<ID3D12Device> device = nullptr;
+	ComPtr<ID3D12Device> device_ = nullptr;
 	//DXGIファクトリ
-	ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
+	ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
 
 	///コマンド関連
 	//コマンドアロケータ
-	ComPtr<ID3D12CommandAllocator> commandAllocator = nullptr;
+	ComPtr<ID3D12CommandAllocator> commandAllocator_ = nullptr;
 	//コマンドリスト
-	ComPtr<ID3D12GraphicsCommandList> commandList = nullptr;
+	ComPtr<ID3D12GraphicsCommandList> commandList_ = nullptr;
 	//コマンドキュー
-	ComPtr<ID3D12CommandQueue> commandQueue = nullptr;
+	ComPtr<ID3D12CommandQueue> commandQueue_ = nullptr;
 
 	///スワップチェーン関連
 	//スワップチェーン
-	ComPtr<IDXGISwapChain4> swapChain = nullptr;
-	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
+	ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
+	DXGI_SWAP_CHAIN_DESC1 swapChainDesc_{};
 };
