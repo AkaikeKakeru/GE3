@@ -29,6 +29,9 @@ public://固有のメンバ関数
 	//レンダ―ターゲットビュー初期化
 	void InitRTV();
 
+	//深度バッファの初期化
+	void InitDepthBuffer();
+
 private://よく使うメンバ変数
 	//WindowsAPI
 	WinApp* winApp_ = nullptr;
@@ -57,4 +60,10 @@ private://よく使うメンバ変数
 	ComPtr<ID3D12DescriptorHeap> rtvHeap_ = nullptr;
 	//バックバッファ
 	std::vector<ComPtr<ID3D12Resource>> backBuffers_;
+
+	///深度バッファ関連
+	//深度バッファ
+	ComPtr<ID3D12Resource> depthBuff_ = nullptr;
+	//深度バッファビューヒープ
+	ComPtr<ID3D12DescriptorHeap> dsvHeap_ = nullptr;
 };

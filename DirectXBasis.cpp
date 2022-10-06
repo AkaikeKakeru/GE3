@@ -14,68 +14,11 @@ void DirectXBasis::Initialize(WinApp* winApp){
 
 	InitCommand();
 
+	InitSwapChain();
+
 	InitRTV();
-	
-#pragma region 深度テスト
 
-#pragma region バッファのリソース設定
-	//リソース設定
-	D3D12_RESOURCE_DESC depthResourceDesc{};
-	depthResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	depthResourceDesc.Width = WinApp::WinWidth;
-	depthResourceDesc.Height = WinApp::WinHeight;
-	depthResourceDesc.DepthOrArraySize = 1;
-	depthResourceDesc.Format = DXGI_FORMAT_D32_FLOAT;
-	depthResourceDesc.SampleDesc.Count = 1;
-	depthResourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
-#pragma endregion
-
-#pragma region その他の設定
-	//深度値用ヒーププロパティ
-	D3D12_HEAP_PROPERTIES depthHeapProp{};
-	depthHeapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
-	//深度値クリア設定
-	D3D12_CLEAR_VALUE depthClearValue{};
-	depthClearValue.DepthStencil.Depth = 1.0f;
-	depthClearValue.Format = DXGI_FORMAT_D32_FLOAT;
-#pragma endregion
-
-#pragma region バッファの生成
-	//リソース生成
-	ComPtr<ID3D12Resource> depthBuff = nullptr;
-	result = device_->CreateCommittedResource(
-		&depthHeapProp,
-		D3D12_HEAP_FLAG_NONE,
-		&depthResourceDesc,
-		D3D12_RESOURCE_STATE_DEPTH_WRITE,
-		&depthClearValue,
-		IID_PPV_ARGS(&depthBuff)
-	);
-#pragma endregion
-
-#pragma region デスクリプタヒープの生成
-	//深度ビュー用デスクリプタヒープ生成
-	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
-	dsvHeapDesc.NumDescriptors = 1;
-	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-	ComPtr<ID3D12DescriptorHeap> dsvHeap = nullptr;
-	result = device_->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
-#pragma endregion
-
-#pragma region 深度ステンシルビュ－の生成
-	//深度ビュ－作成
-	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
-	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
-	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-	device_->CreateDepthStencilView(
-		depthBuff.Get(),
-		&dsvDesc,
-		dsvHeap->GetCPUDescriptorHandleForHeapStart()
-	);
-#pragma endregion
-
-#pragma endregion
-
+	InitDepthBuffer();
 
 	//フェンスの生成
 	ComPtr<ID3D12Fence> fence = nullptr;
@@ -230,4 +173,63 @@ void DirectXBasis::InitRTV(){
 		//レンダ―ターゲットビューの生成
 		device_->CreateRenderTargetView(backBuffers_[i].Get(), &rtvDesc, rtvHandle);
 	}
+}
+
+void DirectXBasis::InitDepthBuffer(){
+	HRESULT result;
+
+#pragma region バッファのリソース設定
+	//リソース設定
+	D3D12_RESOURCE_DESC depthResourceDesc{};
+	depthResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	depthResourceDesc.Width = WinApp::WinWidth;
+	depthResourceDesc.Height = WinApp::WinHeight;
+	depthResourceDesc.DepthOrArraySize = 1;
+	depthResourceDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	depthResourceDesc.SampleDesc.Count = 1;
+	depthResourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+#pragma endregion
+
+#pragma region その他の設定
+	//深度値用ヒーププロパティ
+	D3D12_HEAP_PROPERTIES depthHeapProp{};
+	depthHeapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
+	//深度値クリア設定
+	D3D12_CLEAR_VALUE depthClearValue{};
+	depthClearValue.DepthStencil.Depth = 1.0f;
+	depthClearValue.Format = DXGI_FORMAT_D32_FLOAT;
+#pragma endregion
+
+#pragma region バッファの生成
+	//リソース生成
+	result = device_->CreateCommittedResource(
+		&depthHeapProp,
+		D3D12_HEAP_FLAG_NONE,
+		&depthResourceDesc,
+		D3D12_RESOURCE_STATE_DEPTH_WRITE,
+		&depthClearValue,
+		IID_PPV_ARGS(&depthBuff_)
+	);
+#pragma endregion
+
+#pragma region デスクリプタヒープの生成
+	//深度ビュー用デスクリプタヒープ生成
+	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
+	dsvHeapDesc.NumDescriptors = 1;
+	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+
+	result = device_->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap_));
+#pragma endregion
+
+#pragma region 深度ステンシルビュ－の生成
+	//深度ビュ－作成
+	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
+	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+	device_->CreateDepthStencilView(
+		depthBuff_.Get(),
+		&dsvDesc,
+		dsvHeap_->GetCPUDescriptorHandleForHeapStart()
+	);
+#pragma endregion
 }
