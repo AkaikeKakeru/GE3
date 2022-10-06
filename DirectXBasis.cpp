@@ -4,8 +4,9 @@
 #include <cassert>
 #include <vector>
 
-void DirectXBasis::Initialize(){
-	
+void DirectXBasis::Initialize(WinApp* winApp){
+	winApp_ = winApp;
+
 #pragma region 
 #ifdef _DEBUG
 			  //デバッグプレイヤーをオンに
@@ -120,7 +121,7 @@ void DirectXBasis::Initialize(){
 	//スワップチェーンの生成
 	result = dxgiFactory->CreateSwapChainForHwnd(
 		commandQueue.Get(),
-		winApp->GetHwnd(),
+		winApp_->GetHwnd(),
 		&swapChainDesc,
 		nullptr,
 		nullptr,
