@@ -1,4 +1,8 @@
 #include "DirectXBasis.h"
+#include <d3d12.h>
+#include <dxgi1_6.h>
+#include <cassert>
+#include <vector>
 
 void DirectXBasis::Initialize(){
 	
@@ -226,14 +230,5 @@ void DirectXBasis::Initialize(){
 	UINT64 fenceVal = 0;
 
 	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
-
-	///入力関連の元あった位置
-	//ポインタ
-	Input* input = nullptr;
-	//入力の初期化
-	input = new Input();
-	input->Initialize(winApp);
-
 #pragma endregion
-
 }
