@@ -2,7 +2,7 @@
 #include <cassert>
 #include <vector>
 
-void DirectXBasis::Initialize(WinApp* winApp){
+void DirectXBasis::Initialize(WinApp* winApp) {
 	HRESULT result;
 
 	//nullチェック
@@ -20,15 +20,11 @@ void DirectXBasis::Initialize(WinApp* winApp){
 
 	InitDepthBuffer();
 
-	//フェンスの生成
-	ComPtr<ID3D12Fence> fence = nullptr;
-	UINT64 fenceVal = 0;
-
-	result = device_->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
+	InitFence();
 #pragma endregion
 }
 
-void DirectXBasis::InitDevice(){
+void DirectXBasis::InitDevice() {
 #ifdef _DEBUG
 	//デバッグプレイヤーをオンに
 	ComPtr<ID3D12Debug> debugController;
@@ -93,7 +89,7 @@ void DirectXBasis::InitDevice(){
 	}
 }
 
-void DirectXBasis::InitCommand(){
+void DirectXBasis::InitCommand() {
 	HRESULT result;
 
 	//コマンドアロケータを生成
@@ -116,7 +112,7 @@ void DirectXBasis::InitCommand(){
 	assert(SUCCEEDED(result));
 }
 
-void DirectXBasis::InitSwapChain(){
+void DirectXBasis::InitSwapChain() {
 	HRESULT result;
 
 	//IDXGISwapChain1のComPtrを用意
@@ -146,7 +142,7 @@ void DirectXBasis::InitSwapChain(){
 	swapChain1.As(&swapChain_);
 }
 
-void DirectXBasis::InitRTV(){
+void DirectXBasis::InitRTV() {
 	//デスクリプタヒープの設定
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
@@ -175,7 +171,7 @@ void DirectXBasis::InitRTV(){
 	}
 }
 
-void DirectXBasis::InitDepthBuffer(){
+void DirectXBasis::InitDepthBuffer() {
 	HRESULT result;
 
 #pragma region バッファのリソース設定
@@ -232,4 +228,12 @@ void DirectXBasis::InitDepthBuffer(){
 		dsvHeap_->GetCPUDescriptorHandleForHeapStart()
 	);
 #pragma endregion
+}
+
+void DirectXBasis::InitFence() {
+	HRESULT result;
+	//フェンスの生成
+	UINT64 fenceVal = 0;
+
+	result = device_->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 }

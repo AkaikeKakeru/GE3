@@ -4,7 +4,7 @@
 #include <dxgi1_6.h>
 #include <wrl.h>
 
-class DirectXBasis{
+class DirectXBasis {
 
 public: //namespaceの省略
 	template <class Type>
@@ -29,8 +29,11 @@ public://固有のメンバ関数
 	//レンダ―ターゲットビュー初期化
 	void InitRTV();
 
-	//深度バッファの初期化
+	//深度バッファ初期化
 	void InitDepthBuffer();
+
+	//フェンス初期化
+	void InitFence();
 
 private://よく使うメンバ変数
 	//WindowsAPI
@@ -66,4 +69,8 @@ private://よく使うメンバ変数
 	ComPtr<ID3D12Resource> depthBuff_ = nullptr;
 	//深度バッファビューヒープ
 	ComPtr<ID3D12DescriptorHeap> dsvHeap_ = nullptr;
+
+	///フェンス関連
+	//フェンス
+	ComPtr<ID3D12Fence> fence = nullptr;
 };
