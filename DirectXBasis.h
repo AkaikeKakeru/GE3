@@ -13,6 +13,11 @@ public://基本的なメンバ関数
 	//初期化
 	void Initialize(WinApp* winApp);
 
+public://固有のメンバ関数
+
+	//デバイス
+	void InitDevice();
+
 private://よく使うメンバ変数
 	//WindowsAPI
 	WinApp* winApp_ = nullptr;

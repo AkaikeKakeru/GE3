@@ -5,74 +5,13 @@
 void DirectXBasis::Initialize(WinApp* winApp){
 	winApp_ = winApp;
 
-#pragma region 
-#ifdef _DEBUG
-			  //デバッグプレイヤーをオンに
-	ComPtr<ID3D12Debug> debugController;
-	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
-	}
-#endif
-
 	HRESULT result;
 
+#pragma region 
 	ComPtr<IDXGISwapChain4> swapChain = nullptr;
-
 	ComPtr<ID3D12DescriptorHeap> rtvHeap = nullptr;
 
-	//DXGIファクトリー生成
-	result = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
-	assert(SUCCEEDED(result));
-
-	//アダプターの列挙用
-	//std::vector<IDXGIAdapter4*>adapters;
-	std::vector<ComPtr<IDXGIAdapter4>> adapters;
-
-	//ここに特定の名前を持つアダプターオブジェクトが入る
-	ComPtr<IDXGIAdapter4> tmpAdapter = nullptr;
-
-	//パフォーマンスが高いものから順に、すべてのアダプターを列挙
-	for (UINT i = 0;
-		dxgiFactory->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&tmpAdapter)) != DXGI_ERROR_NOT_FOUND
-		; i++)
-	{
-		//動的配列に追加
-		adapters.push_back(tmpAdapter);
-	}
-
-	//妥当なアダプタを選別
-	for (size_t i = 0; i < adapters.size(); i++) {
-		DXGI_ADAPTER_DESC3 adapterDesc;
-		//アダプターの情報を取得
-		adapters[i]->GetDesc3(&adapterDesc);
-
-		//ソフトウェアデバイスを回避
-		if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
-			//デバイスを採用してループを抜ける
-			tmpAdapter = adapters[i];
-			break;
-		}
-	}
-
-	//対応レベルの配列
-	D3D_FEATURE_LEVEL levels[] = {
-		D3D_FEATURE_LEVEL_12_1,
-		D3D_FEATURE_LEVEL_12_0,
-		D3D_FEATURE_LEVEL_11_1,
-		D3D_FEATURE_LEVEL_11_0,
-	};
-
-	D3D_FEATURE_LEVEL featureLevel;
-
-	for (size_t i = 0; i < _countof(levels); i++) {
-		//採用したアダプターでデバイスを生成
-		result = D3D12CreateDevice(tmpAdapter.Get(), levels[i],
-			IID_PPV_ARGS(&device));
-		if (result == S_OK) {
-			//デバイスを生成できた時点でループを抜ける
-			featureLevel = levels[i];
-			break;
-		}
-	}
+	InitDevice();
 
 	//コマンドアロケータを生成
 	result = device->CreateCommandAllocator(
@@ -221,4 +160,69 @@ void DirectXBasis::Initialize(WinApp* winApp){
 
 	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 #pragma endregion
+}
+
+void DirectXBasis::InitDevice(){
+#ifdef _DEBUG
+	//デバッグプレイヤーをオンに
+	ComPtr<ID3D12Debug> debugController;
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
+	}
+#endif
+
+	HRESULT result;
+
+	//DXGIファクトリー生成
+	result = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
+	assert(SUCCEEDED(result));
+
+	//アダプターの列挙用
+	std::vector<ComPtr<IDXGIAdapter4>> adapters;
+
+	//ここに特定の名前を持つアダプターオブジェクトが入る
+	ComPtr<IDXGIAdapter4> tmpAdapter = nullptr;
+
+	//パフォーマンスが高いものから順に、すべてのアダプターを列挙
+	for (UINT i = 0;
+		dxgiFactory->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&tmpAdapter)) != DXGI_ERROR_NOT_FOUND
+		; i++)
+	{
+		//動的配列に追加
+		adapters.push_back(tmpAdapter);
+	}
+
+	//妥当なアダプタを選別
+	for (size_t i = 0; i < adapters.size(); i++) {
+		DXGI_ADAPTER_DESC3 adapterDesc;
+		//アダプターの情報を取得
+		adapters[i]->GetDesc3(&adapterDesc);
+
+		//ソフトウェアデバイスを回避
+		if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
+			//デバイスを採用してループを抜ける
+			tmpAdapter = adapters[i];
+			break;
+		}
+	}
+
+	//対応レベルの配列
+	D3D_FEATURE_LEVEL levels[] = {
+		D3D_FEATURE_LEVEL_12_1,
+		D3D_FEATURE_LEVEL_12_0,
+		D3D_FEATURE_LEVEL_11_1,
+		D3D_FEATURE_LEVEL_11_0,
+	};
+
+	D3D_FEATURE_LEVEL featureLevel;
+
+	for (size_t i = 0; i < _countof(levels); i++) {
+		//採用したアダプターでデバイスを生成
+		result = D3D12CreateDevice(tmpAdapter.Get(), levels[i],
+			IID_PPV_ARGS(&device));
+		if (result == S_OK) {
+			//デバイスを生成できた時点でループを抜ける
+			featureLevel = levels[i];
+			break;
+		}
+	}
 }
