@@ -3,12 +3,13 @@
 #include <vector>
 
 void DirectXBasis::Initialize(WinApp* winApp){
-	winApp_ = winApp;
-
 	HRESULT result;
 
+	//nullチェック
+	assert(winApp);
+	winApp_ = winApp;
+
 #pragma region 
-	
 	ComPtr<ID3D12DescriptorHeap> rtvHeap = nullptr;
 
 	InitDevice();
@@ -210,8 +211,10 @@ void DirectXBasis::InitCommand(){
 void DirectXBasis::InitSwapChain(){
 	HRESULT result;
 
+	//IDXGISwapChain1のComPtrを用意
+	ComPtr<IDXGISwapChain1> swapChain1;
+
 	//スワップチェーンの設定
-	//DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 	swapChainDesc.Width = 1280;
 	swapChainDesc.Height = 720;
 	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -220,9 +223,6 @@ void DirectXBasis::InitSwapChain(){
 	swapChainDesc.BufferCount = 2;
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
-	//IDXGISwapChain1のComPtrを用意
-	ComPtr<IDXGISwapChain1> swapChain1;
 
 	//スワップチェーンの生成
 	result = dxgiFactory->CreateSwapChainForHwnd(
@@ -236,5 +236,4 @@ void DirectXBasis::InitSwapChain(){
 
 	//生成したIDXGISwapChain1のオブジェクトをIDXGISwapChain4に変換する
 	swapChain1.As(&swapChain);
-
 }
