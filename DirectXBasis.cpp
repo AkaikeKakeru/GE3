@@ -1,6 +1,4 @@
 #include "DirectXBasis.h"
-#include <d3d12.h>
-#include <dxgi1_6.h>
 #include <cassert>
 #include <vector>
 
@@ -17,17 +15,8 @@ void DirectXBasis::Initialize(WinApp* winApp){
 
 	HRESULT result;
 
-	//IDXGIFactory7* dxgiFactory = nullptr;
-	ComPtr<IDXGIFactory7> dxgiFactory;
-
 	ComPtr<IDXGISwapChain4> swapChain = nullptr;
 
-	//ID3D12Device* device = nullptr;
-	ComPtr<ID3D12Device> device;
-
-	ComPtr<ID3D12CommandAllocator> commandAllocator = nullptr;
-	ComPtr<ID3D12GraphicsCommandList> commandList = nullptr;
-	ComPtr<ID3D12CommandQueue> commandQueue = nullptr;
 	ComPtr<ID3D12DescriptorHeap> rtvHeap = nullptr;
 
 	//DXGIファクトリー生成
@@ -138,7 +127,7 @@ void DirectXBasis::Initialize(WinApp* winApp){
 	//デスクリプタヒープの生成
 	device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvHeap));
 
-#pragma region レンダァタァゲットビュゥ
+#pragma region レンダァタァゲット
 
 	//バックバッファ
 	//std::vector<ID3D12Resource*> backBuffers(2);
