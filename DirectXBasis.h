@@ -26,6 +26,9 @@ public://固有のメンバ関数
 	//スワップチェーン初期化
 	void InitSwapChain();
 
+	//レンダ―ターゲットビュー初期化
+	void InitRTV();
+
 private://よく使うメンバ変数
 	//WindowsAPI
 	WinApp* winApp_ = nullptr;
@@ -48,4 +51,10 @@ private://よく使うメンバ変数
 	//スワップチェーン
 	ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc_{};
+
+	///レンダ―ターゲットビュー関連
+	//レンダ―ターゲットビューヒープ
+	ComPtr<ID3D12DescriptorHeap> rtvHeap_ = nullptr;
+	//バックバッファ
+	std::vector<ComPtr<ID3D12Resource>> backBuffers_;
 };
