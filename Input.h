@@ -1,5 +1,5 @@
-#pragma once
-#include <windows.h>
+#pragma once/*
+#include <windows.h>*/
 #include <wrl.h>
 
 #include "WinApp.h"

@@ -285,6 +285,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//------WindowsAPI初期化処理 ここまで------
 
 	//------DirectX初期化処理 ここから------
+
 #pragma region 
 #ifdef _DEBUG
 			  //デバッグプレイヤーをオンに
