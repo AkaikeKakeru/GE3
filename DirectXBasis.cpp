@@ -8,40 +8,14 @@ void DirectXBasis::Initialize(WinApp* winApp){
 	HRESULT result;
 
 #pragma region 
-	ComPtr<IDXGISwapChain4> swapChain = nullptr;
+	
 	ComPtr<ID3D12DescriptorHeap> rtvHeap = nullptr;
 
 	InitDevice();
 
 	InitCommand();
 
-	//スワップチェーンの設定
-	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
-	swapChainDesc.Width = 1280;
-	swapChainDesc.Height = 720;
-	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	swapChainDesc.SampleDesc.Count = 1;
-	swapChainDesc.BufferUsage = DXGI_USAGE_BACK_BUFFER;
-	swapChainDesc.BufferCount = 2;
-	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
-	//IDXGISwapChain1のComPtrを用意
-	ComPtr<IDXGISwapChain1> swapChain1;
-
-	//スワップチェーンの生成
-	result = dxgiFactory->CreateSwapChainForHwnd(
-		commandQueue.Get(),
-		winApp_->GetHwnd(),
-		&swapChainDesc,
-		nullptr,
-		nullptr,
-		&swapChain1);
-	assert(SUCCEEDED(result));
-
-	//生成したIDXGISwapChain1のオブジェクトをIDXGISwapChain4に変換する
-	swapChain1.As(&swapChain);
-
+	
 	//デスクリプタヒープの設定
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
@@ -231,4 +205,36 @@ void DirectXBasis::InitCommand(){
 	//コマンドキューを生成
 	result = device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
 	assert(SUCCEEDED(result));
+}
+
+void DirectXBasis::InitSwapChain(){
+	HRESULT result;
+
+	//スワップチェーンの設定
+	//DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
+	swapChainDesc.Width = 1280;
+	swapChainDesc.Height = 720;
+	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	swapChainDesc.SampleDesc.Count = 1;
+	swapChainDesc.BufferUsage = DXGI_USAGE_BACK_BUFFER;
+	swapChainDesc.BufferCount = 2;
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+	//IDXGISwapChain1のComPtrを用意
+	ComPtr<IDXGISwapChain1> swapChain1;
+
+	//スワップチェーンの生成
+	result = dxgiFactory->CreateSwapChainForHwnd(
+		commandQueue.Get(),
+		winApp_->GetHwnd(),
+		&swapChainDesc,
+		nullptr,
+		nullptr,
+		&swapChain1);
+	assert(SUCCEEDED(result));
+
+	//生成したIDXGISwapChain1のオブジェクトをIDXGISwapChain4に変換する
+	swapChain1.As(&swapChain);
+
 }

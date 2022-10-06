@@ -5,9 +5,11 @@
 #include <wrl.h>
 
 class DirectXBasis{
+
 public: //namespaceの省略
 	template <class Type>
 	using ComPtr = Microsoft::WRL::ComPtr<Type>;
+
 public://基本的なメンバ関数
 
 	//初期化
@@ -20,6 +22,9 @@ public://固有のメンバ関数
 
 	//コマンド初期化
 	void InitCommand();
+
+	//スワップチェーン初期化
+	void InitSwapChain();
 
 private://よく使うメンバ変数
 	//WindowsAPI
@@ -38,4 +43,9 @@ private://よく使うメンバ変数
 	ComPtr<ID3D12GraphicsCommandList> commandList = nullptr;
 	//コマンドキュー
 	ComPtr<ID3D12CommandQueue> commandQueue = nullptr;
+
+	///スワップチェーン関連
+	//スワップチェーン
+	ComPtr<IDXGISwapChain4> swapChain = nullptr;
+	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 };
