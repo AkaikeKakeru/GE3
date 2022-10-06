@@ -15,8 +15,11 @@ public://基本的なメンバ関数
 
 public://固有のメンバ関数
 
-	//デバイス
+	//デバイス初期化
 	void InitDevice();
+
+	//コマンド初期化
+	void InitCommand();
 
 private://よく使うメンバ変数
 	//WindowsAPI

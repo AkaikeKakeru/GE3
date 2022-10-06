@@ -13,24 +13,7 @@ void DirectXBasis::Initialize(WinApp* winApp){
 
 	InitDevice();
 
-	//コマンドアロケータを生成
-	result = device->CreateCommandAllocator(
-		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		IID_PPV_ARGS(&commandAllocator));
-	assert(SUCCEEDED(result));
-
-	//コマンドリストを生成
-	result = device->CreateCommandList(0,
-		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		commandAllocator.Get(), nullptr,
-		IID_PPV_ARGS(&commandList));
-	assert(SUCCEEDED(result));
-
-	//コマンドキューを設定
-	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
-	//コマンドキューを生成
-	result = device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
-	assert(SUCCEEDED(result));
+	InitCommand();
 
 	//スワップチェーンの設定
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
@@ -225,4 +208,27 @@ void DirectXBasis::InitDevice(){
 			break;
 		}
 	}
+}
+
+void DirectXBasis::InitCommand(){
+	HRESULT result;
+
+	//コマンドアロケータを生成
+	result = device->CreateCommandAllocator(
+		D3D12_COMMAND_LIST_TYPE_DIRECT,
+		IID_PPV_ARGS(&commandAllocator));
+	assert(SUCCEEDED(result));
+
+	//コマンドリストを生成
+	result = device->CreateCommandList(0,
+		D3D12_COMMAND_LIST_TYPE_DIRECT,
+		commandAllocator.Get(), nullptr,
+		IID_PPV_ARGS(&commandList));
+	assert(SUCCEEDED(result));
+
+	//コマンドキューを設定
+	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
+	//コマンドキューを生成
+	result = device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
+	assert(SUCCEEDED(result));
 }
