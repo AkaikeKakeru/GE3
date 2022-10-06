@@ -15,7 +15,7 @@ public://基本的なメンバ関数
 	//初期化
 	void Initialize(WinApp* winApp);
 
-public://固有のメンバ関数
+private://固有のメンバ関数
 
 	//デバイス初期化
 	void InitDevice();
