@@ -2,16 +2,16 @@
 #include <Windows.h>
 
 class WinApp {
-//静的メンバ関数(static)
-public:
+public: //静的メンバ関数(static)
+
 	static LRESULT WindowProc(
 		HWND hwnd,
 		UINT msg,
 		WPARAM wparam,
 		LPARAM lparam);
 
-//基本的なメンバ関数
-public:
+public: //基本的なメンバ関数
+
 	//初期化
 	void Initialize();
 	//更新
@@ -19,27 +19,27 @@ public:
 	//終了
 	void Finalize();
 
-//固有のメンバ関数
-public:
+public: //固有のメンバ関数
+
 	//アプリ終了メッセージがあるか
 	bool ProcessMessage();
 
-//Getter
-public:
+public: //ゲッター
+
 	HINSTANCE GetHInstance() const { return w_.hInstance; }
 	HWND GetHwnd() const {return hwnd_;}
 
+public: //外部で使える定数
 
-//外部で使える定数
-public:
 	//サイズ
 	static const int WinWidth = 1280;
 	static const int WinHeight = 720;
 
-//よく使うメンバ変数
-private:
+private: //よく使うメンバ変数
+
 	//クラス設定
 	WNDCLASSEX w_{};
 	//ウィンドウハンドル
 	HWND hwnd_ = nullptr;
+
 };
