@@ -239,4 +239,7 @@ void DirectXBasis::InitFence() {
 }
 
 void DirectXBasis::PrepareDraw(){
+
+	//バックバッファの番号を取得(0番か1番)
+	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 }

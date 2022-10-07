@@ -523,7 +523,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	DirectXBasis* dXBas = nullptr;
 	//DirectXBasis初期化
 	dXBas = new DirectXBasis();
-	dXBas->Initialize();
+	dXBas->Initialize(winApp);
 	//------DirectX初期化処理 ここまで------
 
 	//------描画初期化処理 ここから------
@@ -657,93 +657,93 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	//頂点バッファの生成
 	ComPtr<ID3D12Resource> vertBuff = nullptr;
-	result = device->CreateCommittedResource(
-		&heapProp,//ヒープ設定
-		D3D12_HEAP_FLAG_NONE,
-		&resDesc,//リソース設定
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&vertBuff));
-	assert(SUCCEEDED(result));
+	//result = device->CreateCommittedResource(
+	//	&heapProp,//ヒープ設定
+	//	D3D12_HEAP_FLAG_NONE,
+	//	&resDesc,//リソース設定
+	//	D3D12_RESOURCE_STATE_GENERIC_READ,
+	//	nullptr,
+	//	IID_PPV_ARGS(&vertBuff));
+	//assert(SUCCEEDED(result));
 
 	//GPU上のバッファに対応仮想メモリ(メインメモリ上)を取得
 	Vertex* vertMap = nullptr;
-	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	assert(SUCCEEDED(result));
+	/*result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	assert(SUCCEEDED(result));*/
 
 	/* verticesに記入 */
 
 	//全頂点に対して
-	for (int i = 0; i < _countof(vertices); i++)
-	{
-		vertMap[i] = vertices[i];//座標をコピー
-	}
+	//for (int i = 0; i < _countof(vertices); i++)
+	//{
+	//	vertMap[i] = vertices[i];//座標をコピー
+	//}
 
 	//繋がりを解除
 	vertBuff->Unmap(0, nullptr);
 
 	//頂点バッファビューの作成
 	D3D12_VERTEX_BUFFER_VIEW vbView{};
-	//GPU仮想アドレス
-	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
-	//頂点バッファのサイズ
-	vbView.SizeInBytes = sizeVB;
-	//頂点１つ分のデータサイズ
-	vbView.StrideInBytes = sizeof(vertices[0]);
+	////GPU仮想アドレス
+	//vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
+	////頂点バッファのサイズ
+	//vbView.SizeInBytes = sizeVB;
+	////頂点１つ分のデータサイズ
+	//vbView.StrideInBytes = sizeof(vertices[0]);
 
 	ComPtr<ID3DBlob> vsBlob = nullptr;//頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> psBlob = nullptr;//ピクセルシェーダオブジェクト
 	ComPtr<ID3DBlob> errorBlob = nullptr;//エラーオブジェクト
 
-										 //頂点シェーダの読み込みとコンパイル
-	result = D3DCompileFromFile(
-		L"BasicVS.hlsl",//シェーダファイル名
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE,//インクルード可能にする
-		"main", "vs_5_0",//エントリーポイント名、シェーダ―モデル指定
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,//デバッグ用設定
-		0,
-		&vsBlob, &errorBlob);
+	//頂点シェーダの読み込みとコンパイル
+	//result = D3DCompileFromFile(
+	//	L"BasicVS.hlsl",//シェーダファイル名
+	//	nullptr,
+	//	D3D_COMPILE_STANDARD_FILE_INCLUDE,//インクルード可能にする
+	//	"main", "vs_5_0",//エントリーポイント名、シェーダ―モデル指定
+	//	D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,//デバッグ用設定
+	//	0,
+	//	&vsBlob, &errorBlob);
 
 	//エラーなら
-	if (FAILED(result)) {
-		//errorBlobからエラー内容をstring型にコピー
-		std::string error;
-		error.resize(errorBlob->GetBufferSize());
+	//if (FAILED(result)) {
+	//	//errorBlobからエラー内容をstring型にコピー
+	//	std::string error;
+	//	error.resize(errorBlob->GetBufferSize());
 
-		std::copy_n((char*)errorBlob->GetBufferPointer(),
-			errorBlob->GetBufferSize(),
-			error.begin());
-		error += "\n";
-		//エラー内容を出力ウィンドウに表示
-		OutputDebugStringA(error.c_str());
-		assert(0);
-	}
+	//	std::copy_n((char*)errorBlob->GetBufferPointer(),
+	//		errorBlob->GetBufferSize(),
+	//		error.begin());
+	//	error += "\n";
+	//	//エラー内容を出力ウィンドウに表示
+	//	OutputDebugStringA(error.c_str());
+	//	assert(0);
+	//}
 
 	//ピクセルシェーダの読み込みとコンパイル
-	result = D3DCompileFromFile(
-		L"BasicPS.hlsl",//シェーダファイル名
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE,//インクルード可能にする
-		"main", "ps_5_0",//エントリーポイント名、シェーダーモデル指定
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,//デバッグ用設定
-		0,
-		&psBlob, &errorBlob);
+	//result = D3DCompileFromFile(
+	//	L"BasicPS.hlsl",//シェーダファイル名
+	//	nullptr,
+	//	D3D_COMPILE_STANDARD_FILE_INCLUDE,//インクルード可能にする
+	//	"main", "ps_5_0",//エントリーポイント名、シェーダーモデル指定
+	//	D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,//デバッグ用設定
+	//	0,
+	//	&psBlob, &errorBlob);
 
 	//エラーなら
-	if (FAILED(result)) {
-		//errorBlobからエラー内容をstring型にコピー
-		std::string error;
-		error.resize(errorBlob->GetBufferSize());
+	//if (FAILED(result)) {
+	//	//errorBlobからエラー内容をstring型にコピー
+	//	std::string error;
+	//	error.resize(errorBlob->GetBufferSize());
 
-		std::copy_n((char*)errorBlob->GetBufferPointer(),
-			errorBlob->GetBufferSize(),
-			error.begin());
-		error += "\n";
-		//エラー内容を出力ウィンドウに表示
-		OutputDebugStringA(error.c_str());
-		assert(0);
-	}
+	//	std::copy_n((char*)errorBlob->GetBufferPointer(),
+	//		errorBlob->GetBufferSize(),
+	//		error.begin());
+	//	error += "\n";
+	//	//エラー内容を出力ウィンドウに表示
+	//	OutputDebugStringA(error.c_str());
+	//	assert(0);
+	//}
 
 	//頂点レイアウト
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] =
@@ -921,7 +921,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	//ルートシグネチャのシリアライズ
 	ComPtr<ID3DBlob> rootSigBlob;
-	result = D3D12SerializeRootSignature(
+	/*result = D3D12SerializeRootSignature(
 		&rootSignatureDesc,
 		D3D_ROOT_SIGNATURE_VERSION_1_0,
 		&rootSigBlob,
@@ -932,16 +932,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		rootSigBlob->GetBufferPointer(),
 		rootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootSignature));
-	assert(SUCCEEDED(result));
+	assert(SUCCEEDED(result));*/
 
 	//パイプラインにルートシグネイチャをセット
 	pipelineDesc.pRootSignature = rootSignature.Get();
 
 	//パイプラインステートの生成
 	ComPtr<ID3D12PipelineState> pipelineState = nullptr;
-	result = device->CreateGraphicsPipelineState(&pipelineDesc,
+	/*result = device->CreateGraphicsPipelineState(&pipelineDesc,
 		IID_PPV_ARGS(&pipelineState));
-	assert(SUCCEEDED(result));
+	assert(SUCCEEDED(result));*/
 
 
 	ComPtr<ID3D12Resource> constBuffMaterial = nullptr;
@@ -966,18 +966,18 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	cbresdesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
 	//定数バッファの生成
-	result = device->CreateCommittedResource(
-		&cbheapprop, //ヒープ設定
-		D3D12_HEAP_FLAG_NONE,
-		&cbresdesc, //リソース設定
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&constBuffMaterial));
-	assert(SUCCEEDED(result));
+	//result = device->CreateCommittedResource(
+	//	&cbheapprop, //ヒープ設定
+	//	D3D12_HEAP_FLAG_NONE,
+	//	&cbresdesc, //リソース設定
+	//	D3D12_RESOURCE_STATE_GENERIC_READ,
+	//	nullptr,
+	//	IID_PPV_ARGS(&constBuffMaterial));
+	//assert(SUCCEEDED(result));
 
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
-	result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial); //マッピング
+	//result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial); //マッピング
 
 																			// 値を書き込むと自動的に転送される
 	constMapMaterial->color = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f); //RGBAで半透明の赤
@@ -985,7 +985,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 																//マッピング解除
 	constBuffMaterial->Unmap(0, nullptr);
 
-	assert(SUCCEEDED(result));
+	//assert(SUCCEEDED(result));
 
 #pragma endregion
 
@@ -1021,7 +1021,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//配列内の全オブジェクトに対して
 	for (int i = 0; i < _countof(object3ds); i++)
 	{
-		//SetIntializeObject3ds(&object3ds[i], device, i);
+		SetIntializeObject3ds(&object3ds[i], device, i);
 
 		//初期化
 		InitializeObject3d(&object3ds[i], device.Get());
@@ -1139,17 +1139,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	//インデックスバッファの生成
 	ComPtr<ID3D12Resource> indexBuff = nullptr;
-	result = device->CreateCommittedResource(
+	/*result = device->CreateCommittedResource(
 		&heapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&resDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&indexBuff));
+		IID_PPV_ARGS(&indexBuff));*/
 
 	//　インデックスバッファをマッピング
 	uint16_t* indexMap = nullptr;
-	result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+	//result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 	// 全インデックスに対して
 	for (int i = 0; i < _countof(indices); i++)
 	{
@@ -1258,9 +1258,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	//ゲームループ
 	while (true) {
-
-		//バックバッファの番号を取得(0番か1番)
-		UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
+		dXBas->PrepareDraw();
 
 		//1.リソースバリアで書き込みに変更
 		D3D12_RESOURCE_BARRIER barrierDesc{};

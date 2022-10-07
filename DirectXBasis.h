@@ -15,7 +15,7 @@ public://基本的なメンバ関数
 	//初期化
 	void Initialize(WinApp* winApp);
 
-private://固有のメンバ関数
+private://固有のprivateメンバ関数
 
 	//デバイス初期化
 	void InitDevice();
@@ -29,6 +29,9 @@ private://固有のメンバ関数
 	void InitDepthBuffer();
 	//フェンス初期化
 	void InitFence();
+
+	
+public://固有のpublicメンバ関数
 
 	//描画準備
 	void PrepareDraw();
