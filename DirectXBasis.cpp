@@ -319,4 +319,10 @@ void DirectXBasis::PostDraw(){
 	//コマンドリストをリセット
 	result = commandList_->Reset(commandAllocator_.Get(), nullptr);
 	assert(SUCCEEDED(result));
+
+	//画面に表示するバッファをフリップ(裏表の入れ替え)
+	result = swapChain_->Present(1, 0);
+	result = device_->GetDeviceRemovedReason();
+	assert(SUCCEEDED(result));
+
 }

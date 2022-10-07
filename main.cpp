@@ -1419,11 +1419,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		//4.ここまで、描画コマンド
 		dXBas->PostDraw();
 
-		//画面に表示するバッファをフリップ(裏表の入れ替え)
-		result = swapChain->Present(1, 0);
-		result = device->GetDeviceRemovedReason();
-		assert(SUCCEEDED(result));
-
+		
 		
 
 		
