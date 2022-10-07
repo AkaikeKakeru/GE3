@@ -1421,19 +1421,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		//4.ここまで、描画コマンド
 
-		//5.リソースバリアを戻す
-		barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-		commandList->ResourceBarrier(1, &barrierDesc);
-
-
-		//命令のクローズ
-		result = commandList->Close();
-		assert(SUCCEEDED(result));
-
-		//コマンドリストの実行
-		ID3D12CommandList* commandLists[] = { commandList.Get() };
-		commandQueue->ExecuteCommandLists(1, commandLists);
+		
+		
+		dXBas->PostDraw();
 
 		//画面に表示するバッファをフリップ(裏表の入れ替え)
 		result = swapChain->Present(1, 0);

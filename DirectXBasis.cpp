@@ -294,4 +294,7 @@ void DirectXBasis::PrepareDraw(){
 }
 
 void DirectXBasis::PostDraw(){
+	//コマンドリストの実行
+	ID3D12CommandList* commandLists[] = { commandList_.Get() };
+	commandQueue_->ExecuteCommandLists(1, commandLists);
 }
