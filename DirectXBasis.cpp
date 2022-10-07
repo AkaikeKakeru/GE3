@@ -294,6 +294,9 @@ void DirectXBasis::PrepareDraw(){
 void DirectXBasis::PostDraw(){
 	HRESULT result;
 
+	//バックバッファの番号を取得(0番か1番)
+	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
+
 	//コマンドリストの実行
 	ID3D12CommandList* commandLists[] = { commandList_.Get() };
 	commandQueue_->ExecuteCommandLists(1, commandLists);
@@ -311,7 +314,6 @@ void DirectXBasis::PostDraw(){
 		}
 	}
 
-
 	//アロケーターをリセット
 	result = commandAllocator_->Reset();
 	assert(SUCCEEDED(result));
@@ -324,5 +326,4 @@ void DirectXBasis::PostDraw(){
 	result = swapChain_->Present(1, 0);
 	result = device_->GetDeviceRemovedReason();
 	assert(SUCCEEDED(result));
-
 }
