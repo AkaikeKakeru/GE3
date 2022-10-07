@@ -19,21 +19,19 @@ private://固有のメンバ関数
 
 	//デバイス初期化
 	void InitDevice();
-
 	//コマンド初期化
 	void InitCommand();
-
 	//スワップチェーン初期化
 	void InitSwapChain();
-
 	//レンダ―ターゲットビュー初期化
 	void InitRTV();
-
 	//深度バッファ初期化
 	void InitDepthBuffer();
-
 	//フェンス初期化
 	void InitFence();
+
+	//描画準備
+	void PrepareDraw();
 
 private://よく使うメンバ変数
 	//WindowsAPI

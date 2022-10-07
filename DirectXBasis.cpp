@@ -237,3 +237,6 @@ void DirectXBasis::InitFence() {
 
 	result = device_->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 }
+
+void DirectXBasis::PrepareDraw(){
+}
