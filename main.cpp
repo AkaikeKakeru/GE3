@@ -1381,19 +1381,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ifOneTextureNum = !ifOneTextureNum;
 		}*/
 
-		//4.描画コマンドここから
-
-		//ビューポート設定コマンド
-		D3D12_VIEWPORT viewport{};
-		viewport.Width = WinApp::WinWidth;				//横幅
-		viewport.Height = WinApp::WinHeight;			//縦幅
-		viewport.TopLeftX = 0;		//左上x
-		viewport.TopLeftY = 0;						//左上y
-		viewport.MinDepth = 0.0f;					//最小深度(0でよい)
-		viewport.MaxDepth = 1.0f;					//最大深度(1でよい)
-													//ビューポート設定コマンドを、コマンドリストに積む
-		commandList->RSSetViewports(1, &viewport);
-
 		//シザー矩形
 		D3D12_RECT scissorRect{};							//切り抜き座標
 		scissorRect.left = 0;								//左
@@ -1401,7 +1388,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		scissorRect.top = 0;								//上
 		scissorRect.bottom = scissorRect.top + WinApp::WinHeight;//下
 
-															 //シザー矩形設定コマンドを、コマンドリストに積む
+																 //シザー矩形設定コマンドを、コマンドリストに積む
 		commandList->RSSetScissorRects(1, &scissorRect);
 
 		//パイプラインステートとルートシグネチャの設定コマンド

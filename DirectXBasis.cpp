@@ -269,4 +269,16 @@ void DirectXBasis::PrepareDraw(){
 	//深度バッファのクリアコマンドを追加
 	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
+
+	//4.描画コマンドここから
+	//ビューポート設定コマンド
+	D3D12_VIEWPORT viewport{};
+	viewport.Width = WinApp::WinWidth;			//横幅
+	viewport.Height = WinApp::WinHeight;		//縦幅
+	viewport.TopLeftX = 0;						//左上x
+	viewport.TopLeftY = 0;						//左上y
+	viewport.MinDepth = 0.0f;					//最小深度(0でよい)
+	viewport.MaxDepth = 1.0f;					//最大深度(1でよい)
+	//ビューポート設定コマンドを、コマンドリストに積む
+	commandList_->RSSetViewports(1, &viewport);
 }
