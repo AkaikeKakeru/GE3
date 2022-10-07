@@ -1258,12 +1258,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	//ゲームループ
 	while (true) {
+		//描画の準備
 		dXBas->PrepareDraw();
 
-		
-		
-
-		
 		//入力更新
 		input->Update();
 
@@ -1420,9 +1417,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 
 		//4.ここまで、描画コマンド
-
-		
-		
 		dXBas->PostDraw();
 
 		//画面に表示するバッファをフリップ(裏表の入れ替え)
@@ -1430,18 +1424,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		result = device->GetDeviceRemovedReason();
 		assert(SUCCEEDED(result));
 
-		//コマンドの実行完了を待つ
-		commandQueue->Signal(fence.Get(), ++fenceVal);
-		if (fence->GetCompletedValue() != fenceVal) {
-			_Post_ _Notnull_ HANDLE event = CreateEvent(nullptr, false, false, nullptr);
-
-			if (event != 0)
-			{
-				fence->SetEventOnCompletion(fenceVal, event);
-				WaitForSingleObject(event, INFINITE);
-				CloseHandle(event);
-			}
-		}
+		
 
 		//キューをクリア
 		result = commandAllocator->Reset();

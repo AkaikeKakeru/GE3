@@ -232,9 +232,7 @@ void DirectXBasis::InitDepthBuffer() {
 void DirectXBasis::InitFence() {
 	HRESULT result;
 	//フェンスの生成
-	UINT64 fenceVal = 0;
-
-	result = device_->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
+	result = device_->CreateFence(fenceVal_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
 }
 
 void DirectXBasis::PrepareDraw(){
@@ -297,4 +295,17 @@ void DirectXBasis::PostDraw(){
 	//コマンドリストの実行
 	ID3D12CommandList* commandLists[] = { commandList_.Get() };
 	commandQueue_->ExecuteCommandLists(1, commandLists);
+
+	//コマンドの実行完了を待つ
+	commandQueue_->Signal(fence_.Get(), ++fenceVal_);
+	if (fence_->GetCompletedValue() != fenceVal_) {
+		_Post_ _Notnull_ HANDLE event = CreateEvent(nullptr, false, false, nullptr);
+
+		if (event != 0)
+		{
+			fence_->SetEventOnCompletion(fenceVal_, event);
+			WaitForSingleObject(event, INFINITE);
+			CloseHandle(event);
+		}
+	}
 }

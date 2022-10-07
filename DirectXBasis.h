@@ -78,5 +78,6 @@ private://よく使うメンバ変数
 
 	///フェンス関連
 	//フェンス
-	ComPtr<ID3D12Fence> fence = nullptr;
+	ComPtr<ID3D12Fence> fence_ = nullptr;
+	UINT64 fenceVal_ = 0;
 };
