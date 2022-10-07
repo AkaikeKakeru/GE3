@@ -38,6 +38,11 @@ public://固有のpublicメンバ関数
 	//描画後処理
 	void PostDraw();
 
+public: //ゲッター
+	//デバイス取得
+	ID3D12Device* GetDevice() { return device_.Get(); }
+
+
 private://よく使うメンバ変数
 	//WindowsAPI
 	WinApp* winApp_ = nullptr;
@@ -66,7 +71,8 @@ private://よく使うメンバ変数
 	ComPtr<ID3D12DescriptorHeap> rtvHeap_ = nullptr;
 	//レンダ―ターゲットビューデスク
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc_{};
-	//バックバッファ
+	////バックバッファ
+	//std::vector<ComPtr<ID3D12Resource>> backBuffers_;
 	std::vector<ComPtr<ID3D12Resource>> backBuffers_;
 
 	///深度バッファ関連
