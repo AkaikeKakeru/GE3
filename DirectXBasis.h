@@ -30,7 +30,6 @@ private://固有のprivateメンバ関数
 	//フェンス初期化
 	void InitFence();
 
-	
 public://固有のpublicメンバ関数
 
 	//描画準備
@@ -79,5 +78,6 @@ private://よく使うメンバ変数
 	///フェンス関連
 	//フェンス
 	ComPtr<ID3D12Fence> fence_ = nullptr;
+	//フェンス値
 	UINT64 fenceVal_ = 0;
 };

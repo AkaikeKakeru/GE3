@@ -1253,13 +1253,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma endregion
 	//------描画初期化処理 ここまで------
-
-
-
 	//ゲームループ
 	while (true) {
-		//描画の準備
-		dXBas->PrepareDraw();
 
 		//入力更新
 		input->Update();
@@ -1285,54 +1280,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		for (size_t i = 0; i < _countof(object3ds); i++)
 		{
 			UpdateObject3d(&object3ds[i], matView, matProjection);
-
 		}
 
 		UpdateObjectControll(&object3ds[0], input);
 
-#pragma region	トランスレーション
-
-		//if (key[DIK_UP] || key[DIK_DOWN] || key[DIK_RIGHT] || key[DIK_LEFT])
-		//{
-		//	//座標を移動する処理
-		//	if (key[DIK_UP]) { position.z += 1.0f; }
-		//	else if (key[DIK_DOWN]) { position.z -= 1.0f; }
-
-		//	if (key[DIK_RIGHT]) { position.x += 1.0f; }
-		//	else if (key[DIK_LEFT]) { position.x -= 1.0f; }
-		//}
-
-		//matTrans = XMMatrixTranslation(position.x, position.y, position.z);
-#pragma endregion
-
-#pragma region スケーリング
-		//matScale = XMMatrixIdentity();
-		//matScale *= XMMatrixScaling(scale.x, scale.y, scale.z);
-		//matWorld *= matScale; //ワールド行列にスケーリングを反映
-#pragma endregion
-
-#pragma region ローテーション
-		//matRot = XMMatrixIdentity();
-		//matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));//Z軸周りに回転
-		//matRot += XMMatrixRotationX(XMConvertToRadians(rotation.x));//X軸周りに回転
-		//matRot += XMMatrixRotationY(XMConvertToRadians(rotation.y));//Y軸周りに回転
-		//matWorld *= matRot; //ワールド行列に回転を反映
-#pragma endregion
-
-#pragma region 変換行列を反映
-		////単位化
-		//constMapTransform0->mat = XMMatrixIdentity();
-		//matWorld = XMMatrixIdentity();
-		////ワールド行列に各種変換行列を反映
-		//matWorld *= matScale;
-		//matWorld *= matRot;
-		//matWorld *= matTrans;
-#pragma endregion
-
-		//定数バッファに転送
-		//constMapTransform0->mat = matWorld * matView * matProjection;
-
-#pragma endregion
+		//描画の準備
+		dXBas->PrepareDraw();
 
 #pragma region 法線を計算
 		for (int i = 0; i < _countof(indices) / 3; i++)
@@ -1373,12 +1326,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 #pragma endregion
 
-		/*if (ifKeyPressTrigger(key[DIK_SPACE], oldkey[DIK_SPACE]))
-		{
-			ifOneTextureNum = !ifOneTextureNum;
-		}*/
-
-
 		//パイプラインステートとルートシグネチャの設定コマンド
 		commandList->SetPipelineState(pipelineState.Get());
 		commandList->SetGraphicsRootSignature(rootSignature.Get());
@@ -1418,11 +1365,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		//4.ここまで、描画コマンド
 		dXBas->PostDraw();
-
-		
-		
-
-		
 
 		//windowsのメッセージ処理
 		if (winApp->ProcessMessage()) {
