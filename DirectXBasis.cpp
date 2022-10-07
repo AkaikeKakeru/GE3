@@ -281,4 +281,15 @@ void DirectXBasis::PrepareDraw(){
 	viewport.MaxDepth = 1.0f;					//最大深度(1でよい)
 	//ビューポート設定コマンドを、コマンドリストに積む
 	commandList_->RSSetViewports(1, &viewport);
+
+	//シザー矩形
+	D3D12_RECT scissorRect{};									//切り抜き座標
+	scissorRect.left = 0;										//左
+	scissorRect.right = scissorRect.left + WinApp::WinWidth;	//右
+	scissorRect.top = 0;										//上
+	scissorRect.bottom = scissorRect.top + WinApp::WinHeight;	//下
+
+	//シザー矩形設定コマンドを、コマンドリストに積む
+	commandList_->RSSetScissorRects(1, &scissorRect);
+
 }

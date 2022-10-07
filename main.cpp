@@ -1381,15 +1381,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ifOneTextureNum = !ifOneTextureNum;
 		}*/
 
-		//シザー矩形
-		D3D12_RECT scissorRect{};							//切り抜き座標
-		scissorRect.left = 0;								//左
-		scissorRect.right = scissorRect.left + WinApp::WinWidth;//右
-		scissorRect.top = 0;								//上
-		scissorRect.bottom = scissorRect.top + WinApp::WinHeight;//下
-
-																 //シザー矩形設定コマンドを、コマンドリストに積む
-		commandList->RSSetScissorRects(1, &scissorRect);
 
 		//パイプラインステートとルートシグネチャの設定コマンド
 		commandList->SetPipelineState(pipelineState.Get());
