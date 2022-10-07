@@ -1263,12 +1263,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		
 		
 
-		//3.画面クリア          R      G      B     A
-		FLOAT clearColor[] = { 0.1f, 0.25f, 0.5f, 0.0f };
-		commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
-		//深度バッファのクリアコマンドを追加
-		commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-
+		
 		//入力更新
 		input->Update();
 

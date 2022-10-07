@@ -261,4 +261,12 @@ void DirectXBasis::PrepareDraw(){
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap_->GetCPUDescriptorHandleForHeapStart();
 	//描画先を指定する
 	commandList_->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
+
+
+	//3.画面クリア          R      G      B     A
+	FLOAT clearColor[] = { 0.1f, 0.25f, 0.5f, 0.0f };
+	commandList_->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+	//深度バッファのクリアコマンドを追加
+	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
 }
