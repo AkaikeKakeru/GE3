@@ -6,7 +6,6 @@
 #include <DirectXMath.h>
 #include <DirectXTex.h>
 
-#include <vector>
 #include <string>
 
 #include <d3d12.h>
@@ -16,8 +15,6 @@
 #include <d3dcompiler.h>//シェーダ用コンパイラ
 
 #include "Struct.h"
-
-#include <wrl.h>
 
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
@@ -67,7 +64,6 @@ struct TextureData
 	ScratchImage scratchImg{};
 	ScratchImage mipChine{};
 
-
 	D3D12_HEAP_PROPERTIES textureHeapProp{};
 	D3D12_RESOURCE_DESC textureResourceDesc{};
 
@@ -94,7 +90,6 @@ void InitializeObject3d(Object3d* object, ID3D12Device* device)
 	resDesc.MipLevels = 1;
 	resDesc.SampleDesc.Count = 1;
 	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-
 
 	//定数バッファの生成
 	result = device->CreateCommittedResource(
@@ -137,7 +132,6 @@ void InitializeTexture(TextureData* textureData, const wchar_t* szFile)
 	}
 	//読み込んだでデイヒューズテクスチャをSRGBとして扱う
 	textureData->metadata.format = MakeSRGB(textureData->metadata.format);
-
 };
 
 void TransferTextureBuffer(TextureData* textureData, ID3D12Device* device)
@@ -207,7 +201,6 @@ void SetIntializeObject3ds(Object3d* object, ID3D12Device* device, int objectNum
 		//親オブジェクトに対してZ方向に-8.0ずらす
 		object->position = { 0.0f,0.0f,-8.0f };
 	}
-
 }
 
 //オブジェクト更新処理
@@ -230,7 +223,7 @@ void UpdateObject3d(Object3d* object, XMMATRIX& matView, XMMATRIX& matProjection
 	object->matWorld *= matRot;	//ワールド行列に回転を反映
 	object->matWorld *= matTrans;	//ワールド行列に平行移動を反映
 
-									//親オブジェクトがあれば
+	//親オブジェクトがあれば
 	if (object->parent != nullptr) {
 		//親オブジェクトのワールド行列を掛ける
 		object->matWorld *= object->parent->matWorld;
@@ -238,7 +231,6 @@ void UpdateObject3d(Object3d* object, XMMATRIX& matView, XMMATRIX& matProjection
 
 	//定数バッファへデータ転送
 	object->constMapTransform->mat = object->matWorld * matView * matProjection;
-
 }
 
 void DrawObject3d(Object3d* object, ID3D12GraphicsCommandList* commandList, D3D12_VERTEX_BUFFER_VIEW& vbView,
@@ -275,7 +267,6 @@ void UpdateObjectControll(Object3d* object, Input* input) {
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//------WindowsAPI初期化処理 ここから------
 	HRESULT result;
-
 	const float PI = 3.1415926535f;
 
 	//ポインタ
@@ -287,7 +278,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//------WindowsAPI初期化処理 ここまで------
 
 	//------DirectX初期化処理 ここから------
-
 	//ポインタ
 	Input* input = nullptr;
 	//入力の初期化
@@ -322,7 +312,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	position = { 0.0f,0.0f,0.0f };
 	//position1 = { -20.0f,0.0f,0.0f };
 
-
 	//頂点データ構造体
 	struct Vertex
 	{
@@ -351,38 +340,35 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		{{ 5.0f, -5.0f, -5.0f},	{},		{1.0f, 1.0f}},//右下
 		{{ 5.0f,  5.0f, -5.0f},	{},		{1.0f, 0.0f}},//右上
 
-													  //後ろ				 
+		//後ろ				 
 		{{ 5.0f, -5.0f,  5.0f},	{},		{1.0f, 1.0f}},//右下
 		{{ 5.0f,  5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
 		{{-5.0f, -5.0f,  5.0f},	{},		{0.0f, 1.0f}},//左下
 		{{-5.0f,  5.0f,  5.0f},	{},		{0.0f, 0.0f}},//左上
 
-													  //左							
+		//左							
 		{{-5.0f, -5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
 		{{-5.0f, -5.0f,  5.0f},	{},		{0.0f, 0.0f}},//左上
 		{{-5.0f,  5.0f, -5.0f},	{},		{1.0f, 1.0f}},//右下
 		{{-5.0f,  5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
 
-													  //右							
+		//右							
 		{{ 5.0f,  5.0f, -5.0f},	{},		{1.0f, 1.0f}},//右下
 		{{ 5.0f,  5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
 		{{ 5.0f, -5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
 		{{ 5.0f, -5.0f,  5.0f},	{},		{0.0f, 0.0f}},//左上
 
-
-													  //下							
+		//下							
 		{{-5.0f, -5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
 		{{ 5.0f, -5.0f, -5.0f},	{},		{0.0f, 0.0f}},//左上
 		{{-5.0f, -5.0f,  5.0f},	{},		{1.0f, 1.0f}},//右下
 		{{ 5.0f, -5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
 
-
-													  //上							
+		//上							
 		{{-5.0f,  5.0f,  5.0f},	{},		{1.0f, 1.0f}},//右下
 		{{ 5.0f,  5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
 		{{-5.0f,  5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
 		{{ 5.0f,  5.0f, -5.0f},	{},		{0.0f, 0.0f}},//左上
-
 	};
 
 	//インデックスデータ
@@ -391,24 +377,21 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		//前
 		0,1,2,//一つ目
 		2,1,3,//二つ目
-			  //後ろ
-			  4,5,6,//三つ目
-			  6,5,7,//四つ目
-
-					//左
-					8,9,10,//一つ目
-					10,9,11,//二つ目
-							//右
-							12,13,14,
-							14,13,15,
-
-							//下
-							16,17,18,//一つ目
-							18,17,19,//二つ目
-									 //上
-									 20,21,22,
-									 22,21,23,
-
+		//後ろ
+		4,5,6,//三つ目
+		6,5,7,//四つ目
+		//左
+		8,9,10,//一つ目
+		10,9,11,//二つ目
+		//右
+		12,13,14,
+		14,13,15,
+		//下
+		16,17,18,//一つ目
+		18,17,19,//二つ目
+		//上
+		20,21,22,
+		22,21,23,
 	};
 
 	bool ifOneTextureNum = true;
@@ -617,7 +600,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	pipelineDesc.PrimitiveTopologyType
 		= D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-
 #pragma region 深度テストの設定
 	//デプスステンシルステートの設定
 	pipelineDesc.DepthStencilState.DepthEnable = true;
@@ -748,13 +730,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
 	result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial); //マッピング
-
-																			// 値を書き込むと自動的に転送される
+																			
+	// 値を書き込むと自動的に転送される
 	constMapMaterial->color = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f); //RGBAで半透明の赤
 
 	//マッピング解除
 	constBuffMaterial->Unmap(0, nullptr);
-
 	assert(SUCCEEDED(result));
 
 #pragma endregion
@@ -942,10 +923,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		TransferTextureBuffer(&textureDatas[i], dXBas->GetDevice());
 	}
 
-
 	//元データ開放
 	//delete[] imageData;
-
 
 	//SRVの最大個数
 	const size_t kMaxSRVCount = 2056;
@@ -994,7 +973,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma endregion
 
-
 	//CBV,SRV,UAVの1個分のサイズを取得
 	UINT descriptorSize = dXBas->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	//SRVヒープの先頭ハンドルを取得
@@ -1013,7 +991,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//------描画初期化処理 ここまで------
 	//ゲームループ
 	while (true) {
-
 		//入力更新
 		input->Update();
 
@@ -1091,7 +1068,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		//プリミティブ形状の設定コマンド
 		dXBas->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
 
-																				 //頂点バッファビューの設定コマンド
+		//頂点バッファビューの設定コマンド
 		dXBas->GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
 
 		//定数バッファビュー(CBV)の設定コマンド

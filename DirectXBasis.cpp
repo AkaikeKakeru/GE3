@@ -6,17 +6,12 @@ void DirectXBasis::Initialize(WinApp* winApp) {
 	assert(winApp);
 	winApp_ = winApp;
 
-#pragma region 
+#pragma region Initialize
 	InitDevice();
-
 	InitCommand();
-
 	InitSwapChain();
-
 	InitRTV();
-
 	InitDepthBuffer();
-
 	InitFence();
 #pragma endregion
 }
@@ -233,6 +228,7 @@ void DirectXBasis::InitFence() {
 }
 
 void DirectXBasis::PrepareDraw(){
+#pragma region リソースバリアを描画可能状態に
 	//バックバッファの番号を取得(0番か1番)
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 
@@ -241,8 +237,9 @@ void DirectXBasis::PrepareDraw(){
 	barrierDesc_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 	barrierDesc_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	commandList_->ResourceBarrier(1, &barrierDesc_);
+#pragma endregion
 
-
+#pragma region 描画先を変更
 	//2.描画先の変更
 	//レンダ―ターゲットビューのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap_->GetCPUDescriptorHandleForHeapStart();
@@ -251,15 +248,17 @@ void DirectXBasis::PrepareDraw(){
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap_->GetCPUDescriptorHandleForHeapStart();
 	//描画先を指定する
 	commandList_->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
+#pragma endregion
 
-
+#pragma region 画面をクリア
 	//3.画面クリア          R      G      B     A
 	FLOAT clearColor[] = { 0.1f, 0.25f, 0.5f, 0.0f };
 	commandList_->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 	//深度バッファのクリアコマンドを追加
 	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+#pragma endregion
 
-
+#pragma region ビューポート設定
 	//4.描画コマンドここから
 	//ビューポート設定コマンド
 	D3D12_VIEWPORT viewport{};
@@ -269,9 +268,12 @@ void DirectXBasis::PrepareDraw(){
 	viewport.TopLeftY = 0;						//左上y
 	viewport.MinDepth = 0.0f;					//最小深度(0でよい)
 	viewport.MaxDepth = 1.0f;					//最大深度(1でよい)
+	
 	//ビューポート設定コマンドを、コマンドリストに積む
 	commandList_->RSSetViewports(1, &viewport);
+#pragma endregion
 
+#pragma region シザー矩形設定
 	//シザー矩形
 	D3D12_RECT scissorRect{};									//切り抜き座標
 	scissorRect.left = 0;										//左
@@ -281,6 +283,7 @@ void DirectXBasis::PrepareDraw(){
 
 	//シザー矩形設定コマンドを、コマンドリストに積む
 	commandList_->RSSetScissorRects(1, &scissorRect);
+#pragma endregion
 }
 
 void DirectXBasis::PostDraw(){
@@ -290,25 +293,25 @@ void DirectXBasis::PostDraw(){
 	//バックバッファの番号を取得(0番か1番)
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 
+#pragma region リソースバリアを描画不可状態に
 	//5.リソースバリアを戻す
 	barrierDesc_.Transition.StateBefore =
 		D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrierDesc_.Transition.StateAfter =
 		D3D12_RESOURCE_STATE_PRESENT;
 	commandList_->ResourceBarrier(1, &barrierDesc_);
+#pragma endregion
 
+#pragma region リストに溜めておいたコマンドを実行
 	//命令のクローズ
 	result = commandList_->Close();
 	assert(SUCCEEDED(result));
 	//コマンドリストの実行
 	ID3D12CommandList* commandLists[] = { commandList_.Get() };
 	commandQueue_->ExecuteCommandLists(1, commandLists);
+#pragma endregion
 
-	//画面に表示するバッファをフリップ(裏表の入れ替え)
-	result = swapChain_->Present(1, 0);
-	result = device_->GetDeviceRemovedReason();
-	assert(SUCCEEDED(result));
-
+#pragma region 実行完了まで待つ
 	//コマンドの実行完了を待つ
 	commandQueue_->Signal(fence_.Get(), ++fenceVal_);
 	if (fence_->GetCompletedValue() != fenceVal_) {
@@ -321,7 +324,9 @@ void DirectXBasis::PostDraw(){
 			CloseHandle(event);
 		}
 	}
+#pragma endregion
 
+#pragma region コマンドリストのリセット
 	//アロケーターをリセット
 	result = commandAllocator_->Reset();
 	assert(SUCCEEDED(result));
@@ -329,4 +334,12 @@ void DirectXBasis::PostDraw(){
 	//コマンドリストをリセット
 	result = commandList_->Reset(commandAllocator_.Get(), nullptr);
 	assert(SUCCEEDED(result));
+#pragma endregion
+
+#pragma region バッファをフリップ
+	//画面に表示するバッファをフリップ(裏表の入れ替え)
+	result = swapChain_->Present(1, 0);
+	result = device_->GetDeviceRemovedReason();
+	assert(SUCCEEDED(result));
+#pragma endregion
 }
