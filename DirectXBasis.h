@@ -3,6 +3,7 @@
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <wrl.h>
+#include <vector>
 
 class DirectXBasis {
 
@@ -41,7 +42,8 @@ public://固有のpublicメンバ関数
 public: //ゲッター
 	//デバイス取得
 	ID3D12Device* GetDevice() { return device_.Get(); }
-
+	//コマンドリスト取得
+	ID3D12GraphicsCommandList* GetCommandList() { return commandList_.Get(); }
 
 private://よく使うメンバ変数
 	//WindowsAPI
@@ -71,8 +73,7 @@ private://よく使うメンバ変数
 	ComPtr<ID3D12DescriptorHeap> rtvHeap_ = nullptr;
 	//レンダ―ターゲットビューデスク
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc_{};
-	////バックバッファ
-	//std::vector<ComPtr<ID3D12Resource>> backBuffers_;
+	//バックバッファ
 	std::vector<ComPtr<ID3D12Resource>> backBuffers_;
 
 	///深度バッファ関連

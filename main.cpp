@@ -575,9 +575,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	pipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;//ポリゴン内塗りつぶし
 	pipelineDesc.RasterizerState.DepthClipEnable = true;//深度クリッピングを有効に
 
-	////ブレンドステート
-	//pipelineDesc.BlendState.RenderTarget[0].RenderTargetWriteMask 
-	//	= D3D12_COLOR_WRITE_ENABLE_ALL;//RGB全てのチャネルを描画
+	//ブレンドステート
+	pipelineDesc.BlendState.RenderTarget[0].RenderTargetWriteMask 
+		= D3D12_COLOR_WRITE_ENABLE_ALL;//RGB全てのチャネルを描画
 
 	//レンダ―ターゲットのブレンド設定
 	D3D12_RENDER_TARGET_BLEND_DESC& blenddesc = pipelineDesc.BlendState.RenderTarget[0];
@@ -631,7 +631,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	pipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;//0～255指定のRGBA
 	pipelineDesc.SampleDesc.Count = 1;//1ピクセルにつき1回サンプリング
 
-
 	//ルートシグネチャ
 	ComPtr<ID3D12RootSignature> rootSignature;
 
@@ -641,8 +640,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRange.BaseShaderRegister = 0;//テクスチャレジスタ番号0番
 	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-	//OK//
 
 	//デスクリプタテーブルの設定
 	D3D12_DESCRIPTOR_RANGE descRange{};
@@ -660,21 +657,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	rootParams[0].Descriptor.RegisterSpace = 0;						//デフォルト値
 	rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
 
-																	//テクスチャレジスタ0番
+	//テクスチャレジスタ0番
 	rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;	//定数バッファビュー
 	rootParams[1].DescriptorTable.pDescriptorRanges = &descriptorRange;					//定数バッファ番号
 	rootParams[1].DescriptorTable.NumDescriptorRanges = 1;						//デフォルト値
 	rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
 
-																	//定数バッファ1番
+	//定数バッファ1番
 	rootParams[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//種類
 	rootParams[2].Descriptor.ShaderRegister = 1;					//定数バッファ番号
 	rootParams[2].Descriptor.RegisterSpace = 0;						//デフォルト値
 	rootParams[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
 
-																	//OK//
-
-																	//テクスチャサンプラーの設定
+	//テクスチャサンプラーの設定
 	D3D12_STATIC_SAMPLER_DESC samplerDesc{};
 	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -702,6 +697,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		&rootSigBlob,
 		&errorBlob);
 	assert(SUCCEEDED(result));
+
 	result = dXBas->GetDevice()->CreateRootSignature(
 		0,
 		rootSigBlob->GetBufferPointer(),
@@ -717,7 +713,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	result = dXBas->GetDevice()->CreateGraphicsPipelineState(&pipelineDesc,
 		IID_PPV_ARGS(&pipelineState));
 	assert(SUCCEEDED(result));
-
 
 	ComPtr<ID3D12Resource> constBuffMaterial = nullptr;
 
@@ -757,7 +752,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 																			// 値を書き込むと自動的に転送される
 	constMapMaterial->color = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f); //RGBAで半透明の赤
 
-																//マッピング解除
+	//マッピング解除
 	constBuffMaterial->Unmap(0, nullptr);
 
 	assert(SUCCEEDED(result));
@@ -778,7 +773,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	cbResourceDesc.MipLevels = 1;
 	cbResourceDesc.SampleDesc.Count = 1;
 	cbResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-
 
 #pragma region 三次元オブジェクトの構造化
 
@@ -802,8 +796,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		//ここから↓は親子構造のサンプル
 		//先頭以外なら
 		if (i > 0) {
-
-
 			rndScale = {
 				0.7f,
 				0.7f,
@@ -827,8 +819,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			object3ds[i].rotation = rndRota;
 
 			object3ds[i].position = rndPos;
-
-
 
 			//1つ前のオブジェクトを親オブジェクトとする
 			//object3ds[i].parent = &object3ds[i - 1];
@@ -1003,7 +993,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	dXBas->GetDevice()->CreateShaderResourceView(textureDatas[1].texBuff.Get(), &srvDesc2, srvHandle);
 
 #pragma endregion
-	//OK//
 
 
 	//CBV,SRV,UAVの1個分のサイズを取得
@@ -1081,9 +1070,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			normal = XMVector3Normalize(normal);
 
 			//求めた法線を頂点データに代入
-			//XMStoreFloat3(&vertices[index0].normal, normal);
-			//XMStoreFloat3(&vertices[index1].normal, normal);
-			//XMStoreFloat3(&vertices[index2].normal, normal);
+			XMStoreFloat3(&vertices[index0].normal, normal);
+			XMStoreFloat3(&vertices[index1].normal, normal);
+			XMStoreFloat3(&vertices[index2].normal, normal);
 		}
 #pragma endregion
 
@@ -1096,40 +1085,40 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 		//パイプラインステートとルートシグネチャの設定コマンド
-		commandList->SetPipelineState(pipelineState.Get());
-		commandList->SetGraphicsRootSignature(rootSignature.Get());
+		dXBas->GetCommandList()->SetPipelineState(pipelineState.Get());
+		dXBas->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
 
 		//プリミティブ形状の設定コマンド
-		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
+		dXBas->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
 
 																				 //頂点バッファビューの設定コマンド
-		commandList->IASetVertexBuffers(0, 1, &vbView);
+		dXBas->GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
 
 		//定数バッファビュー(CBV)の設定コマンド
-		commandList->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+		dXBas->GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		//SRVヒープの設定コマンド
-		commandList->SetDescriptorHeaps(1, &srvHeap);
+		dXBas->GetCommandList()->SetDescriptorHeaps(1, &srvHeap);
 
 		//SRVヒープの先頭ハンドルを取得(SRVを指しているはず)
 		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-		////SRVヒープの先頭にあるSRVをルートパラメータ1番に設定
-		commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+		//SRVヒープの先頭にあるSRVをルートパラメータ1番に設定
+		dXBas->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 
 		if (ifOneTextureNum == false)
 		{
 			//2枚目を指し示すようにしたSRVのハンドルをルートパラメータに設定
 			srvGpuHandle.ptr += incrementSize;
-			commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+			dXBas->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 		}
 
 		//インデックスバッファビューの設定コマンド
-		commandList->IASetIndexBuffer(&ibView);
+		dXBas->GetCommandList()->IASetIndexBuffer(&ibView);
 
 		//全オブジェクトについて処理
 		for (int i = 0; i < _countof(object3ds); i++)
 		{
-			DrawObject3d(&object3ds[i], commandList.Get(), vbView, ibView, _countof(indices));
+			DrawObject3d(&object3ds[i], dXBas->GetCommandList(), vbView, ibView, _countof(indices));
 		}
 
 		//4.ここまで、描画コマンド
