@@ -62,6 +62,8 @@ private://よく使うメンバ変数
 	///レンダ―ターゲットビュー関連
 	//レンダ―ターゲットビューヒープ
 	ComPtr<ID3D12DescriptorHeap> rtvHeap_ = nullptr;
+	//レンダ―ターゲットビューデスク
+	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc_{};
 	//バックバッファ
 	std::vector<ComPtr<ID3D12Resource>> backBuffers_;
 
