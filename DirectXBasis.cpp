@@ -236,22 +236,17 @@ void DirectXBasis::PrepareDraw(){
 	//バックバッファの番号を取得(0番か1番)
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 
-	//1.リソースバリアで書き込みに変更
-	D3D12_RESOURCE_BARRIER barrierDesc{};
-	barrierDesc.Transition.pResource = backBuffers_[bbIndex].Get();
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	commandList_->ResourceBarrier(1, &barrierDesc);
+	//1.リソースバリアで書き込み可能に変更
+	barrierDesc_.Transition.pResource = backBuffers_[bbIndex].Get();
+	barrierDesc_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+	barrierDesc_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	commandList_->ResourceBarrier(1, &barrierDesc_);
 
 
 	//2.描画先の変更
 	//レンダ―ターゲットビューのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap_->GetCPUDescriptorHandleForHeapStart();
 	rtvHandle.ptr += bbIndex * device_->GetDescriptorHandleIncrementSize(rtvHeapDesc_.Type);
-
-	//レンダ―ターゲット設定コマンドに、深度ステンシルビュー用の記述を追加するため、旧コードをコメント化
-	//commandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
-
 	//深度ステンシルビュー用デスクリプタヒープのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap_->GetCPUDescriptorHandleForHeapStart();
 	//描画先を指定する
@@ -290,13 +285,29 @@ void DirectXBasis::PrepareDraw(){
 
 void DirectXBasis::PostDraw(){
 	HRESULT result;
-
+	//4.ここまで、描画コマンド
+	
 	//バックバッファの番号を取得(0番か1番)
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 
+	//5.リソースバリアを戻す
+	barrierDesc_.Transition.StateBefore =
+		D3D12_RESOURCE_STATE_RENDER_TARGET;
+	barrierDesc_.Transition.StateAfter =
+		D3D12_RESOURCE_STATE_PRESENT;
+	commandList_->ResourceBarrier(1, &barrierDesc_);
+
+	//命令のクローズ
+	result = commandList_->Close();
+	assert(SUCCEEDED(result));
 	//コマンドリストの実行
 	ID3D12CommandList* commandLists[] = { commandList_.Get() };
 	commandQueue_->ExecuteCommandLists(1, commandLists);
+
+	//画面に表示するバッファをフリップ(裏表の入れ替え)
+	result = swapChain_->Present(1, 0);
+	result = device_->GetDeviceRemovedReason();
+	assert(SUCCEEDED(result));
 
 	//コマンドの実行完了を待つ
 	commandQueue_->Signal(fence_.Get(), ++fenceVal_);
@@ -317,10 +328,5 @@ void DirectXBasis::PostDraw(){
 
 	//コマンドリストをリセット
 	result = commandList_->Reset(commandAllocator_.Get(), nullptr);
-	assert(SUCCEEDED(result));
-
-	//画面に表示するバッファをフリップ(裏表の入れ替え)
-	result = swapChain_->Present(1, 0);
-	result = device_->GetDeviceRemovedReason();
 	assert(SUCCEEDED(result));
 }

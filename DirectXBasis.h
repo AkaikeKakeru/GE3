@@ -76,6 +76,9 @@ private://よく使うメンバ変数
 	//バックバッファ
 	std::vector<ComPtr<ID3D12Resource>> backBuffers_;
 
+	//バリアデスク
+	D3D12_RESOURCE_BARRIER barrierDesc_{};
+
 	///深度バッファ関連
 	//深度バッファ
 	ComPtr<ID3D12Resource> depthBuff_ = nullptr;
