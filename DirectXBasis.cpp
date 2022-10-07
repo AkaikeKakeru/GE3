@@ -292,6 +292,8 @@ void DirectXBasis::PrepareDraw(){
 }
 
 void DirectXBasis::PostDraw(){
+	HRESULT result;
+
 	//コマンドリストの実行
 	ID3D12CommandList* commandLists[] = { commandList_.Get() };
 	commandQueue_->ExecuteCommandLists(1, commandLists);
@@ -308,4 +310,9 @@ void DirectXBasis::PostDraw(){
 			CloseHandle(event);
 		}
 	}
+
+
+	//アロケーターをリセット
+	result = commandAllocator_->Reset();
+	assert(SUCCEEDED(result));
 }
