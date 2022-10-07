@@ -291,5 +291,7 @@ void DirectXBasis::PrepareDraw(){
 
 	//シザー矩形設定コマンドを、コマンドリストに積む
 	commandList_->RSSetScissorRects(1, &scissorRect);
+}
 
+void DirectXBasis::PostDraw(){
 }

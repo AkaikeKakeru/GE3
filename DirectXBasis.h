@@ -36,6 +36,9 @@ public://固有のpublicメンバ関数
 	//描画準備
 	void PrepareDraw();
 
+	//描画後処理
+	void PostDraw();
+
 private://よく使うメンバ変数
 	//WindowsAPI
 	WinApp* winApp_ = nullptr;
