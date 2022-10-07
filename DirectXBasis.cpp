@@ -315,4 +315,8 @@ void DirectXBasis::PostDraw(){
 	//アロケーターをリセット
 	result = commandAllocator_->Reset();
 	assert(SUCCEEDED(result));
+
+	//コマンドリストをリセット
+	result = commandList_->Reset(commandAllocator_.Get(), nullptr);
+	assert(SUCCEEDED(result));
 }

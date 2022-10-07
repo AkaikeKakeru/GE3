@@ -1426,9 +1426,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		
 
-		//コマンドリストをリセット
-		result = commandList->Reset(commandAllocator.Get(), nullptr);
-		assert(SUCCEEDED(result));
+		
 
 		//windowsのメッセージ処理
 		if (winApp->ProcessMessage()) {
