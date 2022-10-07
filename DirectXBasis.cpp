@@ -239,7 +239,13 @@ void DirectXBasis::InitFence() {
 }
 
 void DirectXBasis::PrepareDraw(){
-
 	//バックバッファの番号を取得(0番か1番)
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
+
+	//1.リソースバリアで書き込みに変更
+	D3D12_RESOURCE_BARRIER barrierDesc{};
+	barrierDesc.Transition.pResource = backBuffers_[bbIndex].Get();
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	commandList_->ResourceBarrier(1, &barrierDesc);
 }
