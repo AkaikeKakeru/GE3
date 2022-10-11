@@ -44,10 +44,7 @@ void Drawer::Initialize(const wchar_t* vsFile,const wchar_t* psFile){
 
 	///グラフィックスパイプライン設定
 	//シェーダーの設定
-	pipelineDesc_.VS.pShaderBytecode = vsBlob_->GetBufferPointer();
-	pipelineDesc_.VS.BytecodeLength = vsBlob_->GetBufferSize();
-	pipelineDesc_.PS.pShaderBytecode = psBlob_->GetBufferPointer();
-	pipelineDesc_.PS.BytecodeLength = psBlob_->GetBufferSize();
+	SetingShader();
 
 	//サンプルマスクの設定
 	pipelineDesc_.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;//標準設定
@@ -65,10 +62,8 @@ void Drawer::Initialize(const wchar_t* vsFile,const wchar_t* psFile){
 	pipelineDesc_.PrimitiveTopologyType
 		= D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-#pragma region 深度テストの設定
 	//デプスステンシルステートの設定
 	SetingDepthStencilState();
-#pragma endregion
 
 	//その他の設定
 	pipelineDesc_.NumRenderTargets = 1;//描画対象は1つ
@@ -128,6 +123,13 @@ void Drawer::LoadShaderFile(const wchar_t* vsFile,const wchar_t* psFile){
 		OutputDebugStringA(error.c_str());
 		assert(0);
 	}
+}
+
+void Drawer::SetingShader(){
+	pipelineDesc_.VS.pShaderBytecode = vsBlob_->GetBufferPointer();
+	pipelineDesc_.VS.BytecodeLength = vsBlob_->GetBufferSize();
+	pipelineDesc_.PS.pShaderBytecode = psBlob_->GetBufferPointer();
+	pipelineDesc_.PS.BytecodeLength = psBlob_->GetBufferSize();
 }
 
 void Drawer::SetingAlphaBlend(){

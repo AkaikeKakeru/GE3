@@ -17,11 +17,14 @@ private: //固有のメンバ変数
 	//シェーダーファイル読み込み
 	void LoadShaderFile(const wchar_t* vsFile,const wchar_t* psFile);
 
-	//アルファブレンディング設定
-	void SetingAlphaBlend();
+	//シェーダー設定
+	void SetingShader();
 
 	//ラスタライザ設定
 	void SetingRasterizer();
+
+	//アルファブレンディング設定
+	void SetingAlphaBlend();
 
 	//デプスステンシルステートの設定
 	void SetingDepthStencilState();
