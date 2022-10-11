@@ -42,7 +42,12 @@ void Drawer::Initialize(const wchar_t* vsFile,const wchar_t* psFile){
 		//{/*...*/},
 	};
 
-	///グラフィックスパイプライン設定
+	//グラフィックスパイプライン設定
+	SetingGraphicsPipeline();
+}
+
+//グラフィックスパイプライン設定
+void Drawer::SetingGraphicsPipeline(){
 	//シェーダーの設定
 	SetingShader();
 
@@ -70,6 +75,7 @@ void Drawer::Initialize(const wchar_t* vsFile,const wchar_t* psFile){
 	SetingOther();
 }
 
+//グラフィックスパイプライン設定の中身
 void Drawer::LoadShaderFile(const wchar_t* vsFile,const wchar_t* psFile){
 	HRESULT result;
 
@@ -123,14 +129,12 @@ void Drawer::LoadShaderFile(const wchar_t* vsFile,const wchar_t* psFile){
 		assert(0);
 	}
 }
-
 void Drawer::SetingShader(){
 	pipelineDesc_.VS.pShaderBytecode = vsBlob_->GetBufferPointer();
 	pipelineDesc_.VS.BytecodeLength = vsBlob_->GetBufferSize();
 	pipelineDesc_.PS.pShaderBytecode = psBlob_->GetBufferPointer();
 	pipelineDesc_.PS.BytecodeLength = psBlob_->GetBufferSize();
 }
-
 void Drawer::SetingRasterizer(){
 	//背面カリングも設定する
 	//pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;//カリングしない
@@ -138,7 +142,6 @@ void Drawer::SetingRasterizer(){
 	pipelineDesc_.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;//ポリゴン内塗りつぶし
 	pipelineDesc_.RasterizerState.DepthClipEnable = true;//深度クリッピングを有効に
 }
-
 void Drawer::SetingAlphaBlend(){
 	//ブレンドステート
 	pipelineDesc_.BlendState.RenderTarget[0].RenderTargetWriteMask 
@@ -174,14 +177,12 @@ void Drawer::SetingAlphaBlend(){
 	blenddesc.SrcBlend = D3D12_BLEND_ONE; //ソースの値をアルファ値
 	blenddesc.DestBlend = D3D12_BLEND_ONE; //1.0f-ソースのアルファ値
 }
-
 void Drawer::SetingDepthStencilState(){
 	pipelineDesc_.DepthStencilState.DepthEnable = true;
 	pipelineDesc_.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	pipelineDesc_.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 	pipelineDesc_.DSVFormat = DXGI_FORMAT_R32_FLOAT;
 }
-
 void Drawer::SetingOther(){
 	pipelineDesc_.NumRenderTargets = 1;//描画対象は1つ
 	pipelineDesc_.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;//0～255指定のRGBA

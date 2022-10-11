@@ -14,21 +14,23 @@ public://基本的なメンバ関数
 
 private: //固有のメンバ変数
 
-	//シェーダーファイル読み込み
-	void LoadShaderFile(const wchar_t* vsFile,const wchar_t* psFile);
+	///グラフィックスパイプライン関連
+	//グラフィックスパイプライン設定
+	void SetingGraphicsPipeline();
 
+	///グラフィックスパイプライン設定の中身
+	//シェーダーファイル読み込み
+	void LoadShaderFile(
+		const wchar_t* vsFile,
+		const wchar_t* psFile);
 	//シェーダー設定
 	void SetingShader();
-
 	//ラスタライザ設定
 	void SetingRasterizer();
-
 	//アルファブレンディング設定
 	void SetingAlphaBlend();
-
 	//デプスステンシルステートの設定
 	void SetingDepthStencilState();
-
 	//その他の設定
 	void SetingOther();
 
