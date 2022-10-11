@@ -80,6 +80,9 @@ void Drawer::SetingGraphicsPipeline(){
 	//デスクリプタテーブルの設定
 	SetingDescriptorTable();
 
+	//テクスチャサンプラーの設定
+	SetingTextureSampler();
+
 	///ルートシグネチャ関連
 	//ルートパラメータの設定
 	SetingRootParameter();
@@ -227,6 +230,18 @@ void Drawer::SetingDescriptorTable(){
 		D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 }
 
+void Drawer::SetingTextureSampler(){
+	samplerDesc_.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	samplerDesc_.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	samplerDesc_.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	samplerDesc_.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
+	samplerDesc_.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc_.MaxLOD = D3D12_FLOAT32_MAX;
+	samplerDesc_.MinLOD = 0.0f;
+	samplerDesc_.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	samplerDesc_.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+}
+
 void Drawer::SetingRootParameter(){
 	///ルートパラメータの設定
 	
@@ -259,8 +274,8 @@ void Drawer::SetingRootSignature(){
 	rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 	rootSignatureDesc.pParameters = rootParams_; //ルートパラメータの先頭アドレス
 	rootSignatureDesc.NumParameters = _countof(rootParams_); //ルートパラメータ数
-	//rootSignatureDesc.pStaticSamplers = &samplerDesc;
-	//rootSignatureDesc.NumStaticSamplers = 1;
+	rootSignatureDesc.pStaticSamplers = &samplerDesc_;
+	rootSignatureDesc.NumStaticSamplers = 1;
 	
 	//ルートシグネチャのシリアライズ
 	ComPtr<ID3DBlob> rootSigBlob;
@@ -291,7 +306,6 @@ void Drawer::CreatePipelineState(){
 		IID_PPV_ARGS(&pipelineState));
 	assert(SUCCEEDED(result));
 }
-
 
 void Drawer::CreateConstBufferMaterial(){
 	HRESULT result;

@@ -297,7 +297,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//------描画初期化処理 ここから------
 	//ポインタ
 	Drawer* drawer = nullptr;
-	
+	//Drawer初期化
+	drawer = new Drawer();
+	drawer->Initialize(dXBas,L"BasicVS.hlsl",L"BasicPS.hlsl");
+
 #pragma region
 	float angle = 0.0f; //カメラの回転角
 
@@ -455,57 +458,20 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//頂点１つ分のデータサイズ
 	vbView.StrideInBytes = sizeof(vertices[0]);
 
-	//Drawer初期化
-	drawer = new Drawer();
-	drawer->Initialize(dXBas,L"BasicVS.hlsl",L"BasicPS.hlsl");
+	//Drawerには今、この辺りの処理を引っ越させてます
 
-
-	////デスクリプタレンジの設定
-	//D3D12_DESCRIPTOR_RANGE descriptorRange{};
-	//descriptorRange.NumDescriptors = 1;//一度の描画に使うテクスチャが一枚なので1
-	//descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	//descriptorRange.BaseShaderRegister = 0;//テクスチャレジスタ番号0番
-	//descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-	////デスクリプタテーブルの設定
-	//D3D12_DESCRIPTOR_RANGE descRange{};
-	//descRange.NumDescriptors = 1;//定数は一つ
-	//descRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV; //種別は定数
-	//descRange.BaseShaderRegister = 0; //0番スロットから
-	//descRange.OffsetInDescriptorsFromTableStart =
-	//	D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-	//////ルートパラメータの設定
-	//D3D12_ROOT_PARAMETER rootParams[3] = {};
-	////定数バッファ0番
-	//rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//定数バッファビュー
-	//rootParams[0].Descriptor.ShaderRegister = 0;					//定数バッファ番号
-	//rootParams[0].Descriptor.RegisterSpace = 0;						//デフォルト値
-	//rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
-
-	////テクスチャレジスタ0番
-	//rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;	//定数バッファビュー
-	//rootParams[1].DescriptorTable.pDescriptorRanges = &descriptorRange;					//定数バッファ番号
-	//rootParams[1].DescriptorTable.NumDescriptorRanges = 1;						//デフォルト値
-	//rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
-
-	////定数バッファ1番
-	//rootParams[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//種類
-	//rootParams[2].Descriptor.ShaderRegister = 1;					//定数バッファ番号
-	//rootParams[2].Descriptor.RegisterSpace = 0;						//デフォルト値
-	//rootParams[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
-
+	
 	//テクスチャサンプラーの設定
-	D3D12_STATIC_SAMPLER_DESC samplerDesc{};
-	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	samplerDesc.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
-	samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
-	samplerDesc.MinLOD = 0.0f;
-	samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-	samplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	//D3D12_STATIC_SAMPLER_DESC samplerDesc{};
+	//samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	//samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	//samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	//samplerDesc.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
+	//samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+	//samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
+	//samplerDesc.MinLOD = 0.0f;
+	//samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	//samplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	////ルートシグネチャの設定
 	//D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};

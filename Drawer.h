@@ -51,6 +51,9 @@ private: //固有のメンバ変数
 	//デスクリプタテーブルの設定
 	void SetingDescriptorTable();
 
+	//テクスチャサンプラーの設定
+	void SetingTextureSampler();
+
 	//ルートパラメータ設定
 	void SetingRootParameter();
 	//ルートシグネチャ設定
@@ -79,10 +82,14 @@ private: //よく使うメンバ変数
 	//グラフィックスパイプライン
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_{};
 
+	//サンプラーデスク
+	D3D12_STATIC_SAMPLER_DESC samplerDesc_{};
+
 	//デスクリプタレンジ(タイプSRV)
 	D3D12_DESCRIPTOR_RANGE descriptorRange_{};
 	//デスクテーブル(タイプCBV)
 	D3D12_DESCRIPTOR_RANGE descRange_{};
 
+	//ルートパラメータ
 	D3D12_ROOT_PARAMETER rootParams_[3] = {};
 };
