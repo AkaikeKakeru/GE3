@@ -42,4 +42,7 @@ private: //よく使うメンバ変数
 	//ウィンドウハンドル
 	HWND hwnd_ = nullptr;
 
+private: //コンスト デスト
+	WinApp();
+	~WinApp();
 };

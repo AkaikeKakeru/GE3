@@ -1,5 +1,8 @@
 #include "WinApp.h"
 
+WinApp::WinApp(){}
+WinApp::~WinApp(){}
+
 //ウィンドウプロシージャ
 LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 	switch (msg) {

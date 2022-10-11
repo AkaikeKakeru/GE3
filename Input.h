@@ -52,4 +52,8 @@ private: //よく使うメンバ変数
 
 	//WindowsAPI
 	WinApp* winApp_ = nullptr;
+
+private: //コンスト デスト
+	Input();
+	~Input();
 };
