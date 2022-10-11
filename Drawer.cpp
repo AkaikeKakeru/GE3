@@ -67,10 +67,7 @@ void Drawer::Initialize(const wchar_t* vsFile,const wchar_t* psFile){
 
 #pragma region 深度テストの設定
 	//デプスステンシルステートの設定
-	pipelineDesc_.DepthStencilState.DepthEnable = true;
-	pipelineDesc_.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	pipelineDesc_.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-	pipelineDesc_.DSVFormat = DXGI_FORMAT_R32_FLOAT;
+	SetingDepthStencilState();
 #pragma endregion
 
 	//その他の設定
@@ -176,4 +173,11 @@ void Drawer::SetingRasterizer(){
 	pipelineDesc_.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;//ポリゴン内塗りつぶし
 	pipelineDesc_.RasterizerState.DepthClipEnable = true;//深度クリッピングを有効に
 
+}
+
+void Drawer::SetingDepthStencilState(){
+	pipelineDesc_.DepthStencilState.DepthEnable = true;
+	pipelineDesc_.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	pipelineDesc_.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	pipelineDesc_.DSVFormat = DXGI_FORMAT_R32_FLOAT;
 }

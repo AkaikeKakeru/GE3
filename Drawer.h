@@ -23,6 +23,9 @@ private: //固有のメンバ変数
 	//ラスタライザ設定
 	void SetingRasterizer();
 
+	//デプスステンシルステートの設定
+	void SetingDepthStencilState();
+
 private: //よく使うメンバ変数
 
 	//頂点シェーダオブジェクト
