@@ -22,7 +22,7 @@ public: //namespaceの省略
 	using ComPtr = Microsoft::WRL::ComPtr<Type>;
 
 public://基本的なメンバ関数
-	void Initialize(const wchar_t* vsFile,const wchar_t* psFile);
+	void Initialize(DirectXBasis* dXBas,const wchar_t* vsFile,const wchar_t* psFile);
 
 private: //固有のメンバ変数
 

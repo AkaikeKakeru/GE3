@@ -3,8 +3,10 @@
 #include <d3dcompiler.h>
 #include <string>
 
-void Drawer::Initialize(const wchar_t* vsFile,const wchar_t* psFile){
-	
+void Drawer::Initialize(DirectXBasis* dXBas,const wchar_t* vsFile,const wchar_t* psFile){
+	assert(dXBas);
+	dXBas_ = dXBas;
+
 	LoadShaderFile(vsFile,psFile);
 	
 	//頂点レイアウト
