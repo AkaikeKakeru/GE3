@@ -29,6 +29,9 @@ private: //固有のメンバ変数
 	//デプスステンシルステートの設定
 	void SetingDepthStencilState();
 
+	//その他の設定
+	void SetingOther();
+
 private: //よく使うメンバ変数
 
 	//頂点シェーダオブジェクト
