@@ -1,7 +1,12 @@
 #pragma once
+#include <wrl.h>
 
 class  Drawer
 {
+public: //namespace‚ÌÈ—ª
+	template <class Type>
+	using ComPtr = Microsoft::WRL::ComPtr<Type>;
+
 public://Šî–{“I‚Èƒƒ“ƒoŠÖ”
 	void Initialize();
 

@@ -1,6 +1,10 @@
 #include "Drawer.h"
+#include <d3d12.h>
 
 void Drawer::Initialize(){
+	ComPtr<ID3DBlob> vsBlob = nullptr;//頂点シェーダオブジェクト
+	ComPtr<ID3DBlob> psBlob = nullptr;//ピクセルシェーダオブジェクト
+
 	//グラフィックスパイプライン設定
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc{};
 

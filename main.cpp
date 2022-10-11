@@ -451,8 +451,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//頂点１つ分のデータサイズ
 	vbView.StrideInBytes = sizeof(vertices[0]);
 
-	ComPtr<ID3DBlob> vsBlob = nullptr;//頂点シェーダオブジェクト
-	ComPtr<ID3DBlob> psBlob = nullptr;//ピクセルシェーダオブジェクト
+	//ComPtr<ID3DBlob> vsBlob = nullptr;//頂点シェーダオブジェクト
+	//ComPtr<ID3DBlob> psBlob = nullptr;//ピクセルシェーダオブジェクト
 	ComPtr<ID3DBlob> errorBlob = nullptr;//エラーオブジェクト
 
 	//頂点シェーダの読み込みとコンパイル
