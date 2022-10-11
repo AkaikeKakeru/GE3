@@ -5,6 +5,13 @@
 
 class  Drawer
 {
+public: //構造体
+	//定数バッファ用データ構造体(マテリアル)
+	struct ConstBufferDataMaterial
+	{
+		XMFLOAT4 color; //色(RGBA)
+	};
+
 public: //namespaceの省略
 	template <class Type>
 	using ComPtr = Microsoft::WRL::ComPtr<Type>;
@@ -33,6 +40,15 @@ private: //固有のメンバ変数
 	void SetingDepthStencilState();
 	//その他の設定
 	void SetingOther();
+
+
+	///定数バッファ関連
+	//定数バッファ生成
+	void CreateConstBuffer();
+
+	///定数バッファ生成の中身
+	//マテリアル
+	void CreateConstBufferMaterial();
 
 private: //よく使うメンバ変数
 

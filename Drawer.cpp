@@ -44,6 +44,12 @@ void Drawer::Initialize(const wchar_t* vsFile,const wchar_t* psFile){
 
 	//グラフィックスパイプライン設定
 	SetingGraphicsPipeline();
+
+	//定数バッファ生成
+	CreateConstBuffer();
+#pragma region constMapMaterial関連
+
+#pragma endregion
 }
 
 //グラフィックスパイプライン設定
@@ -74,6 +80,14 @@ void Drawer::SetingGraphicsPipeline(){
 	//その他の設定
 	SetingOther();
 }
+
+
+void Drawer::CreateConstBuffer(){
+	CreateConstBufferMaterial();
+}
+
+
+
 
 //グラフィックスパイプライン設定の中身
 void Drawer::LoadShaderFile(const wchar_t* vsFile,const wchar_t* psFile){
@@ -187,4 +201,43 @@ void Drawer::SetingOther(){
 	pipelineDesc_.NumRenderTargets = 1;//描画対象は1つ
 	pipelineDesc_.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;//0～255指定のRGBA
 	pipelineDesc_.SampleDesc.Count = 1;//1ピクセルにつき1回サンプリング
+}
+
+
+void Drawer::CreateConstBufferMaterial(){
+	HRESULT result;
+
+	//ヒープ設定
+	D3D12_HEAP_PROPERTIES cbheapprop{};
+	cbheapprop.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用
+											  //リソース設定
+	D3D12_RESOURCE_DESC cbresdesc{};
+	cbresdesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	cbresdesc.Width = (sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff; //256バイトアラインメント
+	cbresdesc.Height = 1;
+	cbresdesc.DepthOrArraySize = 1;
+	cbresdesc.MipLevels = 1;
+	cbresdesc.SampleDesc.Count = 1;
+	cbresdesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+	//定数バッファの生成
+	result = dXBas->GetDevice()->CreateCommittedResource(
+		&cbheapprop, //ヒープ設定
+		D3D12_HEAP_FLAG_NONE,
+		&cbresdesc, //リソース設定
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&constBuffMaterial));
+	assert(SUCCEEDED(result));
+
+	//定数バッファのマッピング
+	ConstBufferDataMaterial* constMapMaterial = nullptr;
+	result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial); //マッピング
+
+	// 値を書き込むと自動的に転送される
+	constMapMaterial->color = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f); //RGBAで半透明の赤
+
+	//マッピング解除
+	constBuffMaterial->Unmap(0, nullptr);
+	assert(SUCCEEDED(result));
 }

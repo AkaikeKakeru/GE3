@@ -24,11 +24,11 @@
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-//定数バッファ用データ構造体(マテリアル)
-struct ConstBufferDataMaterial
-{
-	XMFLOAT4 color; //色(RGBA)
-};
+////定数バッファ用データ構造体(マテリアル)
+//struct ConstBufferDataMaterial
+//{
+//	XMFLOAT4 color; //色(RGBA)
+//};
 
 //資料05-02で追加
 #pragma region 3D変換行列
@@ -712,41 +712,41 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma region
 
 #pragma region constMapMaterial関連
-
-	//ヒープ設定
-	D3D12_HEAP_PROPERTIES cbheapprop{};
-	cbheapprop.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用
-	//リソース設定
-	D3D12_RESOURCE_DESC cbresdesc{};
-	cbresdesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	cbresdesc.Width = (sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff; //256バイトアラインメント
-	cbresdesc.Height = 1;
-	cbresdesc.DepthOrArraySize = 1;
-	cbresdesc.MipLevels = 1;
-	cbresdesc.SampleDesc.Count = 1;
-	cbresdesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-
-	//定数バッファの生成
-	result = dXBas->GetDevice()->CreateCommittedResource(
-		&cbheapprop, //ヒープ設定
-		D3D12_HEAP_FLAG_NONE,
-		&cbresdesc, //リソース設定
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&constBuffMaterial));
-	assert(SUCCEEDED(result));
-
-	//定数バッファのマッピング
-	ConstBufferDataMaterial* constMapMaterial = nullptr;
-	result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial); //マッピング
-																			
-	// 値を書き込むと自動的に転送される
-	constMapMaterial->color = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f); //RGBAで半透明の赤
-
-	//マッピング解除
-	constBuffMaterial->Unmap(0, nullptr);
-	assert(SUCCEEDED(result));
-
+//
+//	//ヒープ設定
+//	D3D12_HEAP_PROPERTIES cbheapprop{};
+//	cbheapprop.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用
+//	//リソース設定
+//	D3D12_RESOURCE_DESC cbresdesc{};
+//	cbresdesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+//	cbresdesc.Width = (sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff; //256バイトアラインメント
+//	cbresdesc.Height = 1;
+//	cbresdesc.DepthOrArraySize = 1;
+//	cbresdesc.MipLevels = 1;
+//	cbresdesc.SampleDesc.Count = 1;
+//	cbresdesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+//
+//	//定数バッファの生成
+//	result = dXBas->GetDevice()->CreateCommittedResource(
+//		&cbheapprop, //ヒープ設定
+//		D3D12_HEAP_FLAG_NONE,
+//		&cbresdesc, //リソース設定
+//		D3D12_RESOURCE_STATE_GENERIC_READ,
+//		nullptr,
+//		IID_PPV_ARGS(&constBuffMaterial));
+//	assert(SUCCEEDED(result));
+//
+//	//定数バッファのマッピング
+//	ConstBufferDataMaterial* constMapMaterial = nullptr;
+//	result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial); //マッピング
+//																			
+//	// 値を書き込むと自動的に転送される
+//	constMapMaterial->color = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f); //RGBAで半透明の赤
+//
+//	//マッピング解除
+//	constBuffMaterial->Unmap(0, nullptr);
+//	assert(SUCCEEDED(result));
+//
 #pragma endregion
 
 #pragma region constMapTransfrom関連
