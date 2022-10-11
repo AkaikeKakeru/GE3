@@ -262,6 +262,9 @@ void UpdateObjectRotation(Object3d* object, Input* input) {
 void UpdateObjectControll(Object3d* object, Input* input) {
 	UpdateObjectRotation(object, input);
 	UpdateObjectPosition(object, input);
+	if (input->ifKeyTrigger(DIK_RETURN)) { object->position.y -= 6.0f; }
+
+	if (input->ifKeyRelease(DIK_RETURN)) { object->position.y += 20.0f; }
 }
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
@@ -758,7 +761,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma region 三次元オブジェクトの構造化
 
 	//3Dオブジェクトの数
-	const size_t kObjectCount = 50;
+	const size_t kObjectCount = 1;
 	//3Dオブジェクトの配列
 	Object3d object3ds[kObjectCount];
 
@@ -993,6 +996,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	while (true) {
 		//入力更新
 		input->Update();
+		
+
 
 #pragma region ターゲットの周りを回るカメラ
 		if (input->ifKeyPress(DIK_D) || input->ifKeyPress(DIK_A))
@@ -1015,9 +1020,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		for (size_t i = 0; i < _countof(object3ds); i++)
 		{
 			UpdateObject3d(&object3ds[i], matView, matProjection);
+	
 		}
 
 		UpdateObjectControll(&object3ds[0], input);
+
+
 
 		//描画の準備
 		dXBas->PrepareDraw();
