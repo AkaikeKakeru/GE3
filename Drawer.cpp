@@ -3,59 +3,10 @@
 #include <d3dcompiler.h>
 #include <string>
 
-void Drawer::Initialize(){
-	HRESULT result;
-
-	//頂点シェーダの読み込みとコンパイル
-	result = D3DCompileFromFile(
-		L"BasicVS.hlsl",//シェーダファイル名
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE,//インクルード可能にする
-		"main", "vs_5_0",//エントリーポイント名、シェーダ―モデル指定
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,//デバッグ用設定
-		0,
-		&vsBlob_, &errorBlob_);
-
-	//エラーなら
-	if (FAILED(result)) {
-		//errorBlobからエラー内容をstring型にコピー
-		std::string error;
-		error.resize(errorBlob_->GetBufferSize());
-
-		std::copy_n((char*)errorBlob_->GetBufferPointer(),
-			errorBlob_->GetBufferSize(),
-			error.begin());
-		error += "\n";
-		//エラー内容を出力ウィンドウに表示
-		OutputDebugStringA(error.c_str());
-		assert(0);
-	}
-
-	//ピクセルシェーダの読み込みとコンパイル
-	result = D3DCompileFromFile(
-		L"BasicPS.hlsl",//シェーダファイル名
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE,//インクルード可能にする
-		"main", "ps_5_0",//エントリーポイント名、シェーダーモデル指定
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,//デバッグ用設定
-		0,
-		&psBlob_, &errorBlob_);
-
-	//エラーなら
-	if (FAILED(result)) {
-		//errorBlobからエラー内容をstring型にコピー
-		std::string error;
-		error.resize(errorBlob_->GetBufferSize());
-
-		std::copy_n((char*)errorBlob_->GetBufferPointer(),
-			errorBlob_->GetBufferSize(),
-			error.begin());
-		error += "\n";
-		//エラー内容を出力ウィンドウに表示
-		OutputDebugStringA(error.c_str());
-		assert(0);
-	}
-
+void Drawer::Initialize(const wchar_t* vsFile,const wchar_t* psFile){
+	
+	LoadShaderFile(vsFile,psFile);
+	
 	//頂点レイアウト
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] =
 	{
@@ -163,4 +114,58 @@ void Drawer::Initialize(){
 	pipelineDesc_.NumRenderTargets = 1;//描画対象は1つ
 	pipelineDesc_.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;//0～255指定のRGBA
 	pipelineDesc_.SampleDesc.Count = 1;//1ピクセルにつき1回サンプリング
+}
+
+void Drawer::LoadShaderFile(const wchar_t* vsFile,const wchar_t* psFile){
+	HRESULT result;
+
+	//頂点シェーダの読み込みとコンパイル
+	result = D3DCompileFromFile(
+		vsFile,//シェーダファイル名
+		nullptr,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,//インクルード可能にする
+		"main", "vs_5_0",//エントリーポイント名、シェーダ―モデル指定
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,//デバッグ用設定
+		0,
+		&vsBlob_, &errorBlob_);
+
+	//エラーなら
+	if (FAILED(result)) {
+		//errorBlobからエラー内容をstring型にコピー
+		std::string error;
+		error.resize(errorBlob_->GetBufferSize());
+
+		std::copy_n((char*)errorBlob_->GetBufferPointer(),
+			errorBlob_->GetBufferSize(),
+			error.begin());
+		error += "\n";
+		//エラー内容を出力ウィンドウに表示
+		OutputDebugStringA(error.c_str());
+		assert(0);
+	}
+
+	//ピクセルシェーダの読み込みとコンパイル
+	result = D3DCompileFromFile(
+		psFile,//シェーダファイル名
+		nullptr,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,//インクルード可能にする
+		"main", "ps_5_0",//エントリーポイント名、シェーダーモデル指定
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,//デバッグ用設定
+		0,
+		&psBlob_, &errorBlob_);
+
+	//エラーなら
+	if (FAILED(result)) {
+		//errorBlobからエラー内容をstring型にコピー
+		std::string error;
+		error.resize(errorBlob_->GetBufferSize());
+
+		std::copy_n((char*)errorBlob_->GetBufferPointer(),
+			errorBlob_->GetBufferSize(),
+			error.begin());
+		error += "\n";
+		//エラー内容を出力ウィンドウに表示
+		OutputDebugStringA(error.c_str());
+		assert(0);
+	}
 }

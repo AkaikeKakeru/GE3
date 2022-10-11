@@ -299,7 +299,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Drawer* drawer = nullptr;
 	//Drawer‰Šú‰»
 	drawer = new Drawer();
-	drawer->Initialize();
+	drawer->Initialize(L"BasicVS.hlsl",L"BasicPS.hlsl");
 
 #pragma region
 	float angle = 0.0f; //ƒJƒƒ‰‚Ì‰ñ“]Šp
