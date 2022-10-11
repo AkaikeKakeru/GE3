@@ -297,10 +297,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//------描画初期化処理 ここから------
 	//ポインタ
 	Drawer* drawer = nullptr;
-	//Drawer初期化
-	drawer = new Drawer();
-	drawer->Initialize(dXBas,L"BasicVS.hlsl",L"BasicPS.hlsl");
-
+	
 #pragma region
 	float angle = 0.0f; //カメラの回転角
 
@@ -458,22 +455,25 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//頂点１つ分のデータサイズ
 	vbView.StrideInBytes = sizeof(vertices[0]);
 
+	//Drawer初期化
+	drawer = new Drawer();
+	drawer->Initialize(dXBas,L"BasicVS.hlsl",L"BasicPS.hlsl");
 
 
-	//デスクリプタレンジの設定
-	D3D12_DESCRIPTOR_RANGE descriptorRange{};
-	descriptorRange.NumDescriptors = 1;//一度の描画に使うテクスチャが一枚なので1
-	descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRange.BaseShaderRegister = 0;//テクスチャレジスタ番号0番
-	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	////デスクリプタレンジの設定
+	//D3D12_DESCRIPTOR_RANGE descriptorRange{};
+	//descriptorRange.NumDescriptors = 1;//一度の描画に使うテクスチャが一枚なので1
+	//descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	//descriptorRange.BaseShaderRegister = 0;//テクスチャレジスタ番号0番
+	//descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	//デスクリプタテーブルの設定
-	D3D12_DESCRIPTOR_RANGE descRange{};
-	descRange.NumDescriptors = 1;//定数は一つ
-	descRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV; //種別は定数
-	descRange.BaseShaderRegister = 0; //0番スロットから
-	descRange.OffsetInDescriptorsFromTableStart =
-		D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	////デスクリプタテーブルの設定
+	//D3D12_DESCRIPTOR_RANGE descRange{};
+	//descRange.NumDescriptors = 1;//定数は一つ
+	//descRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV; //種別は定数
+	//descRange.BaseShaderRegister = 0; //0番スロットから
+	//descRange.OffsetInDescriptorsFromTableStart =
+	//	D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 	//////ルートパラメータの設定
 	//D3D12_ROOT_PARAMETER rootParams[3] = {};

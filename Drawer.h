@@ -45,6 +45,12 @@ private: //固有のメンバ変数
 	void SetingDepthStencilState();
 	//その他の設定
 	void SetingOther();
+
+	//デスクリプタレンジの設定
+	void SetingDescriptorRange();
+	//デスクリプタテーブルの設定
+	void SetingDescriptorTable();
+
 	//ルートパラメータ設定
 	void SetingRootParameter();
 	//ルートシグネチャ設定
@@ -72,6 +78,11 @@ private: //よく使うメンバ変数
 
 	//グラフィックスパイプライン
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_{};
+
+	//デスクリプタレンジ(タイプSRV)
+	D3D12_DESCRIPTOR_RANGE descriptorRange_{};
+	//デスクテーブル(タイプCBV)
+	D3D12_DESCRIPTOR_RANGE descRange_{};
 
 	D3D12_ROOT_PARAMETER rootParams_[3] = {};
 };

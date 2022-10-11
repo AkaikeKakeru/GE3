@@ -58,29 +58,27 @@ void Drawer::SetingGraphicsPipeline(){
 
 	//シェーダーの設定
 	SetingShader();
-
 	//サンプルマスクの設定
 	pipelineDesc_.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;//標準設定
-
 	//ラスタライザの設定
 	SetingRasterizer();
-
 	//アルファブレンディングの設定
 	SetingAlphaBlend();
-
 	//頂点レイアウトの設定
 	pipelineDesc_.InputLayout.pInputElementDescs = inputLayout;
 	pipelineDesc_.InputLayout.NumElements = _countof(inputLayout);
-
 	//図形の形状設定
 	pipelineDesc_.PrimitiveTopologyType
 		= D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-
 	//デプスステンシルステートの設定
 	SetingDepthStencilState();
-
 	//その他の設定
 	SetingOther();
+
+	//デスクリプタレンジの設定
+	SetingDescriptorRange();
+	//デスクリプタテーブルの設定
+	SetingDescriptorTable();
 
 	///ルートシグネチャ関連
 	//ルートパラメータの設定
@@ -211,6 +209,24 @@ void Drawer::SetingOther(){
 	pipelineDesc_.SampleDesc.Count = 1;//1ピクセルにつき1回サンプリング
 }
 
+void Drawer::SetingDescriptorRange(){
+	descriptorRange_.NumDescriptors = 1;//一度の描画に使うテクスチャが一枚なので1
+	descriptorRange_.RangeType = 
+		D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descriptorRange_.BaseShaderRegister = 0;//テクスチャレジスタ番号0番
+	descriptorRange_.OffsetInDescriptorsFromTableStart = 
+		D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+}
+
+void Drawer::SetingDescriptorTable(){
+	descRange_.NumDescriptors = 1;//定数は一つ
+	descRange_.RangeType = 
+		D3D12_DESCRIPTOR_RANGE_TYPE_CBV; //種別は定数
+	descRange_.BaseShaderRegister = 0; //0番スロットから
+	descRange_.OffsetInDescriptorsFromTableStart =
+		D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+}
+
 void Drawer::SetingRootParameter(){
 	///ルートパラメータの設定
 	
@@ -222,7 +238,7 @@ void Drawer::SetingRootParameter(){
 
 	//テクスチャレジスタ0番
 	rootParams_[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;	//定数バッファビュー
-	rootParams_[1].DescriptorTable.pDescriptorRanges = &descriptorRange;					//定数バッファ番号
+	rootParams_[1].DescriptorTable.pDescriptorRanges = &descriptorRange_;					//定数バッファ番号
 	rootParams_[1].DescriptorTable.NumDescriptorRanges = 1;						//デフォルト値
 	rootParams_[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
 
