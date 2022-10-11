@@ -1,6 +1,10 @@
 #include "DirectXBasis.h"
 #include <cassert>
 
+DirectXBasis::DirectXBasis(){}
+DirectXBasis::~DirectXBasis(){}
+
+
 void DirectXBasis::Initialize(WinApp* winApp) {
 	//nullチェック
 	assert(winApp);
