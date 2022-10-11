@@ -13,13 +13,14 @@ public://基本的なメンバ関数
 	void Initialize(const wchar_t* vsFile,const wchar_t* psFile);
 
 private: //固有のメンバ変数
+
+	//シェーダーファイル読み込み
 	void LoadShaderFile(const wchar_t* vsFile,const wchar_t* psFile);
 
+	//アルファブレンディング設定
+	void SetingAlphaBlend();
+
 private: //よく使うメンバ変数
-	////頂点シェーダーファイル
-	//wchar_t* vsFile_;
-	////ピクセルシェーダーファイル
-	//wchar_t* psFile_;
 
 	//頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> vsBlob_ = nullptr;
