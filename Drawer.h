@@ -16,6 +16,8 @@ private: //よく使うメンバ変数
 	ComPtr<ID3DBlob> vsBlob_ = nullptr;
 	//ピクセルシェーダオブジェクト
 	ComPtr<ID3DBlob> psBlob_ = nullptr;
+	//エラーオブジェクト
+	ComPtr<ID3DBlob> errorBlob_ = nullptr;
 
 	//グラフィックスパイプライン
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_{};
