@@ -1,5 +1,6 @@
 #pragma once
 #include <wrl.h>
+#include <d3d12.h>
 
 class  Drawer
 {
@@ -12,10 +13,10 @@ public://基本的なメンバ関数
 
 private: //よく使うメンバ変数
 	//頂点シェーダオブジェクト
-	ComPtr<ID3DBlob> vsBlob = nullptr;
+	ComPtr<ID3DBlob> vsBlob_ = nullptr;
 	//ピクセルシェーダオブジェクト
-	ComPtr<ID3DBlob> psBlob = nullptr;
+	ComPtr<ID3DBlob> psBlob_ = nullptr;
 
 	//グラフィックスパイプライン
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc{};
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_{};
 };
