@@ -45,7 +45,12 @@ private: //固有のメンバ変数
 	void SetingDepthStencilState();
 	//その他の設定
 	void SetingOther();
-
+	//ルートパラメータ設定
+	void SetingRootParameter();
+	//ルートシグネチャ設定
+	void SetingRootSignature();
+	//パイプラインステート生成
+	void CreatePipelineState();
 
 	///定数バッファ関連
 	//定数バッファ生成
@@ -67,4 +72,6 @@ private: //よく使うメンバ変数
 
 	//グラフィックスパイプライン
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_{};
+
+	D3D12_ROOT_PARAMETER rootParams_[3] = {};
 };
