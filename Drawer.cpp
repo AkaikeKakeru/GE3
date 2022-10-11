@@ -53,11 +53,7 @@ void Drawer::Initialize(const wchar_t* vsFile,const wchar_t* psFile){
 	pipelineDesc_.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;//標準設定
 
 	//ラスタライザの設定
-	//背面カリングも設定する
-	//pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;//カリングしない
-	pipelineDesc_.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;//背面カリングする
-	pipelineDesc_.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;//ポリゴン内塗りつぶし
-	pipelineDesc_.RasterizerState.DepthClipEnable = true;//深度クリッピングを有効に
+	SetingRasterizer();
 
 	SetingAlphaBlend();
 
@@ -171,4 +167,13 @@ void Drawer::SetingAlphaBlend(){
 	blenddesc.BlendOp = D3D12_BLEND_OP_ADD; //加算
 	blenddesc.SrcBlend = D3D12_BLEND_ONE; //ソースの値をアルファ値
 	blenddesc.DestBlend = D3D12_BLEND_ONE; //1.0f-ソースのアルファ値
+}
+
+void Drawer::SetingRasterizer(){
+	//背面カリングも設定する
+	//pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;//カリングしない
+	pipelineDesc_.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;//背面カリングする
+	pipelineDesc_.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;//ポリゴン内塗りつぶし
+	pipelineDesc_.RasterizerState.DepthClipEnable = true;//深度クリッピングを有効に
+
 }

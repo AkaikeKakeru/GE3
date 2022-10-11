@@ -20,6 +20,9 @@ private: //固有のメンバ変数
 	//アルファブレンディング設定
 	void SetingAlphaBlend();
 
+	//ラスタライザ設定
+	void SetingRasterizer();
+
 private: //よく使うメンバ変数
 
 	//頂点シェーダオブジェクト
