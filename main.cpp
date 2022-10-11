@@ -1,4 +1,3 @@
-#define DIRECTINPUT_VERSION		0x0800 //DirectInputのバージョン指定
 #include "WinApp.h"
 #include "Input.h"
 #include "DirectXBasis.h"
