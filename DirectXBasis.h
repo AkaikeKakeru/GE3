@@ -92,7 +92,7 @@ private://よく使うメンバ変数
 	//フェンス値
 	UINT64 fenceVal_ = 0;
 
-private: //コンスト デスト
-	DirectXBasis();
-	~DirectXBasis();
+//private: //コンスト デスト
+//	DirectXBasis();
+//	~DirectXBasis();
 };
