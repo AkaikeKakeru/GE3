@@ -9,6 +9,18 @@ void Drawer::Initialize(DirectXBasis* dXBas,const wchar_t* vsFile,const wchar_t*
 
 	LoadShaderFile(vsFile,psFile);
 	
+	//グラフィックスパイプライン設定
+	SetingGraphicsPipeline();
+
+	//定数バッファ生成
+	CreateConstBuffer();
+#pragma region constMapMaterial関連
+
+#pragma endregion
+}
+
+//グラフィックスパイプライン設定
+void Drawer::SetingGraphicsPipeline(){
 	//頂点レイアウト
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] =
 	{
@@ -44,18 +56,6 @@ void Drawer::Initialize(DirectXBasis* dXBas,const wchar_t* vsFile,const wchar_t*
 		//{/*...*/},
 	};
 
-	//グラフィックスパイプライン設定
-	SetingGraphicsPipeline();
-
-	//定数バッファ生成
-	CreateConstBuffer();
-#pragma region constMapMaterial関連
-
-#pragma endregion
-}
-
-//グラフィックスパイプライン設定
-void Drawer::SetingGraphicsPipeline(){
 	//シェーダーの設定
 	SetingShader();
 
