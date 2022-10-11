@@ -1,8 +1,13 @@
 #pragma once
 #include <wrl.h>
 #include <d3d12.h>
+#include <DirectXMath.h>
+
+#include "DirectXBasis.h"
+
 #pragma comment(lib,"d3d12.lib")
 
+using namespace DirectX;
 class  Drawer
 {
 public: //構造体
@@ -51,6 +56,7 @@ private: //固有のメンバ変数
 	void CreateConstBufferMaterial();
 
 private: //よく使うメンバ変数
+	DirectXBasis* dXBas_ = nullptr;
 
 	//頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> vsBlob_ = nullptr;

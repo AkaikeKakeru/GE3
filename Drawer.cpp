@@ -207,6 +207,9 @@ void Drawer::SetingOther(){
 void Drawer::CreateConstBufferMaterial(){
 	HRESULT result;
 
+	//マテリアル定数バッファ
+	ComPtr<ID3D12Resource> constBuffMaterial = nullptr;
+
 	//ヒープ設定
 	D3D12_HEAP_PROPERTIES cbheapprop{};
 	cbheapprop.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用
@@ -221,7 +224,7 @@ void Drawer::CreateConstBufferMaterial(){
 	cbresdesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
 	//定数バッファの生成
-	result = dXBas->GetDevice()->CreateCommittedResource(
+	result = dXBas_->GetDevice()->CreateCommittedResource(
 		&cbheapprop, //ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
 		&cbresdesc, //リソース設定

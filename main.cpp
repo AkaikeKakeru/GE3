@@ -705,7 +705,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		IID_PPV_ARGS(&pipelineState));
 	assert(SUCCEEDED(result));
 
-	ComPtr<ID3D12Resource> constBuffMaterial = nullptr;
+	//ComPtr<ID3D12Resource> constBuffMaterial = nullptr;
 
 #pragma endregion
 
