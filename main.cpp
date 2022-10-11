@@ -24,12 +24,6 @@
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-////定数バッファ用データ構造体(マテリアル)
-//struct ConstBufferDataMaterial
-//{
-//	XMFLOAT4 color; //色(RGBA)
-//};
-
 //資料05-02で追加
 #pragma region 3D変換行列
 //定数バッファ用データ構造体(3D変換行列)
@@ -295,12 +289,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//------DirectX初期化処理 ここまで------
 
 	//------描画初期化処理 ここから------
-	//ポインタ
-	Drawer* drawer = nullptr;
-	//Drawer初期化
-	drawer = new Drawer();
-	drawer->Initialize(dXBas,L"BasicVS.hlsl",L"BasicPS.hlsl");
-
 #pragma region
 	float angle = 0.0f; //カメラの回転角
 
@@ -458,97 +446,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//頂点１つ分のデータサイズ
 	vbView.StrideInBytes = sizeof(vertices[0]);
 
+
 	//Drawerには今、この辺りの処理を引っ越させてます
-
-	
-	//テクスチャサンプラーの設定
-	//D3D12_STATIC_SAMPLER_DESC samplerDesc{};
-	//samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	//samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	//samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	//samplerDesc.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
-	//samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-	//samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
-	//samplerDesc.MinLOD = 0.0f;
-	//samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-	//samplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-
-	////ルートシグネチャの設定
-	//D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
-	//rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-	//rootSignatureDesc.pParameters = rootParams; //ルートパラメータの先頭アドレス
-	//rootSignatureDesc.NumParameters = _countof(rootParams); //ルートパラメータ数
-	//rootSignatureDesc.pStaticSamplers = &samplerDesc;
-	//rootSignatureDesc.NumStaticSamplers = 1;
-
-	////ルートシグネチャのシリアライズ
-	//ComPtr<ID3DBlob> rootSigBlob;
-	//result = D3D12SerializeRootSignature(
-	//	&rootSignatureDesc,
-	//	D3D_ROOT_SIGNATURE_VERSION_1_0,
-	//	&rootSigBlob,
-	//	&errorBlob);
-	//assert(SUCCEEDED(result));
-
-	//result = dXBas->GetDevice()->CreateRootSignature(
-	//	0,
-	//	rootSigBlob->GetBufferPointer(),
-	//	rootSigBlob->GetBufferSize(),
-	//	IID_PPV_ARGS(&rootSignature));
-	//assert(SUCCEEDED(result));
-
-	////パイプラインにルートシグネイチャをセット
-	//pipelineDesc.pRootSignature = rootSignature.Get();
-
-	////パイプラインステートの生成
-	//ComPtr<ID3D12PipelineState> pipelineState = nullptr;
-	//result = dXBas->GetDevice()->CreateGraphicsPipelineState(&pipelineDesc,
-	//	IID_PPV_ARGS(&pipelineState));
-	//assert(SUCCEEDED(result));
-
-	//ComPtr<ID3D12Resource> constBuffMaterial = nullptr;
-
-#pragma endregion
-
-#pragma region
-
-#pragma region constMapMaterial関連
-//
-//	//ヒープ設定
-//	D3D12_HEAP_PROPERTIES cbheapprop{};
-//	cbheapprop.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用
-//	//リソース設定
-//	D3D12_RESOURCE_DESC cbresdesc{};
-//	cbresdesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-//	cbresdesc.Width = (sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff; //256バイトアラインメント
-//	cbresdesc.Height = 1;
-//	cbresdesc.DepthOrArraySize = 1;
-//	cbresdesc.MipLevels = 1;
-//	cbresdesc.SampleDesc.Count = 1;
-//	cbresdesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-//
-//	//定数バッファの生成
-//	result = dXBas->GetDevice()->CreateCommittedResource(
-//		&cbheapprop, //ヒープ設定
-//		D3D12_HEAP_FLAG_NONE,
-//		&cbresdesc, //リソース設定
-//		D3D12_RESOURCE_STATE_GENERIC_READ,
-//		nullptr,
-//		IID_PPV_ARGS(&constBuffMaterial));
-//	assert(SUCCEEDED(result));
-//
-//	//定数バッファのマッピング
-//	ConstBufferDataMaterial* constMapMaterial = nullptr;
-//	result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial); //マッピング
-//																			
-//	// 値を書き込むと自動的に転送される
-//	constMapMaterial->color = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f); //RGBAで半透明の赤
-//
-//	//マッピング解除
-//	constBuffMaterial->Unmap(0, nullptr);
-//	assert(SUCCEEDED(result));
-//
-#pragma endregion
+	//ポインタ
+	Drawer* drawer = nullptr;
+	//Drawer初期化
+	drawer = new Drawer();
+	drawer->Initialize(dXBas,L"BasicVS.hlsl",L"BasicPS.hlsl");
 
 #pragma region constMapTransfrom関連
 
@@ -804,8 +708,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		//入力更新
 		input->Update();
 		
-
-
 #pragma region ターゲットの周りを回るカメラ
 		if (input->ifKeyPress(DIK_D) || input->ifKeyPress(DIK_A))
 		{
@@ -831,8 +733,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 
 		UpdateObjectControll(&object3ds[0], input);
-
-
 
 		//描画の準備
 		dXBas->PrepareDraw();
@@ -877,8 +777,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 		//パイプラインステートとルートシグネチャの設定コマンド
-		dXBas->GetCommandList()->SetPipelineState(pipelineState.Get());
-		dXBas->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
+		dXBas->GetCommandList()->SetPipelineState(drawer->GetPipelineState().Get());
+		dXBas->GetCommandList()->SetGraphicsRootSignature(drawer->GetRootSignature().Get());
 
 		//プリミティブ形状の設定コマンド
 		dXBas->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
@@ -887,7 +787,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		dXBas->GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
 
 		//定数バッファビュー(CBV)の設定コマンド
-		dXBas->GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+		dXBas->GetCommandList()->SetGraphicsRootConstantBufferView(0,drawer->GetConstBuffMaterial()->GetGPUVirtualAddress());
 
 		//SRVヒープの設定コマンド
 		dXBas->GetCommandList()->SetDescriptorHeaps(1, &srvHeap);

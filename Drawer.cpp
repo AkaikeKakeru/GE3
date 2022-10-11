@@ -266,9 +266,6 @@ void Drawer::SetingRootParameter(){
 void Drawer::SetingRootSignature(){
 	HRESULT result;
 
-	//ルートシグネチャ
-	ComPtr<ID3D12RootSignature> rootSignature;
-
 	//ルートシグネチャの設定
 	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
 	rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
@@ -290,28 +287,24 @@ void Drawer::SetingRootSignature(){
 		0,
 		rootSigBlob->GetBufferPointer(),
 		rootSigBlob->GetBufferSize(),
-		IID_PPV_ARGS(&rootSignature));
+		IID_PPV_ARGS(&rootSignature_));
 	assert(SUCCEEDED(result));
 
 	//パイプラインにルートシグネイチャをセット
-	pipelineDesc_.pRootSignature = rootSignature.Get();
+	pipelineDesc_.pRootSignature = rootSignature_.Get();
 }
 
 void Drawer::CreatePipelineState(){
 	HRESULT result;
 
 	//パイプラインステートの生成
-	ComPtr<ID3D12PipelineState> pipelineState = nullptr;
 	result = dXBas_->GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_,
-		IID_PPV_ARGS(&pipelineState));
+		IID_PPV_ARGS(&pipelineState_));
 	assert(SUCCEEDED(result));
 }
 
 void Drawer::CreateConstBufferMaterial(){
 	HRESULT result;
-
-	//マテリアル定数バッファ
-	ComPtr<ID3D12Resource> constBuffMaterial = nullptr;
 
 	//ヒープ設定
 	D3D12_HEAP_PROPERTIES cbheapprop{};
@@ -333,17 +326,17 @@ void Drawer::CreateConstBufferMaterial(){
 		&cbresdesc, //リソース設定
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&constBuffMaterial));
+		IID_PPV_ARGS(&constBuffMaterial_));
 	assert(SUCCEEDED(result));
 
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
-	result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial); //マッピング
+	result = constBuffMaterial_->Map(0, nullptr, (void**)&constMapMaterial); //マッピング
 
 	// 値を書き込むと自動的に転送される
 	constMapMaterial->color = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f); //RGBAで半透明の赤
 
 	//マッピング解除
-	constBuffMaterial->Unmap(0, nullptr);
+	constBuffMaterial_->Unmap(0, nullptr);
 	assert(SUCCEEDED(result));
 }

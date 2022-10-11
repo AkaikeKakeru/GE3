@@ -69,6 +69,11 @@ private: //固有のメンバ変数
 	//マテリアル
 	void CreateConstBufferMaterial();
 
+public: //ゲッタ
+	ComPtr<ID3D12RootSignature> GetRootSignature() { return  rootSignature_; }
+	ComPtr<ID3D12PipelineState> GetPipelineState() { return  pipelineState_; }
+	ComPtr<ID3D12Resource> GetConstBuffMaterial() { return constBuffMaterial_; }
+
 private: //よく使うメンバ変数
 	DirectXBasis* dXBas_ = nullptr;
 
@@ -85,6 +90,12 @@ private: //よく使うメンバ変数
 	//サンプラーデスク
 	D3D12_STATIC_SAMPLER_DESC samplerDesc_{};
 
+	//ルートシグネチャ
+	ComPtr<ID3D12RootSignature> rootSignature_;
+
+	//パイプラインステート
+	ComPtr<ID3D12PipelineState> pipelineState_ = nullptr;
+
 	//デスクリプタレンジ(タイプSRV)
 	D3D12_DESCRIPTOR_RANGE descriptorRange_{};
 	//デスクテーブル(タイプCBV)
@@ -92,4 +103,7 @@ private: //よく使うメンバ変数
 
 	//ルートパラメータ
 	D3D12_ROOT_PARAMETER rootParams_[3] = {};
+
+	//マテリアル定数バッファ
+	ComPtr<ID3D12Resource> constBuffMaterial_ = nullptr;
 };
