@@ -2,6 +2,7 @@
 #include "Input.h"
 #include "DirectXBasis.h"
 #include "Drawer.h"
+#include "Model.h"
 
 #include <DirectXMath.h>
 
@@ -22,157 +23,6 @@
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
-
-//資料05-02で追加
-#pragma region 3D変換行列
-//定数バッファ用データ構造体(3D変換行列)
-struct ConstBufferDataTransform {
-	XMMATRIX mat; //3D変換行列
-};
-
-//3Dオブジェクト型
-struct Object3d
-{
-	//定数バッファ(行列用)
-	ComPtr<ID3D12Resource> constBuffTransform = {};
-
-	//定数バッファマップ(行列用)
-	ConstBufferDataTransform* constMapTransform = {};
-
-	//アフィン変換情報
-	XMFLOAT3 scale = { 1,1,1 };
-	XMFLOAT3 rotation = { 0,0,0 };
-	XMFLOAT3 position = { 0,0,0 };
-
-	//ワールド変換行列
-	XMMATRIX matWorld = {};
-
-	//親オブジェクトへのポインタ
-	Object3d* parent = nullptr;
-};
-
-//3Dオブジェクトの初期化
-void InitializeObject3d(Object3d* object, ID3D12Device* device)
-{
-	HRESULT result;
-
-#pragma region constMapTransfrom関連
-
-	//ヒープ設定
-	D3D12_HEAP_PROPERTIES heapProp{};
-	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用
-											//リソース設定
-	D3D12_RESOURCE_DESC resDesc{};
-	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	resDesc.Width = (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff; //256バイトアラインメント
-	resDesc.Height = 1;
-	resDesc.DepthOrArraySize = 1;
-	resDesc.MipLevels = 1;
-	resDesc.SampleDesc.Count = 1;
-	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-
-	//定数バッファの生成
-	result = device->CreateCommittedResource(
-		&heapProp, //ヒープ設定
-		D3D12_HEAP_FLAG_NONE,
-		&resDesc, //リソース設定
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&object->constBuffTransform));
-	assert(SUCCEEDED(result));
-
-	//定数バッファのマッピング
-	result = object->constBuffTransform->Map(0, nullptr,
-		(void**)&object->constMapTransform); //マッピング
-	assert(SUCCEEDED(result));
-
-#pragma endregion
-}
-
-
-//3Dオブジェクトの初期化処理の呼び出し
-void SetIntializeObject3ds(Object3d* object, ID3D12Device* device, int objectNum)
-{
-	//初期化
-	InitializeObject3d(object, device);
-
-	//ここから↓は親子構造のサンプル
-	//先頭以外なら
-	if (objectNum > 0) {
-		//1つ前のオブジェクトを親オブジェクトとする
-		object->parent = &object[objectNum - 1];
-		//親オブジェクトの9割の大きさ
-		object->scale = { 0.9f,0.9f,0.9f };
-		//親オブジェクトに対してZ軸まわりに30度回転
-		object->rotation = { 0.0f,0.0f,XMConvertToRadians(30.0f) };
-		//親オブジェクトに対してZ方向に-8.0ずらす
-		object->position = { 0.0f,0.0f,-8.0f };
-	}
-}
-
-//オブジェクト更新処理
-void UpdateObject3d(Object3d* object, XMMATRIX& matView, XMMATRIX& matProjection)
-{
-	XMMATRIX matScale, matRot, matTrans;
-
-	//スケール、回転、平行移動行列の計算
-	matScale = XMMatrixScaling(object->scale.x, object->scale.y, object->scale.z);
-	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(object->rotation.z);
-	matRot *= XMMatrixRotationX(object->rotation.x);
-	matRot *= XMMatrixRotationY(object->rotation.y);
-	matTrans = XMMatrixTranslation(
-		object->position.x, object->position.y, object->position.z);
-
-	//ワールド行列の合成
-	object->matWorld = XMMatrixIdentity();	//変形リセット
-	object->matWorld *= matScale;	//ワールド行列のスケーリングを反映
-	object->matWorld *= matRot;	//ワールド行列に回転を反映
-	object->matWorld *= matTrans;	//ワールド行列に平行移動を反映
-
-	//親オブジェクトがあれば
-	if (object->parent != nullptr) {
-		//親オブジェクトのワールド行列を掛ける
-		object->matWorld *= object->parent->matWorld;
-	}
-
-	//定数バッファへデータ転送
-	object->constMapTransform->mat = object->matWorld * matView * matProjection;
-}
-
-void DrawObject3d(Object3d* object, ID3D12GraphicsCommandList* commandList, D3D12_VERTEX_BUFFER_VIEW& vbView,
-	D3D12_INDEX_BUFFER_VIEW& ibView, UINT numIndices) {
-	//頂点バッファの設定
-	commandList->IASetVertexBuffers(0, 1, &vbView);
-	//インデックスバッファの設定
-	commandList->IASetIndexBuffer(&ibView);
-	//定数バッファビュー(CBV)の設定コマンド
-	commandList->SetGraphicsRootConstantBufferView(2, object->constBuffTransform->GetGPUVirtualAddress());
-
-	//描画コマンド
-	commandList->DrawIndexedInstanced(numIndices, 1, 0, 0, 0);
-}
-
-//座標操作
-void UpdateObjectPosition(Object3d* object, Input* input) {
-	if (input->ifKeyPress(DIK_UP)) { object->position.y += 1.0f; }
-	else if (input->ifKeyPress(DIK_DOWN)) { object->position.y -= 1.0f; }
-	if (input->ifKeyPress(DIK_RIGHT)) { object->position.x += 1.0f; }
-	else if (input->ifKeyPress(DIK_LEFT)) { object->position.x -= 1.0f; }
-}
-//回転操作
-void UpdateObjectRotation(Object3d* object, Input* input) {
-	if (input->ifKeyPress(DIK_Q)) { object->rotation.z += 0.1f; }
-	else if (input->ifKeyPress(DIK_E)) { object->rotation.z -= 0.1f; }
-}
-//オブジェクト操作
-void UpdateObjectControll(Object3d* object, Input* input) {
-	UpdateObjectRotation(object, input);
-	UpdateObjectPosition(object, input);
-	if (input->ifKeyTrigger(DIK_RETURN)) { object->position.y -= 6.0f; }
-
-	if (input->ifKeyRelease(DIK_RETURN)) { object->position.y += 20.0f; }
-}
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//------WindowsAPI初期化処理 ここから------
@@ -229,78 +79,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		XMFLOAT2 uv;		//uv座標
 	};
 
-	////頂点データ
-	//Vertex vertices[] =
-	//{
-	//	//x		 y		z		法線	u	  v
-	//	//前
-	//	{{-5.0f, -5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
-	//	{{-5.0f,  5.0f, -5.0f},	{},		{0.0f, 0.0f}},//左上
-	//	{{ 5.0f, -5.0f, -5.0f},	{},		{1.0f, 1.0f}},//右下
-	//	{{ 5.0f,  5.0f, -5.0f},	{},		{1.0f, 0.0f}},//右上
-
-	//												  //後ろ				 
-	//	{{ 5.0f, -5.0f,  5.0f},	{},		{1.0f, 1.0f}},//右下
-	//	{{ 5.0f,  5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
-	//	{{-5.0f, -5.0f,  5.0f},	{},		{0.0f, 1.0f}},//左下
-	//	{{-5.0f,  5.0f,  5.0f},	{},		{0.0f, 0.0f}},//左上
-
-	//												  //左							
-	//	{{-5.0f, -5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
-	//	{{-5.0f, -5.0f,  5.0f},	{},		{0.0f, 0.0f}},//左上
-	//	{{-5.0f,  5.0f, -5.0f},	{},		{1.0f, 1.0f}},//右下
-	//	{{-5.0f,  5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
-
-	//												  //右							
-	//	{{ 5.0f,  5.0f, -5.0f},	{},		{1.0f, 1.0f}},//右下
-	//	{{ 5.0f,  5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
-	//	{{ 5.0f, -5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
-	//	{{ 5.0f, -5.0f,  5.0f},	{},		{0.0f, 0.0f}},//左上
-
-	//												  //下							
-	//	{{-5.0f, -5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
-	//	{{ 5.0f, -5.0f, -5.0f},	{},		{0.0f, 0.0f}},//左上
-	//	{{-5.0f, -5.0f,  5.0f},	{},		{1.0f, 1.0f}},//右下
-	//	{{ 5.0f, -5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
-
-	//												  //上							
-	//	{{-5.0f,  5.0f,  5.0f},	{},		{1.0f, 1.0f}},//右下
-	//	{{ 5.0f,  5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
-	//	{{-5.0f,  5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
-	//	{{ 5.0f,  5.0f, -5.0f},	{},		{0.0f, 0.0f}},//左上
-	//};
-
-	////インデックスデータ
-	//unsigned short indices[] =
-	//{
-	//	//前
-	//	0,1,2,//一つ目
-	//	2,1,3,//二つ目
-	//		  //後ろ
-	//		  4,5,6,//三つ目
-	//		  6,5,7,//四つ目
-	//				//左
-	//				8,9,10,//一つ目
-	//				10,9,11,//二つ目
-	//						//右
-	//						12,13,14,
-	//						14,13,15,
-	//						//下
-	//						16,17,18,//一つ目
-	//						18,17,19,//二つ目
-	//								 //上
-	//								 20,21,22,
-	//								 22,21,23,
-	//};
-
-
 	//Drawerには今、この辺りの処理を引っ越させてます
 	//ポインタ
 	Drawer* drawer = nullptr;
 	//Drawer初期化
 	drawer = new Drawer();
 	drawer->Initialize(dXBas,
-		L"BasicVS.hlsl",L"BasicPS.hlsl");
+		L"BasicVS.hlsl", L"BasicPS.hlsl");
+
+	//ポインタ
+	Model* modelAdam = nullptr;
+
 
 #pragma region constMapTransfrom関連
 
@@ -310,7 +99,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//リソース設定
 	D3D12_RESOURCE_DESC cbResourceDesc{};
 	cbResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	cbResourceDesc.Width = (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff; //256バイトアラインメント
+	cbResourceDesc.Width = (sizeof(Model::ConstBufferDataTransform_) + 0xff) & ~0xff; //256バイトアラインメント
 	cbResourceDesc.Height = 1;
 	cbResourceDesc.DepthOrArraySize = 1;
 	cbResourceDesc.MipLevels = 1;
@@ -322,57 +111,25 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//3Dオブジェクトの数
 	const size_t kObjectCount = 1;
 	//3Dオブジェクトの配列
-	Object3d object3ds[kObjectCount];
+	//Object3d object3ds[kObjectCount];
 
 	XMFLOAT3 rndScale;
 	XMFLOAT3 rndRota;
 	XMFLOAT3 rndPos;
 
+	//Model初期化
+	modelAdam = new Model();
+	modelAdam->Initialize(
+		dXBas->GetDevice(),
+		input, kObjectCount);
+
 	//配列内の全オブジェクトに対して
-	for (int i = 0; i < _countof(object3ds); i++)
+	for (int i = 0; i < /*_countof(*/kObjectCount/*)*/; i++)
 	{
-		SetIntializeObject3ds(&object3ds[i],dXBas->GetDevice(), i);
+		//SetIntializeObject3ds(&object3ds[i],dXBas->GetDevice(), i);
 
-		//初期化
-		InitializeObject3d(&object3ds[i], dXBas->GetDevice());
-
-		//ここから↓は親子構造のサンプル
-		//先頭以外なら
-		if (i > 0) {
-			rndScale = {
-				0.7f,
-				0.7f,
-				0.7f,
-			};
-
-			rndRota = {
-				XMConvertToRadians(static_cast<float>(rand() % 90)),
-				XMConvertToRadians(static_cast<float>(rand() % 90)),
-				XMConvertToRadians(static_cast<float>(rand() % 90)),
-			};
-
-			rndPos = {
-				static_cast<float>(rand() % 60 - 30),
-				static_cast<float>(rand() % 60 - 30),
-				static_cast<float>(rand() % 60 - 30),
-			};
-
-			object3ds[i].scale = rndScale;
-
-			object3ds[i].rotation = rndRota;
-
-			object3ds[i].position = rndPos;
-
-			//1つ前のオブジェクトを親オブジェクトとする
-			//object3ds[i].parent = &object3ds[i - 1];
-			////親オブジェクトの9割の大きさ
-			//object3ds[i].scale = { 0.9f,0.9f,0.9f };
-			////親オブジェクトに対してZ軸まわりに30度回転
-			//object3ds[i].rotation = { 0.0f,0.0f,XMConvertToRadians(30.0f)};
-			////親オブジェクトに対してZ方向に-8.0ずらす
-			//object3ds[i].position = { 0.0f,0.0f,-8.0f };
-		}
-
+		////初期化
+		//InitializeObject3d(&object3ds[i], dXBas->GetDevice());
 	}
 
 #pragma endregion
@@ -413,7 +170,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	while (true) {
 		//入力更新
 		input->Update();
-		
+
 #pragma region ターゲットの周りを回るカメラ
 		if (input->ifKeyPress(DIK_D) || input->ifKeyPress(DIK_A))
 		{
@@ -426,19 +183,22 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			matView = XMMatrixLookAtLH(XMLoadFloat3(&eye),
 				XMLoadFloat3(&target), XMLoadFloat3(&up));
 
-			object3ds[0].constMapTransform->mat = matView * matProjection;
+			/*object3ds[0]*/
+			modelAdam->GetConstMapTransform()->mat = matView * matProjection;
 		}
 #pragma endregion
 
 #pragma region 連続移動
 
-		for (size_t i = 0; i < _countof(object3ds); i++)
-		{
-			UpdateObject3d(&object3ds[i], matView, matProjection);
-	
-		}
+		//for (size_t i = 0; i < _countof(object3ds); i++)
+		//{
+		////	//UpdateObject3d(&object3ds[i], matView, matProjection);
 
-		UpdateObjectControll(&object3ds[0], input);
+		//}
+		modelAdam->Update(matView, matProjection);
+
+		//UpdateObjectControll(&object3ds[0], input);
+
 
 		//描画の準備
 		dXBas->PrepareDraw();
@@ -448,10 +208,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		drawer->Update();
 
 		//全オブジェクトについて処理
-		for (int i = 0; i < _countof(object3ds); i++)
-		{
-			DrawObject3d(&object3ds[i], dXBas->GetCommandList(),drawer->GetVBView(),drawer->GetIBView(),static_cast<UINT>( drawer->GetIndices().size()));
-		}
+		//for (int i = 0; i < _countof(object3ds); i++)
+		//{
+		//	//DrawObject3d(&object3ds[i], dXBas->GetCommandList(),drawer->GetVBView(),drawer->GetIBView(),static_cast<UINT>( drawer->GetIndices().size()));
+		//}
+		modelAdam->Draw(dXBas->GetCommandList(), drawer->GetVBView(), drawer->GetIBView(), static_cast<UINT>(drawer->GetIndices().size()));
 
 		//描画後処理
 		dXBas->PostDraw();
