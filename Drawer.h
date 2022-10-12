@@ -4,12 +4,17 @@
 #include <DirectXMath.h>
 
 #include "DirectXBasis.h"
+#include <DirectXTex.h>
 
 #pragma comment(lib,"d3d12.lib")
 
 using namespace DirectX;
 class  Drawer
 {
+public: //namespaceの省略
+	template <class Type>
+	using ComPtr = Microsoft::WRL::ComPtr<Type>;
+
 public: //構造体
 	//定数バッファ用データ構造体(マテリアル)
 	struct ConstBufferDataMaterial
@@ -17,12 +22,44 @@ public: //構造体
 		XMFLOAT4 color; //色(RGBA)
 	};
 
+	//テクスチャデータ
+	struct TextureData
+	{
+		TexMetadata metadata{};
+		ScratchImage scratchImg{};
+		ScratchImage mipChine{};
+
+		D3D12_HEAP_PROPERTIES textureHeapProp{};
+		D3D12_RESOURCE_DESC textureResourceDesc{};
+
+		//テクスチャバッファの生成
+		ComPtr<ID3D12Resource> texBuff = nullptr;
+	};
+
+	struct Vertex
+	{
+		XMFLOAT3 pos;		//xyz座標
+		XMFLOAT3 normal;	//法線ベクトル
+		XMFLOAT2 uv;		//uv座標
+	};
+
+private: //頂点データ等
+
+	
+
 public: //namespaceの省略
 	template <class Type>
 	using ComPtr = Microsoft::WRL::ComPtr<Type>;
 
 public://基本的なメンバ関数
-	void Initialize(DirectXBasis* dXBas,const wchar_t* vsFile,const wchar_t* psFile);
+
+	void Initialize(DirectXBasis* dXBas, const wchar_t* vsFile,const wchar_t* psFile);
+	
+	void VertexBufferInitialize();
+
+	void TextureInitialize();
+	
+	void Update();
 
 private: //固有のメンバ変数
 
@@ -69,6 +106,14 @@ private: //固有のメンバ変数
 	//マテリアル
 	void CreateConstBufferMaterial();
 
+
+	//テクスチャの初期化
+	void InitializeTexture(TextureData* textureData, 
+		const wchar_t* szFile);
+	//テクスチャバッファの転送
+	void TransferTextureBuffer(TextureData* textureData, 
+		ID3D12Device* device);
+
 public: //ゲッタ
 	ComPtr<ID3D12RootSignature> GetRootSignature() { return  rootSignature_; }
 	ComPtr<ID3D12PipelineState> GetPipelineState() { return  pipelineState_; }
@@ -76,6 +121,23 @@ public: //ゲッタ
 
 private: //よく使うメンバ変数
 	DirectXBasis* dXBas_ = nullptr;
+
+	//リソースデスク
+	D3D12_RESOURCE_DESC resDesc_{};
+	//頂点バッファのヒーププロパティ
+	D3D12_HEAP_PROPERTIES heapProp_{};
+	bool ifOneTextureNum_ = true;
+
+	//頂点バッファビュー
+	D3D12_VERTEX_BUFFER_VIEW vbView_{};
+
+
+	//デスクリプタヒープ
+	ID3D12DescriptorHeap* srvHeap_ = nullptr;
+	//インデックスバッファビュー
+	D3D12_INDEX_BUFFER_VIEW ibView_{};
+	//インクリメントサイズ
+	UINT incrementSize_;
 
 	//頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> vsBlob_ = nullptr;
