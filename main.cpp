@@ -3,7 +3,12 @@
 #include "DirectXBasis.h"
 #include "Drawer.h"
 #include "Model.h"
-#include "Struct.h"
+
+#include <dxgi1_6.h>
+#include <d3dcompiler.h>//シェーダ用コンパイラ
+
+#pragma comment(lib,"dxgi.lib")
+#pragma comment(lib, "d3dcompiler.lib")//シェーダ用コンパイラ
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//------WindowsAPI初期化処理 ここから------
@@ -35,31 +40,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma region
 	float angle = 0.0f; //カメラの回転角
 
-	//拡縮倍率
-	XMFLOAT3 scale;
-	//回転角
-	XMFLOAT3 rotation;
-	//座標
-	XMFLOAT3 position;
-	//座標
-	//XMFLOAT3 position1;
-
-	//拡縮倍率
-	scale = { 1.0f,1.0f,1.0f };
-	//回転角
-	rotation = { 00.0f,00.0f,00.0f };
-	//座標
-	position = { 0.0f,0.0f,0.0f };
-	//position1 = { -20.0f,0.0f,0.0f };
-
-	//頂点データ構造体
-	struct Vertex
-	{
-		XMFLOAT3 pos;		//xyz座標
-		XMFLOAT3 normal;	//法線ベクトル
-		XMFLOAT2 uv;		//uv座標
-	};
-
 	//Drawerには今、この辺りの処理を引っ越させてます
 	//ポインタ
 	Drawer* drawer = nullptr;
@@ -67,10 +47,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	drawer = new Drawer();
 	drawer->Initialize(dXBas,
 		L"BasicVS.hlsl", L"BasicPS.hlsl");
-
-	//ポインタ
-	Model* modelAdam = nullptr;
-
 
 #pragma region constMapTransfrom関連
 
@@ -94,6 +70,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//3Dオブジェクトの配列
 	//Object3d object3ds[kObjectCount];
 
+	//ポインタ
+	Model* modelAdam = nullptr;
 	//Model初期化
 	modelAdam = new Model();
 	modelAdam->Initialize(
@@ -176,10 +154,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		//UpdateObjectControll(&object3ds[0], input);
 
-
 		//描画の準備
 		dXBas->PrepareDraw();
-
 
 		//コマンドリストの処理を一気に実行
 		drawer->Update();
@@ -203,6 +179,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	//WindowsAPI終了処理
 	winApp->Finalize();
+
+	//モデルの解放
+	delete modelAdam;
+	modelAdam = nullptr;
 
 	//描画系の解放
 	delete drawer;
