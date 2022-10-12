@@ -3,7 +3,8 @@
 #include <d3dcompiler.h>
 #include <string>
 
-void Drawer::Initialize(DirectXBasis* dXBas,const wchar_t* vsFile,const wchar_t* psFile){
+void Drawer::Initialize(DirectXBasis* dXBas,
+	const wchar_t* vsFile,const wchar_t* psFile){
 	assert(dXBas);
 	dXBas_ = dXBas;
 
@@ -25,8 +26,9 @@ void Drawer::Initialize(DirectXBasis* dXBas,const wchar_t* vsFile,const wchar_t*
 
 void Drawer::VertexBufferInitialize(){
 	HRESULT result;
+	
 	//頂点データ
-	Vertex vertices[] =
+	vertices_ =
 	{
 		//x		 y		z		法線	u	  v
 		//前
@@ -67,16 +69,13 @@ void Drawer::VertexBufferInitialize(){
 	};
 
 
-
 	//頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
-	UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
+	UINT sizeVB = static_cast<UINT>(sizeof(vertices_[0]) * /*_countof(*/vertices_.size());
 
 	//頂点バッファの設定
 	//ヒープ設定
-	
 	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUの転送用
 	//リソース設定
-
 	resDesc_.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 	resDesc_.Width = sizeVB;//頂点データ全体のサイズ
 	resDesc_.Height = 1;
@@ -97,16 +96,16 @@ void Drawer::VertexBufferInitialize(){
 	assert(SUCCEEDED(result));
 
 	//GPU上のバッファに対応仮想メモリ(メインメモリ上)を取得
-	Vertex* vertMap = nullptr;
-	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	
+	result = vertBuff->Map(0, nullptr, (void**)&vertMap_);
 	assert(SUCCEEDED(result));
 
 	/* verticesに記入 */
 
 	//全頂点に対して
-	for (int i = 0; i < _countof(vertices); i++)
+	for (int i = 0; i < vertices_.size(); i++)
 	{
-		vertMap[i] = vertices[i];//座標をコピー
+		vertMap_[i] = vertices_[i];//座標をコピー
 	}
 
 	//繋がりを解除
@@ -118,7 +117,7 @@ void Drawer::VertexBufferInitialize(){
 	//頂点バッファのサイズ
 	vbView_.SizeInBytes = sizeVB;
 	//頂点１つ分のデータサイズ
-	vbView_.StrideInBytes = sizeof(vertices[0]);
+	vbView_.StrideInBytes = sizeof(vertices_[0]);
 
 }
 
@@ -126,7 +125,7 @@ void Drawer::TextureInitialize(){
 	HRESULT result;
 
 	//インデックスデータ
-	unsigned short indices[] =
+	indices_ =
 	{
 		//前
 		0,1,2,//一つ目
@@ -148,8 +147,9 @@ void Drawer::TextureInitialize(){
 									 22,21,23,
 	};
 
+
 	// インデックスデータ全体のサイズ
-	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indices));
+	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * /*_countof(*/indices_.size())/*)*/;
 
 	// リソース設定
 	resDesc_.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
@@ -174,9 +174,9 @@ void Drawer::TextureInitialize(){
 	uint16_t* indexMap = nullptr;
 	result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 	// 全インデックスに対して
-	for (int i = 0; i < _countof(indices); i++)
+	for (int i = 0; i < /*_countof(*/indices_.size()/*)*/; i++)
 	{
-		indexMap[i] = indices[i]; //インデックスをコピー
+		indexMap[i] = indices_[i]; //インデックスをコピー
 	}
 	//マッピング解除
 	indexBuff->Unmap(0, nullptr);
@@ -205,9 +205,6 @@ void Drawer::TextureInitialize(){
 	{
 		TransferTextureBuffer(&textureDatas[i], dXBas_->GetDevice());
 	}
-
-	//元データ開放
-	//delete[] imageData;
 
 	//SRVの最大個数
 	const size_t kMaxSRVCount = 2056;
@@ -303,6 +300,8 @@ void Drawer::Update(){
 
 	//インデックスバッファビューの設定コマンド
 	dXBas_->GetCommandList()->IASetIndexBuffer(&ibView_);
+
+
 
 }
 
@@ -628,6 +627,47 @@ void Drawer::CreateConstBufferMaterial(){
 	assert(SUCCEEDED(result));
 }
 
+void Drawer::TransferVertices(){
+#pragma region 法線を計算
+	for (int i = 0; i < indices_.size() / 3; i++)
+	{
+		//三角形１つごとに計算していく
+		//三角形のインデックスを取り出して、一時的な変数に入れる
+		unsigned short index0 = indices_[i * 3 + 0];
+		unsigned short index1 = indices_[i * 3 + 1];
+		unsigned short index2 = indices_[i * 3 + 2];
+
+		//三角形を構成する頂点座標をベクトルに代入
+		XMVECTOR p0 = XMLoadFloat3(&vertices_[index0].pos);
+		XMVECTOR p1 = XMLoadFloat3(&vertices_[index1].pos);
+		XMVECTOR p2 = XMLoadFloat3(&vertices_[index2].pos);
+
+		//p0->p1ベクトル、 p0->p2ベクトルを計算 (ベクトルの減算)
+		XMVECTOR v1 = XMVectorSubtract(p1, p0);
+		XMVECTOR v2 = XMVectorSubtract(p2, p0);
+
+		//外積は両方から垂直なベクトル
+		XMVECTOR normal = XMVector3Cross(v1, v2);
+
+		//正規化 (長さを1にする)
+		normal = XMVector3Normalize(normal);
+
+		//求めた法線を頂点データに代入
+		XMStoreFloat3(&vertices_[index0].normal, normal);
+		XMStoreFloat3(&vertices_[index1].normal, normal);
+		XMStoreFloat3(&vertices_[index2].normal, normal);
+	}
+#pragma endregion
+
+#pragma region 転送
+	//全頂点に対して
+	for (int i = 0; i < vertices_.size(); i++)
+	{
+		vertMap_[i] = vertices_[i];//座標をコピー
+	}
+#pragma endregion
+}
+
 void Drawer::InitializeTexture(TextureData* textureData, const wchar_t* szFile)
 {
 	HRESULT result;
@@ -658,14 +698,12 @@ void Drawer::TransferTextureBuffer(TextureData* textureData, ID3D12Device* devic
 	HRESULT result;
 
 	//ヒープ設定
-	//D3D12_HEAP_PROPERTIES textureHeapProp{};
 	textureData->textureHeapProp.Type = D3D12_HEAP_TYPE_CUSTOM;
 	textureData->textureHeapProp.CPUPageProperty =
 		D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
 	textureData->textureHeapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
 
 	//リソース設定
-	//D3D12_RESOURCE_DESC textureResourceDesc{};
 	textureData->textureResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 	textureData->textureResourceDesc.Format = textureData->metadata.format;
 	textureData->textureResourceDesc.Width = textureData->metadata.width; //幅
@@ -675,8 +713,6 @@ void Drawer::TransferTextureBuffer(TextureData* textureData, ID3D12Device* devic
 	textureData->textureResourceDesc.SampleDesc.Count = 1;
 
 	////テクスチャバッファの生成
-	//ID3D12Resource* texBuff = nullptr;
-
 	result = device->CreateCommittedResource(
 		&textureData->textureHeapProp,
 		D3D12_HEAP_FLAG_NONE,

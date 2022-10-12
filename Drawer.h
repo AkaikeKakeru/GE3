@@ -6,6 +6,7 @@
 #include "DirectXBasis.h"
 #include <DirectXTex.h>
 
+#include <d3d12.h>
 #pragma comment(lib,"d3d12.lib")
 
 using namespace DirectX;
@@ -36,6 +37,7 @@ public: //構造体
 		ComPtr<ID3D12Resource> texBuff = nullptr;
 	};
 
+	//頂点データ構造体
 	struct Vertex
 	{
 		XMFLOAT3 pos;		//xyz座標
@@ -44,7 +46,6 @@ public: //構造体
 	};
 
 private: //頂点データ等
-
 	
 
 public: //namespaceの省略
@@ -53,15 +54,16 @@ public: //namespaceの省略
 
 public://基本的なメンバ関数
 
-	void Initialize(DirectXBasis* dXBas, const wchar_t* vsFile,const wchar_t* psFile);
-	
-	void VertexBufferInitialize();
+	void Initialize(DirectXBasis* dXBas,
+		const wchar_t* vsFile,const wchar_t* psFile);
 
-	void TextureInitialize();
 	
 	void Update();
 
 private: //固有のメンバ変数
+
+	void VertexBufferInitialize();
+	void TextureInitialize();
 
 	///グラフィックスパイプライン関連
 	//グラフィックスパイプライン設定
@@ -107,6 +109,9 @@ private: //固有のメンバ変数
 	void CreateConstBufferMaterial();
 
 
+	//
+	void TransferVertices();
+
 	//テクスチャの初期化
 	void InitializeTexture(TextureData* textureData, 
 		const wchar_t* szFile);
@@ -115,18 +120,26 @@ private: //固有のメンバ変数
 		ID3D12Device* device);
 
 public: //ゲッタ
-	ComPtr<ID3D12RootSignature> GetRootSignature() { return  rootSignature_; }
-	ComPtr<ID3D12PipelineState> GetPipelineState() { return  pipelineState_; }
-	ComPtr<ID3D12Resource> GetConstBuffMaterial() { return constBuffMaterial_; }
+	D3D12_VERTEX_BUFFER_VIEW &GetVBView() { return vbView_; }
+	D3D12_INDEX_BUFFER_VIEW &GetIBView() { return ibView_; }
+
+	std::vector<unsigned short> GetIndices() { return indices_; }
 
 private: //よく使うメンバ変数
 	DirectXBasis* dXBas_ = nullptr;
+
+	std::vector<Vertex> vertices_;
+
+	std::vector<unsigned short> indices_;
 
 	//リソースデスク
 	D3D12_RESOURCE_DESC resDesc_{};
 	//頂点バッファのヒーププロパティ
 	D3D12_HEAP_PROPERTIES heapProp_{};
 	bool ifOneTextureNum_ = true;
+
+	//頂点マップ
+	Vertex* vertMap_ = nullptr;
 
 	//頂点バッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vbView_{};

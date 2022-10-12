@@ -4,11 +4,10 @@
 #include "Drawer.h"
 
 #include <DirectXMath.h>
-#include <DirectXTex.h>
 
 #include <string>
 
-#include <d3d12.h>
+
 #include <dxgi1_6.h>
 #include <cassert>
 
@@ -177,7 +176,6 @@ void UpdateObjectControll(Object3d* object, Input* input) {
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//------WindowsAPI初期化処理 ここから------
-	HRESULT result;
 	const float PI = 3.1415926535f;
 
 	//ポインタ
@@ -234,16 +232,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	////頂点データ
 	//Vertex vertices[] =
 	//{
-	//	//x		 y		z		u	  v
-	//	{{-50.0f, -50.0f, 0.0f}, {0.0f, 1.0f}},//左下
-	//	{{-50.0f,  50.0f, 0.0f}, {0.0f, 0.0f}},//左上
-	//	{{ 50.0f, -50.0f, 0.0f}, {1.0f, 1.0f}},//右下
-	//	{{ 50.0f,  50.0f, 0.0f}, {1.0f, 0.0f}},//右上
-	//};
-
-	////頂点データ
-	//Vertex vertices[] =
-	//{
 	//	//x		 y		z		法線	u	  v
 	//	//前
 	//	{{-5.0f, -5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
@@ -251,31 +239,31 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//	{{ 5.0f, -5.0f, -5.0f},	{},		{1.0f, 1.0f}},//右下
 	//	{{ 5.0f,  5.0f, -5.0f},	{},		{1.0f, 0.0f}},//右上
 
-	//	//後ろ				 
+	//												  //後ろ				 
 	//	{{ 5.0f, -5.0f,  5.0f},	{},		{1.0f, 1.0f}},//右下
 	//	{{ 5.0f,  5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
 	//	{{-5.0f, -5.0f,  5.0f},	{},		{0.0f, 1.0f}},//左下
 	//	{{-5.0f,  5.0f,  5.0f},	{},		{0.0f, 0.0f}},//左上
 
-	//	//左							
+	//												  //左							
 	//	{{-5.0f, -5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
 	//	{{-5.0f, -5.0f,  5.0f},	{},		{0.0f, 0.0f}},//左上
 	//	{{-5.0f,  5.0f, -5.0f},	{},		{1.0f, 1.0f}},//右下
 	//	{{-5.0f,  5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
 
-	//	//右							
+	//												  //右							
 	//	{{ 5.0f,  5.0f, -5.0f},	{},		{1.0f, 1.0f}},//右下
 	//	{{ 5.0f,  5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
 	//	{{ 5.0f, -5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
 	//	{{ 5.0f, -5.0f,  5.0f},	{},		{0.0f, 0.0f}},//左上
 
-	//	//下							
+	//												  //下							
 	//	{{-5.0f, -5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
 	//	{{ 5.0f, -5.0f, -5.0f},	{},		{0.0f, 0.0f}},//左上
 	//	{{-5.0f, -5.0f,  5.0f},	{},		{1.0f, 1.0f}},//右下
 	//	{{ 5.0f, -5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
 
-	//	//上							
+	//												  //上							
 	//	{{-5.0f,  5.0f,  5.0f},	{},		{1.0f, 1.0f}},//右下
 	//	{{ 5.0f,  5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
 	//	{{-5.0f,  5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
@@ -288,77 +276,22 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//	//前
 	//	0,1,2,//一つ目
 	//	2,1,3,//二つ目
-	//	//後ろ
-	//	4,5,6,//三つ目
-	//	6,5,7,//四つ目
-	//	//左
-	//	8,9,10,//一つ目
-	//	10,9,11,//二つ目
-	//	//右
-	//	12,13,14,
-	//	14,13,15,
-	//	//下
-	//	16,17,18,//一つ目
-	//	18,17,19,//二つ目
-	//	//上
-	//	20,21,22,
-	//	22,21,23,
+	//		  //後ろ
+	//		  4,5,6,//三つ目
+	//		  6,5,7,//四つ目
+	//				//左
+	//				8,9,10,//一つ目
+	//				10,9,11,//二つ目
+	//						//右
+	//						12,13,14,
+	//						14,13,15,
+	//						//下
+	//						16,17,18,//一つ目
+	//						18,17,19,//二つ目
+	//								 //上
+	//								 20,21,22,
+	//								 22,21,23,
 	//};
-
-	//bool ifOneTextureNum = true;
-
-	////頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
-	//UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
-
-	////頂点バッファの設定
-	////ヒープ設定
-	//D3D12_HEAP_PROPERTIES heapProp{};
-	//heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUの転送用
-	//									   //リソース設定
-	//D3D12_RESOURCE_DESC resDesc{};
-	//resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	//resDesc.Width = sizeVB;//頂点データ全体のサイズ
-	//resDesc.Height = 1;
-	//resDesc.DepthOrArraySize = 1;
-	//resDesc.MipLevels = 1;
-	//resDesc.SampleDesc.Count = 1;
-	//resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-
-	////頂点バッファの生成
-	//ComPtr<ID3D12Resource> vertBuff = nullptr;
-	//result = dXBas->GetDevice()->CreateCommittedResource(
-	//	&heapProp,//ヒープ設定
-	//	D3D12_HEAP_FLAG_NONE,
-	//	&resDesc,//リソース設定
-	//	D3D12_RESOURCE_STATE_GENERIC_READ,
-	//	nullptr,
-	//	IID_PPV_ARGS(&vertBuff));
-	//assert(SUCCEEDED(result));
-
-	////GPU上のバッファに対応仮想メモリ(メインメモリ上)を取得
-	//Vertex* vertMap = nullptr;
-	//result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	//assert(SUCCEEDED(result));
-
-	///* verticesに記入 */
-
-	////全頂点に対して
-	//for (int i = 0; i < _countof(vertices); i++)
-	//{
-	//	vertMap[i] = vertices[i];//座標をコピー
-	//}
-
-	////繋がりを解除
-	//vertBuff->Unmap(0, nullptr);
-
-	////頂点バッファビューの作成
-	//D3D12_VERTEX_BUFFER_VIEW vbView{};
-	////GPU仮想アドレス
-	//vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
-	////頂点バッファのサイズ
-	//vbView.SizeInBytes = sizeVB;
-	////頂点１つ分のデータサイズ
-	//vbView.StrideInBytes = sizeof(vertices[0]);
 
 
 	//Drawerには今、この辺りの処理を引っ越させてます
@@ -366,7 +299,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Drawer* drawer = nullptr;
 	//Drawer初期化
 	drawer = new Drawer();
-	drawer->Initialize(dXBas,L"BasicVS.hlsl",L"BasicPS.hlsl");
+	drawer->Initialize(dXBas,
+		L"BasicVS.hlsl",L"BasicPS.hlsl");
 
 #pragma region constMapTransfrom関連
 
@@ -474,148 +408,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma endregion
 
-#pragma region ワールド変換行列
-
-	//XMMATRIX matWorld;
-	//matWorld = XMMatrixIdentity();
-
-	//XMMATRIX matScale; //スケーリング行列
-
-	//XMMATRIX matRot; //回転行列
-	//matRot = XMMatrixIdentity();
-
-	//XMMATRIX matTrans; //平行移動行列
-	//matTrans = XMMatrixTranslation(0, 0, 0);
-
-	//matWorld *= matTrans; //ワールド行列に平行移動を反映
-
-#pragma endregion
-
-#pragma endregion
-
-//	// インデックスデータ全体のサイズ
-//	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indices));
-//
-//	// リソース設定
-//	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-//	resDesc.Width = sizeIB; // インデックス情報が入る分のサイズ
-//	resDesc.Height = 1;
-//	resDesc.DepthOrArraySize = 1;
-//	resDesc.MipLevels = 1;
-//	resDesc.SampleDesc.Count = 1;
-//	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-//
-//	//インデックスバッファの生成
-//	ComPtr<ID3D12Resource> indexBuff = nullptr;
-//	result = dXBas->GetDevice()->CreateCommittedResource(
-//		&heapProp,
-//		D3D12_HEAP_FLAG_NONE,
-//		&resDesc,
-//		D3D12_RESOURCE_STATE_GENERIC_READ,
-//		nullptr,
-//		IID_PPV_ARGS(&indexBuff));
-//
-//	//　インデックスバッファをマッピング
-//	uint16_t* indexMap = nullptr;
-//	result = indexBuff->Map(0, nullptr, (void**)&indexMap);
-//	// 全インデックスに対して
-//	for (int i = 0; i < _countof(indices); i++)
-//	{
-//		indexMap[i] = indices[i]; //インデックスをコピー
-//	}
-//	//マッピング解除
-//	indexBuff->Unmap(0, nullptr);
-//
-//	//インデックスバッファビューの作成
-//	D3D12_INDEX_BUFFER_VIEW ibView{};
-//	ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
-//	ibView.Format = DXGI_FORMAT_R16_UINT;
-//	ibView.SizeInBytes = sizeIB;
-//
-//	const int kTextureCount = 2;
-//	TextureData textureDatas[kTextureCount] = { 0 };
-//
-//	const wchar_t* texImgs[kTextureCount] =
-//	{
-//		L"Resources/texture.png",
-//		L"Resources/reimu.png",
-//	};
-//
-//	for (size_t i = 0; i < _countof(textureDatas); i++)
-//	{
-//		InitializeTexture(&textureDatas[i], texImgs[i]);
-//	}
-//
-//	for (size_t i = 0; i < _countof(textureDatas); i++)
-//	{
-//		TransferTextureBuffer(&textureDatas[i], dXBas->GetDevice());
-//	}
-//
-//	//元データ開放
-//	//delete[] imageData;
-//
-//	//SRVの最大個数
-//	const size_t kMaxSRVCount = 2056;
-//
-//	//デスクリプタヒープの設定
-//	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-//	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-//	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
-//	srvHeapDesc.NumDescriptors = kMaxSRVCount;
-//
-//	//設定を基にSRV用デスクリプタヒープを生成
-//	ID3D12DescriptorHeap* srvHeap = nullptr;
-//	result = dXBas->GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
-//	assert(SUCCEEDED(result));
-//
-//	//SRVヒープの先頭ハンドルを取得
-//	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
-//
-//	//シェーダリソースビュー設定
-//	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
-//	srvDesc.Format = resDesc.Format;//RGBA float
-//	srvDesc.Shader4ComponentMapping =
-//		D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-//	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-//	srvDesc.Texture2D.MipLevels = resDesc.MipLevels;
-//
-//	//ハンドルの指す位置にシェーダーリソースビュー作成
-//	dXBas->GetDevice()->CreateShaderResourceView(textureDatas[0].texBuff.Get(), &srvDesc, srvHandle);
-//
-//#pragma region テクスチャの差し替えで追記
-//	//サイズ変更
-//	UINT incrementSize = dXBas->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-//	srvHandle.ptr += incrementSize;
-//
-//	//2枚目用
-//	//シェーダリソースビュー設定
-//	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc2{};//設定構造体
-//	srvDesc2.Format = textureDatas[1].textureResourceDesc.Format;//RGBA float
-//	srvDesc2.Shader4ComponentMapping =
-//		D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-//	srvDesc2.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-//	srvDesc2.Texture2D.MipLevels = textureDatas[1].textureResourceDesc.MipLevels;
-//
-//	//ハンドルの指す位置にシェーダーリソースビュー作成
-//	dXBas->GetDevice()->CreateShaderResourceView(textureDatas[1].texBuff.Get(), &srvDesc2, srvHandle);
-//
-//#pragma endregion
-//
-//	//CBV,SRV,UAVの1個分のサイズを取得
-//	UINT descriptorSize = dXBas->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-//	//SRVヒープの先頭ハンドルを取得
-//	//D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
-//	//ハンドルを一つ進める(SRVの位置)
-//	srvHandle.ptr += descriptorSize * 1;
-//
-//	//CBV(コンスタントバッファビュー)の設定
-//	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc{};
-//	//cbvDescの値設定(省略)
-//	dXBas->GetDevice()->CreateConstantBufferView(&cbvDesc, srvHandle);
-//
-//#pragma endregion
-//
-//#pragma endregion
 	//------描画初期化処理 ここまで------
 	//ゲームループ
 	while (true) {
@@ -651,44 +443,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		//描画の準備
 		dXBas->PrepareDraw();
 
-#pragma region 法線を計算
-		for (int i = 0; i < _countof(indices) / 3; i++)
-		{
-			//三角形１つごとに計算していく
-			//三角形のインデックスを取り出して、一時的な変数に入れる
-			unsigned short index0 = indices[i * 3 + 0];
-			unsigned short index1 = indices[i * 3 + 1];
-			unsigned short index2 = indices[i * 3 + 2];
-
-			//三角形を構成する頂点座標をベクトルに代入
-			XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
-			XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
-			XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
-
-			//p0->p1ベクトル、 p0->p2ベクトルを計算 (ベクトルの減算)
-			XMVECTOR v1 = XMVectorSubtract(p1, p0);
-			XMVECTOR v2 = XMVectorSubtract(p2, p0);
-
-			//外積は両方から垂直なベクトル
-			XMVECTOR normal = XMVector3Cross(v1, v2);
-
-			//正規化 (長さを1にする)
-			normal = XMVector3Normalize(normal);
-
-			//求めた法線を頂点データに代入
-			XMStoreFloat3(&vertices[index0].normal, normal);
-			XMStoreFloat3(&vertices[index1].normal, normal);
-			XMStoreFloat3(&vertices[index2].normal, normal);
-		}
-#pragma endregion
-
-#pragma region 転送
-		//全頂点に対して
-		for (int i = 0; i < _countof(vertices); i++)
-		{
-			vertMap[i] = vertices[i];//座標をコピー
-		}
-#pragma endregion
 
 		//コマンドリストの処理を一気に実行
 		drawer->Update();
@@ -696,7 +450,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		//全オブジェクトについて処理
 		for (int i = 0; i < _countof(object3ds); i++)
 		{
-			DrawObject3d(&object3ds[i], dXBas->GetCommandList(), vbView, ibView, _countof(indices));
+			DrawObject3d(&object3ds[i], dXBas->GetCommandList(),drawer->GetVBView(),drawer->GetIBView(),static_cast<UINT>( drawer->GetIndices().size()));
 		}
 
 		//描画後処理
