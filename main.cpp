@@ -3,26 +3,7 @@
 #include "DirectXBasis.h"
 #include "Drawer.h"
 #include "Model.h"
-
-#include <DirectXMath.h>
-
-#include <string>
-
-
-#include <dxgi1_6.h>
-#include <cassert>
-
-#include <d3dcompiler.h>//シェーダ用コンパイラ
-
 #include "Struct.h"
-
-#pragma comment(lib,"d3d12.lib")
-#pragma comment(lib,"dxgi.lib")
-
-#pragma comment(lib, "d3dcompiler.lib")//シェーダ用コンパイラ
-
-using namespace DirectX;
-using namespace Microsoft::WRL;
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//------WindowsAPI初期化処理 ここから------
@@ -112,10 +93,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	const size_t kObjectCount = 1;
 	//3Dオブジェクトの配列
 	//Object3d object3ds[kObjectCount];
-
-	XMFLOAT3 rndScale;
-	XMFLOAT3 rndRota;
-	XMFLOAT3 rndPos;
 
 	//Model初期化
 	modelAdam = new Model();
