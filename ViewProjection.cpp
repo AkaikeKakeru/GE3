@@ -1,4 +1,7 @@
 #include "ViewProjection.h"
+#include <DirectXMath.h>
+#include "WinApp.h"
+using namespace DirectX;
 
 void ViewProjection::Initialize() {
 #pragma region “Š‘“Š‰e•ÏŠ·s—ñ‚ÌŒvZ
