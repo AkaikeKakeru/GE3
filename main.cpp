@@ -3,6 +3,7 @@
 #include "DirectXBasis.h"
 #include "Drawer.h"
 #include "Model.h"
+#include "ViewProjection.h"
 
 #include <dxgi1_6.h>
 #include <d3dcompiler.h>//シェーダ用コンパイラ
@@ -99,26 +100,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//	0.0f, 1.0f);//前端、奥端
 #pragma endregion
 
-//#pragma region 投資投影変換行列の計算
-//
-//	XMMATRIX matProjection =
-//		XMMatrixPerspectiveFovLH(
-//			XMConvertToRadians(45.0f),//上下画角45度
-//			(float)WinApp::WinWidth / WinApp::WinHeight,//アスペクト比(画面横幅/画面縦幅)
-//			0.1f, 1000.0f
-//		);//前端、奥端
-//
-//#pragma region ビュー行列の作成
-//	XMMATRIX matView;
-//	XMFLOAT3 eye(0, 0, -100);	//視点座標
-//	XMFLOAT3 target(0, 0, 0);	//注視点座標
-//	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
-//	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye),
-//		XMLoadFloat3(&target), XMLoadFloat3(&up));
-//
-//#pragma endregion
-//
-//#pragma endregion
+	//ポインタ
+	ViewProjection* viewProjection_ = nullptr;
+	//ビューとプロジェクションの初期化
+	viewProjection_ = new ViewProjection;
+	viewProjection_->Initialize();
+
 
 	//------描画初期化処理 ここまで------
 	//ゲームループ
@@ -133,13 +120,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			else if (input->ifKeyPress(DIK_A)) { angle -= XMConvertToRadians(1.0f); }
 
 			//angleラジアンだけY軸周りに回転、半径は-100
-			eye.x = -100 * sinf(angle);
-			eye.z = -100 * cosf(angle);
-			matView = XMMatrixLookAtLH(XMLoadFloat3(&eye),
-				XMLoadFloat3(&target), XMLoadFloat3(&up));
+			viewProjection_->eye_.x = -100 * sinf(angle);
+			viewProjection_->eye_.z = -100 * cosf(angle);
+			viewProjection_->matView_ = XMMatrixLookAtLH(XMLoadFloat3(&viewProjection_->eye_),
+				XMLoadFloat3(&viewProjection_->target_), XMLoadFloat3(&viewProjection_->up_));
 
 			/*object3ds[0]*/
-			modelAdam->GetConstMapTransform()->mat = matView * matProjection;
+			modelAdam->GetConstMapTransform()->mat = viewProjection_->matView_ * viewProjection_->matProjection_;
 		}
 #pragma endregion
 
@@ -150,7 +137,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		////	//UpdateObject3d(&object3ds[i], matView, matProjection);
 
 		//}
-		modelAdam->Update(matView, matProjection);
+		modelAdam->Update(viewProjection_->matView_, viewProjection_->matProjection_);
 
 		//UpdateObjectControll(&object3ds[0], input);
 
@@ -179,6 +166,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	//WindowsAPI終了処理
 	winApp->Finalize();
+
+	//ビュープロジェクションの解放
+	delete viewProjection_;
+	viewProjection_ = nullptr;
 
 	//モデルの解放
 	delete modelAdam;

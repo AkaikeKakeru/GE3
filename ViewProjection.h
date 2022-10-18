@@ -5,9 +5,9 @@ using namespace DirectX;
 
 class ViewProjection {
 
-public:
+public: //基本のメンバ関数
 	void Initialize();
-public:
+public: //メンバ変数
 	XMMATRIX matProjection_; //プロジェクション行列
 
 	XMMATRIX matView_; //ビュー行列
