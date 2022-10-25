@@ -142,15 +142,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DirectXBasis.cpp" />
+    <ClCompile Include="DrawBasis.cpp" />
     <ClCompile Include="FixFPS.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectXBasis.h" />
+    <ClInclude Include="DrawBasis.h" />
     <ClInclude Include="FixFPS.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Sprite.h" />
     <ClInclude Include="Struct.h" />
     <ClInclude Include="WinApp.h" />
   </ItemGroup>

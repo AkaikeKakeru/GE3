@@ -13,39 +13,63 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ソース ファイル\Basis">
+      <UniqueIdentifier>{ae131633-07b8-433f-9cce-599baed3cb37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Drawer">
+      <UniqueIdentifier>{e2730c58-31a9-4487-9b3d-dfe9cddd1921}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Basis">
+      <UniqueIdentifier>{5c4df622-58cd-4f86-99e8-bffff7e8db70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Drawer">
+      <UniqueIdentifier>{12037899-655b-405a-aacd-e4645830c2e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="WinApp.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Basis</Filter>
     </ClCompile>
     <ClCompile Include="DirectXBasis.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Basis</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>ソース ファイル\Basis</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawBasis.cpp">
+      <Filter>ソース ファイル\Drawer</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>ソース ファイル\Drawer</Filter>
     </ClCompile>
     <ClCompile Include="FixFPS.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Basis</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Struct.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="WinApp.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="DirectXBasis.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Basis</Filter>
     </ClInclude>
     <ClInclude Include="FixFPS.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Basis</Filter>
+    </ClInclude>
+    <ClInclude Include="WinApp.h">
+      <Filter>ヘッダー ファイル\Basis</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>ヘッダー ファイル\Basis</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawBasis.h">
+      <Filter>ヘッダー ファイル\Drawer</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>ヘッダー ファイル\Drawer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
