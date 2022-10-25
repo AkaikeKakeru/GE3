@@ -31,8 +31,7 @@ using namespace DirectX;
 using namespace Microsoft::WRL;
 
 //定数バッファ用データ構造体(マテリアル)
-struct ConstBufferDataMaterial
-{
+struct ConstBufferDataMaterial {
 	Vector4 color; //色(RGBA)
 };
 
@@ -43,34 +42,36 @@ struct ConstBufferDataTransform {
 	Matrix4 mat; //3D変換行列
 };
 
+//定数バッファ用データ構造体(ビュープロジェクション)
 struct ConstBufferDataViewProjection {
-	Matrix4 view;
-	Matrix4 projection;
+	Matrix4 view; //ビュー行列
+	Matrix4 projection; //プロジェクション行列
 };
 
 //3Dオブジェクト型
-struct Object3d
-{
+struct Object3d {
 	//定数バッファ(行列用)
-	ComPtr<ID3D12Resource> constBuffTransform = {};
+	ComPtr<ID3D12Resource> constBuffTransform_ = {};
+
+	//定数バッファ(ビュープロジェクション)
+	ConstBufferDataViewProjection viewProjection_ = {};
 
 	//定数バッファマップ(行列用)
-	ConstBufferDataTransform* constMapTransform = {};
+	ConstBufferDataTransform* constMapTransform_ = {};
 
 	//アフィン変換情報
-	Vector3 scale = { 1,1,1 };
-	Vector3 rotation = { 0,0,0 };
-	Vector3 position = { 0,0,0 };
+	Vector3 scale_ = { 1,1,1 };
+	Vector3 rotation_ = { 0,0,0 };
+	Vector3 position_ = { 0,0,0 };
 
 	//ワールド変換行列
-	Matrix4 matWorld = {};
+	Matrix4 matWorld_ = {};
 
 	//親オブジェクトへのポインタ
-	Object3d* parent = nullptr;
+	Object3d* parent_ = nullptr;
 };
 
-struct TextureData
-{
+struct TextureData {
 	TexMetadata metadata{};
 	ScratchImage scratchImg{};
 	ScratchImage mipChine{};
@@ -83,8 +84,7 @@ struct TextureData
 };
 
 //3Dオブジェクトの初期化
-void InitializeObject3d(Object3d* object, ID3D12Device* device)
-{
+void InitializeObject3d(Object3d* object, ID3D12Device* device) {
 	HRESULT result;
 
 #pragma region constMapTransfrom関連
@@ -109,19 +109,18 @@ void InitializeObject3d(Object3d* object, ID3D12Device* device)
 		&resDesc, //リソース設定
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&object->constBuffTransform));
+		IID_PPV_ARGS(&object->constBuffTransform_));
 	assert(SUCCEEDED(result));
 
 	//定数バッファのマッピング
-	result = object->constBuffTransform->Map(0, nullptr,
-		(void**)&object->constMapTransform); //マッピング
+	result = object->constBuffTransform_->Map(0, nullptr,
+		(void**)&object->constMapTransform_); //マッピング
 	assert(SUCCEEDED(result));
 
 #pragma endregion
 }
 
-void InitializeTexture(TextureData* textureData, const wchar_t* szFile)
-{
+void InitializeTexture(TextureData* textureData, const wchar_t* szFile) {
 	HRESULT result;
 
 	//WICテクスチャのロード
@@ -145,8 +144,7 @@ void InitializeTexture(TextureData* textureData, const wchar_t* szFile)
 	textureData->metadata.format = MakeSRGB(textureData->metadata.format);
 };
 
-void TransferTextureBuffer(TextureData* textureData, ID3D12Device* device)
-{
+void TransferTextureBuffer(TextureData* textureData, ID3D12Device* device) {
 	HRESULT result;
 
 	//ヒープ設定
@@ -178,8 +176,7 @@ void TransferTextureBuffer(TextureData* textureData, ID3D12Device* device)
 		IID_PPV_ARGS(&textureData->texBuff));
 
 	//全ミップマップについて
-	for (size_t i = 0; i < textureData->metadata.mipLevels; i++)
-	{
+	for (size_t i = 0; i < textureData->metadata.mipLevels; i++) {
 		//ミップマップレベルを指定してイメージを取得
 		const Image* img = textureData->scratchImg.GetImage(i, 0, 0);
 		//テクスチャバッファにデータ転送
@@ -195,8 +192,7 @@ void TransferTextureBuffer(TextureData* textureData, ID3D12Device* device)
 }
 
 //3Dオブジェクトの初期化処理の呼び出し
-void SetIntializeObject3ds(Object3d* object, ID3D12Device* device, int objectNum)
-{
+void SetIntializeObject3ds(Object3d* object, ID3D12Device* device, int objectNum) {
 	//初期化
 	InitializeObject3d(object, device);
 
@@ -204,46 +200,49 @@ void SetIntializeObject3ds(Object3d* object, ID3D12Device* device, int objectNum
 	//先頭以外なら
 	if (objectNum > 0) {
 		//1つ前のオブジェクトを親オブジェクトとする
-		object->parent = &object[objectNum - 1];
+		object->parent_ = &object[objectNum - 1];
 		//親オブジェクトの9割の大きさ
-		object->scale = { 0.9f,0.9f,0.9f };
+		object->scale_ = { 0.9f,0.9f,0.9f };
 		//親オブジェクトに対してZ軸まわりに30度回転
-		object->rotation = { 0.0f,0.0f,XMConvertToRadians(30.0f) };
+		object->rotation_ = { 0.0f,0.0f,XMConvertToRadians(30.0f) };
 		//親オブジェクトに対してZ方向に-8.0ずらす
-		object->position = { 0.0f,0.0f,-8.0f };
+		object->position_ = { 0.0f,0.0f,-8.0f };
 	}
 }
 
 //オブジェクト更新処理
-void UpdateObject3d(Object3d* object,ConstBufferDataViewProjection viewProjection)
-{
-	Matrix4 matScale, matRot, matTrans;
+void UpdateObject3d(Object3d* object) {
+	Matrix4 matScale, matRota, matTrans, matX, matY, matZ;
 
 	//スケール、回転、平行移動行列の計算
-	matScale = MatScale(object->scale);
-	matRot = MatIdentity();
-	matRot *= MatRotationZ(object->rotation.z);
-	matRot *= MatRotationX(object->rotation.x);
-	matRot *= MatRotationY(object->rotation.y);
-	matTrans = MatTranslation(
-		object->position);
+	matScale = MatScale(object->scale_);
+	matRota = MatIdentity();
+
+	matZ = MatRotationZ(object->rotation_.z);
+	matX = MatRotationX(object->rotation_.x);
+	matY = MatRotationY(object->rotation_.y);
+
+	matRota = matRota * matZ * matX * matY;
+
+	matTrans = MatTranslation(object->position_);
 
 	//ワールド行列の合成
-	object->matWorld = MatIdentity();	//変形リセット
-	object->matWorld *= matScale;	//ワールド行列のスケーリングを反映
-	object->matWorld *= matRot;	//ワールド行列に回転を反映
-	object->matWorld *= matTrans;	//ワールド行列に平行移動を反映
+	object->matWorld_ = MatIdentity();	//変形リセット
+
+	object->matWorld_ *= matScale;	//ワールド行列のスケーリングを反映
+	object->matWorld_ *= matRota;	//ワールド行列に回転を反映
+	object->matWorld_ *= matTrans;	//ワールド行列に平行移動を反映
 
 	//親オブジェクトがあれば
-	if (object->parent != nullptr) {
+	if (object->parent_ != nullptr) {
 		//親オブジェクトのワールド行列を掛ける
-		object->matWorld *= object->parent->matWorld;
+		object->matWorld_ *= object->parent_->matWorld_;
 	}
 
 	//定数バッファへデータ転送
-	object->constMapTransform->mat = object->matWorld *
-		viewProjection.view * 
-		viewProjection.projection;
+	object->constMapTransform_->mat = object->matWorld_ *
+		object->viewProjection_.view *
+		object->viewProjection_.projection;
 }
 
 void DrawObject3d(Object3d* object, ID3D12GraphicsCommandList* commandList, D3D12_VERTEX_BUFFER_VIEW& vbView,
@@ -253,7 +252,7 @@ void DrawObject3d(Object3d* object, ID3D12GraphicsCommandList* commandList, D3D1
 	//インデックスバッファの設定
 	commandList->IASetIndexBuffer(&ibView);
 	//定数バッファビュー(CBV)の設定コマンド
-	commandList->SetGraphicsRootConstantBufferView(2, object->constBuffTransform->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(2, object->constBuffTransform_->GetGPUVirtualAddress());
 
 	//描画コマンド
 	commandList->DrawIndexedInstanced(numIndices, 1, 0, 0, 0);
@@ -261,29 +260,28 @@ void DrawObject3d(Object3d* object, ID3D12GraphicsCommandList* commandList, D3D1
 
 //座標操作
 void UpdateObjectPosition(Object3d* object, Input* input) {
-	if (input->ifKeyPress(DIK_UP)) { object->position.y += 1.0f; }
-	else if (input->ifKeyPress(DIK_DOWN)) { object->position.y -= 1.0f; }
-	if (input->ifKeyPress(DIK_RIGHT)) { object->position.x += 1.0f; }
-	else if (input->ifKeyPress(DIK_LEFT)) { object->position.x -= 1.0f; }
+	if (input->ifKeyPress(DIK_UP)) { object->position_.y += 1.0f; }
+	else if (input->ifKeyPress(DIK_DOWN)) { object->position_.y -= 1.0f; }
+	if (input->ifKeyPress(DIK_RIGHT)) { object->position_.x += 1.0f; }
+	else if (input->ifKeyPress(DIK_LEFT)) { object->position_.x -= 1.0f; }
+
 }
 //回転操作
 void UpdateObjectRotation(Object3d* object, Input* input) {
-	if (input->ifKeyPress(DIK_Q)) { object->rotation.z += 0.1f; }
-	else if (input->ifKeyPress(DIK_E)) { object->rotation.z -= 0.1f; }
+	if (input->ifKeyPress(DIK_Q)) { object->rotation_.z += 0.1f; }
+	else if (input->ifKeyPress(DIK_E)) { object->rotation_.z -= 0.1f; }
 }
 //オブジェクト操作
 void UpdateObjectControll(Object3d* object, Input* input) {
 	UpdateObjectRotation(object, input);
 	UpdateObjectPosition(object, input);
-	if (input->ifKeyTrigger(DIK_RETURN)) { object->position.y -= 6.0f; }
-
-	if (input->ifKeyRelease(DIK_RETURN)) { object->position.y += 20.0f; }
+	if (input->ifKeyTrigger(DIK_RETURN)) { object->position_.y -= 6.0f; }
+	if (input->ifKeyRelease(DIK_RETURN)) { object->position_.y += 20.0f; }
 }
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	HRESULT result;
 #pragma region 基盤初期化
-
 #pragma region WindowsAPI
 	//ポインタ
 	WinApp* winApp = nullptr;
@@ -291,9 +289,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	winApp = new WinApp();
 	winApp->Initialize();
 #pragma endregion
-
 #pragma region DirectX基盤
-
 #pragma region 入力機
 	//ポインタ
 	Input* input = nullptr;
@@ -301,7 +297,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	input = new Input();
 	input->Initialize(winApp);
 #pragma endregion
-
 #pragma region DX基盤
 	//ポインタ
 	DirectXBasis* dXBas = nullptr;
@@ -309,7 +304,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	dXBas = new DirectXBasis();
 	dXBas->Initialize(winApp);
 #pragma endregion
-
 #pragma region Draw基盤
 	//ポインタ
 	DrawBasis* drawBas = nullptr;
@@ -317,42 +311,32 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	drawBas = new DrawBasis();
 	drawBas->Initialize();
 #pragma endregion
-
-
 #pragma endregion
-
 #pragma endregion
-
 #pragma region ゲームシーンの初期設定
-
 	//ポインタ
 	Sprite* sprite = new Sprite();
 	//Sprite初期化
 	sprite->Initialize();
-
 #pragma region 描画情報初期設定
 	float angle = 0.0f; //カメラの回転角
 
-						//拡縮倍率
+	//拡縮倍率
 	Vector3 scale;
 	//回転角
 	Vector3 rotation;
 	//座標
 	Vector3 position;
-	//座標
-	//Vector3 position1;
 
 	//拡縮倍率
-	scale = {1.0f,1.0f,1.0f };
+	scale = { 1.0f,1.0f,1.0f };
 	//回転角
 	rotation = { 00.0f,00.0f,00.0f };
 	//座標
 	position = { 0.0f,0.0f,0.0f };
-	//position1 = { -20.0f,0.0f,0.0f };
 
 	//頂点データ構造体
-	struct Vertex
-	{
+	struct Vertex {
 		XMFLOAT3 pos;		//xyz座標
 		XMFLOAT3 normal;	//法線ベクトル
 		XMFLOAT2 uv;		//uv座標
@@ -369,8 +353,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//};
 
 	//頂点データ
-	Vertex vertices[] =
-	{
+	Vertex vertices[] = {
 		//x		 y		z		法線	u	  v
 		//前
 		{{-5.0f, -5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
@@ -378,31 +361,31 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		{{ 5.0f, -5.0f, -5.0f},	{},		{1.0f, 1.0f}},//右下
 		{{ 5.0f,  5.0f, -5.0f},	{},		{1.0f, 0.0f}},//右上
 
-													  //後ろ				 
+		//後ろ				 
 		{{ 5.0f, -5.0f,  5.0f},	{},		{1.0f, 1.0f}},//右下
 		{{ 5.0f,  5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
 		{{-5.0f, -5.0f,  5.0f},	{},		{0.0f, 1.0f}},//左下
 		{{-5.0f,  5.0f,  5.0f},	{},		{0.0f, 0.0f}},//左上
 
-													  //左							
+		//左							
 		{{-5.0f, -5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
 		{{-5.0f, -5.0f,  5.0f},	{},		{0.0f, 0.0f}},//左上
 		{{-5.0f,  5.0f, -5.0f},	{},		{1.0f, 1.0f}},//右下
 		{{-5.0f,  5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
 
-													  //右							
+		//右							
 		{{ 5.0f,  5.0f, -5.0f},	{},		{1.0f, 1.0f}},//右下
 		{{ 5.0f,  5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
 		{{ 5.0f, -5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
 		{{ 5.0f, -5.0f,  5.0f},	{},		{0.0f, 0.0f}},//左上
 
-													  //下							
+		//下							
 		{{-5.0f, -5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
 		{{ 5.0f, -5.0f, -5.0f},	{},		{0.0f, 0.0f}},//左上
 		{{-5.0f, -5.0f,  5.0f},	{},		{1.0f, 1.0f}},//右下
 		{{ 5.0f, -5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
 
-													  //上							
+		//上							
 		{{-5.0f,  5.0f,  5.0f},	{},		{1.0f, 1.0f}},//右下
 		{{ 5.0f,  5.0f,  5.0f},	{},		{1.0f, 0.0f}},//右上
 		{{-5.0f,  5.0f, -5.0f},	{},		{0.0f, 1.0f}},//左下
@@ -410,8 +393,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	};
 
 	//インデックスデータ
-	unsigned short indices[] =
-	{
+	unsigned short indices[] = {
 		//前
 		0,1,2,//一つ目
 		2,1,3,//二つ目
@@ -470,8 +452,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	/* verticesに記入 */
 
 	//全頂点に対して
-	for (int i = 0; i < _countof(vertices); i++)
-	{
+	for (int i = 0; i < _countof(vertices); i++) {
 		vertMap[i] = vertices[i];//座標をコピー
 	}
 
@@ -542,8 +523,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	}
 
 	//頂点レイアウト
-	D3D12_INPUT_ELEMENT_DESC inputLayout[] =
-	{
+	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 		{
 			//xyz座標
 			"POSITION",									//セマンティック名
@@ -587,20 +567,20 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	//サンプルマスクの設定
 	pipelineDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;//標準設定
-														//pipelineDesc.SampleMask = UINT_MAX;
+	//pipelineDesc.SampleMask = UINT_MAX;
 
-														//ラスタライザの設定
-														//背面カリングも設定する
-														//pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;//カリングしない
+	//ラスタライザの設定
+	//背面カリングも設定する
+	//pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;//カリングしない
 	pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;//背面カリングする
 	pipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;//ポリゴン内塗りつぶし
 	pipelineDesc.RasterizerState.DepthClipEnable = true;//深度クリッピングを有効に
 
-														//ブレンドステート
-	pipelineDesc.BlendState.RenderTarget[0].RenderTargetWriteMask 
+	//ブレンドステート
+	pipelineDesc.BlendState.RenderTarget[0].RenderTargetWriteMask
 		= D3D12_COLOR_WRITE_ENABLE_ALL;//RGB全てのチャネルを描画
 
-									   //レンダ―ターゲットのブレンド設定
+	//レンダ―ターゲットのブレンド設定
 	D3D12_RENDER_TARGET_BLEND_DESC& blenddesc = pipelineDesc.BlendState.RenderTarget[0];
 	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
@@ -610,27 +590,27 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE; //加算
 	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO; //デストの値を 0%使う　
 
-												 //加算合成
-												 //blenddesc.BlendOp = D3D12_BLEND_OP_ADD; //加算
-												 //blenddesc.SrcBlend = D3D12_BLEND_ONE; //ソースの値を100%使う
-												 //blenddesc.DestBlend = D3D12_BLEND_ONE; //デストの値を100%使う
+	//加算合成
+	//blenddesc.BlendOp = D3D12_BLEND_OP_ADD; //加算
+	//blenddesc.SrcBlend = D3D12_BLEND_ONE; //ソースの値を100%使う
+	//blenddesc.DestBlend = D3D12_BLEND_ONE; //デストの値を100%使う
 
-												 //減算合成
-												 //blenddesc.BlendOp = D3D12_BLEND_OP_REV_SUBTRACT; //減算
-												 //blenddesc.SrcBlend = D3D12_BLEND_ONE; //ソースの値を100%使う
-												 //blenddesc.DestBlend = D3D12_BLEND_ONE; //デストの値を100%使う
+	//減算合成
+	//blenddesc.BlendOp = D3D12_BLEND_OP_REV_SUBTRACT; //減算
+	//blenddesc.SrcBlend = D3D12_BLEND_ONE; //ソースの値を100%使う
+	//blenddesc.DestBlend = D3D12_BLEND_ONE; //デストの値を100%使う
 
-												 //色反転
-												 //blenddesc.BlendOp = D3D12_BLEND_OP_ADD; //加算
-												 //blenddesc.SrcBlend = D3D12_BLEND_INV_DEST_COLOR; //1.0f-デストから－の値
-												 //blenddesc.DestBlend = D3D12_BLEND_ZERO; //使わない
+	//色反転
+	//blenddesc.BlendOp = D3D12_BLEND_OP_ADD; //加算
+	//blenddesc.SrcBlend = D3D12_BLEND_INV_DEST_COLOR; //1.0f-デストから－の値
+	//blenddesc.DestBlend = D3D12_BLEND_ZERO; //使わない
 
-												 //半透明合成
+	//半透明合成
 	blenddesc.BlendOp = D3D12_BLEND_OP_ADD; //加算
 	blenddesc.SrcBlend = D3D12_BLEND_ONE; //ソースの値をアルファ値
 	blenddesc.DestBlend = D3D12_BLEND_ONE; //1.0f-ソースのアルファ値
 
-										   //頂点レイアウトの設定
+	//頂点レイアウトの設定
 	pipelineDesc.InputLayout.pInputElementDescs = inputLayout;
 	pipelineDesc.InputLayout.NumElements = _countof(inputLayout);
 
@@ -651,7 +631,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	pipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;//0～255指定のRGBA
 	pipelineDesc.SampleDesc.Count = 1;//1ピクセルにつき1回サンプリング
 
-									  //ルートシグネチャ
+	//ルートシグネチャ
 	ComPtr<ID3D12RootSignature> rootSignature;
 
 	//デスクリプタレンジの設定
@@ -677,19 +657,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	rootParams[0].Descriptor.RegisterSpace = 0;						//デフォルト値
 	rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
 
-																	//テクスチャレジスタ0番
+	//テクスチャレジスタ0番
 	rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;	//定数バッファビュー
 	rootParams[1].DescriptorTable.pDescriptorRanges = &descriptorRange;					//定数バッファ番号
 	rootParams[1].DescriptorTable.NumDescriptorRanges = 1;						//デフォルト値
 	rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
 
-																	//定数バッファ1番
+	//定数バッファ1番
 	rootParams[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//種類
 	rootParams[2].Descriptor.ShaderRegister = 1;					//定数バッファ番号
 	rootParams[2].Descriptor.RegisterSpace = 0;						//デフォルト値
 	rootParams[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
 
-																	//テクスチャサンプラーの設定
+	//テクスチャサンプラーの設定
 	D3D12_STATIC_SAMPLER_DESC samplerDesc{};
 	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -767,10 +747,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
 	result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial); //マッピング
 
-																			// 値を書き込むと自動的に転送される
+	// 値を書き込むと自動的に転送される
 	constMapMaterial->color = Vector4(0.5f, 0.5f, 0.5f, 1.0f); //RGBAで半透明の赤
 
-																//マッピング解除
+	//マッピング解除
 	constBuffMaterial->Unmap(0, nullptr);
 	assert(SUCCEEDED(result));
 
@@ -781,7 +761,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//ヒープ設定
 	D3D12_HEAP_PROPERTIES cbHeapProp{};
 	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用
-											  //リソース設定
+	//リソース設定
 	D3D12_RESOURCE_DESC cbResourceDesc{};
 	cbResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 	cbResourceDesc.Width = (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff; //256バイトアラインメント
@@ -803,9 +783,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Vector3 rndPos;
 
 	//配列内の全オブジェクトに対して
-	for (int i = 0; i < _countof(object3ds); i++)
-	{
-		SetIntializeObject3ds(&object3ds[i],dXBas->GetDevice(), i);
+	for (int i = 0; i < _countof(object3ds); i++) {
+		SetIntializeObject3ds(&object3ds[i], dXBas->GetDevice(), i);
 
 		//初期化
 		InitializeObject3d(&object3ds[i], dXBas->GetDevice());
@@ -831,11 +810,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				static_cast<float>(rand() % 60 - 30),
 			};
 
-			object3ds[i].scale = rndScale;
+			object3ds[i].scale_ = rndScale;
 
-			object3ds[i].rotation = rndRota;
+			object3ds[i].rotation_ = rndRota;
 
-			object3ds[i].position = rndPos;
+			object3ds[i].position_ = rndPos;
 
 			//1つ前のオブジェクトを親オブジェクトとする
 			//object3ds[i].parent = &object3ds[i - 1];
@@ -846,7 +825,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			////親オブジェクトに対してZ方向に-8.0ずらす
 			//object3ds[i].position = { 0.0f,0.0f,-8.0f };
 		}
-
 	}
 
 #pragma endregion
@@ -862,10 +840,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region 投資投影変換行列の計算
-	
+
 	ConstBufferDataViewProjection viewProjection;
 	XMMATRIX matPro;
-	matPro	=
+	matPro =
 		XMMatrixPerspectiveFovLH(
 			XMConvertToRadians(45.0f),//上下画角45度
 			(float)WinApp::WinWidth / WinApp::WinHeight,//アスペクト比(画面横幅/画面縦幅)
@@ -884,13 +862,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
 
 
-	matView	= XMMatrixLookAtLH(
+	matView = XMMatrixLookAtLH(
 		XMLoadFloat3(&eye),
-		XMLoadFloat3(&target), 
+		XMLoadFloat3(&target),
 		XMLoadFloat3(&up));
 
-	for (int i = 0; i < 4; i++)
-	{
+	for (int i = 0; i < 4; i++) {
 		viewProjection.projection.m[i][0] = XMVectorGetX(matPro.r[i]);
 		viewProjection.projection.m[i][1] = XMVectorGetY(matPro.r[i]);
 		viewProjection.projection.m[i][2] = XMVectorGetZ(matPro.r[i]);
@@ -900,6 +877,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		viewProjection.view.m[i][1] = XMVectorGetY(matView.r[i]);
 		viewProjection.view.m[i][2] = XMVectorGetZ(matView.r[i]);
 		viewProjection.view.m[i][3] = XMVectorGetW(matView.r[i]);
+	}
+	//配列内の全オブジェクトに対して
+	for (int i = 0; i < _countof(object3ds); i++) {
+		object3ds[i].viewProjection_ = viewProjection;
 	}
 #pragma endregion
 
@@ -950,8 +931,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	uint16_t* indexMap = nullptr;
 	result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 	// 全インデックスに対して
-	for (int i = 0; i < _countof(indices); i++)
-	{
+	for (int i = 0; i < _countof(indices); i++) {
 		indexMap[i] = indices[i]; //インデックスをコピー
 	}
 	//マッピング解除
@@ -966,19 +946,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	const int kTextureCount = 2;
 	TextureData textureDatas[kTextureCount] = { 0 };
 
-	const wchar_t* texImgs[kTextureCount] =
-	{
+	const wchar_t* texImgs[kTextureCount] = {
 		L"Resources/texture.png",
 		L"Resources/reimu.png",
 	};
 
-	for (size_t i = 0; i < _countof(textureDatas); i++)
-	{
+	for (size_t i = 0; i < _countof(textureDatas); i++) {
 		InitializeTexture(&textureDatas[i], texImgs[i]);
 	}
 
-	for (size_t i = 0; i < _countof(textureDatas); i++)
-	{
+	for (size_t i = 0; i < _countof(textureDatas); i++) {
 		TransferTextureBuffer(&textureDatas[i], dXBas->GetDevice());
 	}
 
@@ -1065,8 +1042,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma region ゲームシーンの更新
 
 #pragma region ターゲットの周りを回るカメラ
-		if (input->ifKeyPress(DIK_D) || input->ifKeyPress(DIK_A))
-		{
+		if (input->ifKeyPress(DIK_D) || input->ifKeyPress(DIK_A)) {
 			if (input->ifKeyPress(DIK_D)) { angle += XMConvertToRadians(1.0f); }
 			else if (input->ifKeyPress(DIK_A)) { angle -= XMConvertToRadians(1.0f); }
 
@@ -1076,27 +1052,27 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			matView = XMMatrixLookAtLH(XMLoadFloat3(&eye),
 				XMLoadFloat3(&target), XMLoadFloat3(&up));
 
-			for (int i = 0; i < 4; i++)
-			{
+			for (int i = 0; i < 4; i++) {
 				viewProjection.view.m[i][0] = XMVectorGetX(matView.r[i]);
 				viewProjection.view.m[i][1] = XMVectorGetY(matView.r[i]);
 				viewProjection.view.m[i][2] = XMVectorGetZ(matView.r[i]);
 				viewProjection.view.m[i][3] = XMVectorGetW(matView.r[i]);
 			}
 
-			object3ds[0].constMapTransform->mat = viewProjection.view * viewProjection.projection;
+			object3ds[0].viewProjection_ = viewProjection;
+
+			object3ds[0].constMapTransform_->mat =
+				object3ds[0].viewProjection_.view * object3ds[0].viewProjection_.projection;
 		}
 #pragma endregion
 
 #pragma region 連続移動
+
 		UpdateObjectControll(&object3ds[0], input);
 
-		for (size_t i = 0; i < _countof(object3ds); i++)
-		{
-			UpdateObject3d(&object3ds[i], viewProjection);
-
+		for (size_t i = 0; i < _countof(object3ds); i++) {
+			UpdateObject3d(&object3ds[i]);
 		}
-
 
 #pragma endregion
 
@@ -1108,8 +1084,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma region ゲームシーンの描画
 
 #pragma region 法線を計算
-		for (int i = 0; i < _countof(indices) / 3; i++)
-		{
+		for (int i = 0; i < _countof(indices) / 3; i++) {
 			//三角形１つごとに計算していく
 			//三角形のインデックスを取り出して、一時的な変数に入れる
 			unsigned short index0 = indices[i * 3 + 0];
@@ -1140,8 +1115,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma region 転送
 		//全頂点に対して
-		for (int i = 0; i < _countof(vertices); i++)
-		{
+		for (int i = 0; i < _countof(vertices); i++) {
 			vertMap[i] = vertices[i];//座標をコピー
 		}
 #pragma endregion
@@ -1155,7 +1129,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		//プリミティブ形状の設定コマンド
 		dXBas->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
 
-																							 //頂点バッファビューの設定コマンド
+		//頂点バッファビューの設定コマンド
 		dXBas->GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
 
 		//定数バッファビュー(CBV)の設定コマンド
@@ -1169,8 +1143,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		//SRVヒープの先頭にあるSRVをルートパラメータ1番に設定
 		dXBas->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 
-		if (ifOneTextureNum == false)
-		{
+		if (ifOneTextureNum == false) {
 			//2枚目を指し示すようにしたSRVのハンドルをルートパラメータに設定
 			srvGpuHandle.ptr += incrementSize;
 			dXBas->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
@@ -1180,8 +1153,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		dXBas->GetCommandList()->IASetIndexBuffer(&ibView);
 
 		//全オブジェクトについて処理
-		for (int i = 0; i < _countof(object3ds); i++)
-		{
+		for (int i = 0; i < _countof(object3ds); i++) {
 			DrawObject3d(&object3ds[i], dXBas->GetCommandList(), vbView, ibView, _countof(indices));
 		}
 
