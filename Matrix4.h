@@ -8,7 +8,7 @@ struct Matrix4{
 };
 
 // ’PˆÊs—ñ‚ğ‹‚ß‚é
-Matrix4 identity();
+Matrix4 MatIdentity();
 
 //Šg‘åk¬s—ñ‚Ìİ’è
 Matrix4 MatScale(const Vector3& s);
