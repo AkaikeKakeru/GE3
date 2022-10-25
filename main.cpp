@@ -1,6 +1,8 @@
 #include "WinApp.h"
 #include "Input.h"
 #include "DirectXBasis.h"
+#include "DrawBasis.h"
+#include "Sprite.h"
 
 #include <DirectXMath.h>
 #include <DirectXTex.h>
@@ -296,11 +298,25 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	dXBas->Initialize(winApp);
 #pragma endregion
 
+#pragma region Draw基盤
+	//ポインタ
+	DrawBasis* drawBas = nullptr;
+	//DrawBasis初期化
+	drawBas = new DrawBasis();
+	drawBas->Initialize();
+#pragma endregion
+
+
 #pragma endregion
 
 #pragma endregion
 
 #pragma region ゲームシーンの初期設定
+
+	//ポインタ
+	Sprite* sprite = new Sprite();
+	//Sprite初期化
+	sprite->Initialize();
 
 #pragma region 描画情報初期設定
 	float angle = 0.0f; //カメラの回転角
@@ -1145,11 +1161,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//WindowsAPI終了処理
 	winApp->Finalize();
 
+	//Spriteの解放
+	delete sprite;
+	sprite = nullptr;
+
+	//DrawBasis基盤の解放
+	delete drawBas;
+	drawBas = nullptr;
+
 	//入力の解放
 	delete input;
 	input = nullptr;
 
-	//基盤の解放
+	//DirectX基盤の解放
 	delete dXBas;
 	dXBas = nullptr;
 

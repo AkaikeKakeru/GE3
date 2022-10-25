@@ -25,6 +25,12 @@
     <Filter Include="ヘッダー ファイル\Drawer">
       <UniqueIdentifier>{12037899-655b-405a-aacd-e4645830c2e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Struct">
+      <UniqueIdentifier>{5822cfbb-77e8-4e45-a801-b0299bb93400}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Shader">
+      <UniqueIdentifier>{4f439576-1a0e-4253-bf0e-310b5910453a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -50,9 +56,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Struct.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="DirectXBasis.h">
       <Filter>ヘッダー ファイル\Basis</Filter>
     </ClInclude>
@@ -65,24 +68,27 @@
     <ClInclude Include="Input.h">
       <Filter>ヘッダー ファイル\Basis</Filter>
     </ClInclude>
-    <ClInclude Include="DrawBasis.h">
-      <Filter>ヘッダー ファイル\Drawer</Filter>
-    </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>ヘッダー ファイル\Drawer</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Basic.hlsli">
-      <Filter>リソース ファイル</Filter>
-    </None>
+    <ClInclude Include="DrawBasis.h">
+      <Filter>ヘッダー ファイル\Basis</Filter>
+    </ClInclude>
+    <ClInclude Include="Struct.h">
+      <Filter>ヘッダー ファイル\Struct</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicPS.hlsl">
-      <Filter>リソース ファイル</Filter>
+      <Filter>リソース ファイル\Shader</Filter>
     </FxCompile>
     <FxCompile Include="BasicVS.hlsl">
-      <Filter>リソース ファイル</Filter>
+      <Filter>リソース ファイル\Shader</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Basic.hlsli">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>
