@@ -267,34 +267,42 @@ void UpdateObjectControll(Object3d* object, Input* input) {
 }
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
-	//------WindowsAPI初期化処理 ここから------
 	HRESULT result;
-	const float PI = 3.1415926535f;
+#pragma region 基盤初期化
 
+#pragma region WindowsAPI
 	//ポインタ
 	WinApp* winApp = nullptr;
 	//WinApp初期化
 	winApp = new WinApp();
 	winApp->Initialize();
+#pragma endregion
 
-	//------WindowsAPI初期化処理 ここまで------
+#pragma region DirectX基盤
 
-	//------DirectX初期化処理 ここから------
+#pragma region 入力機
 	//ポインタ
 	Input* input = nullptr;
 	//入力の初期化
 	input = new Input();
 	input->Initialize(winApp);
+#pragma endregion
 
+#pragma region DX基盤
 	//ポインタ
 	DirectXBasis* dXBas = nullptr;
 	//DirectXBasis初期化
 	dXBas = new DirectXBasis();
 	dXBas->Initialize(winApp);
-	//------DirectX初期化処理 ここまで------
+#pragma endregion
 
-	//------描画初期化処理 ここから------
-#pragma region
+#pragma endregion
+
+#pragma endregion
+
+#pragma region ゲームシーンの初期設定
+
+#pragma region 描画情報初期設定
 	float angle = 0.0f; //カメラの回転角
 
 						//拡縮倍率
@@ -702,8 +710,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma endregion
 
-#pragma region
-
 #pragma region constMapMaterial関連
 
 	//ヒープ設定
@@ -990,13 +996,22 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma endregion
-	//------描画初期化処理 ここまで------
-	//ゲームループ
+
+#pragma region ゲームループ
+
 	while (true) {
+#pragma region 基盤更新
+		//windowsのメッセージ処理
+		if (winApp->ProcessMessage()) {
+			//ループを抜ける
+			break;
+		}
+
 		//入力更新
 		input->Update();
+#pragma endregion
 
-
+#pragma region ゲームシーンの更新
 
 #pragma region ターゲットの周りを回るカメラ
 		if (input->ifKeyPress(DIK_D) || input->ifKeyPress(DIK_A))
@@ -1024,10 +1039,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		UpdateObjectControll(&object3ds[0], input);
 
+#pragma endregion
 
+#pragma endregion
 
 		//描画の準備
 		dXBas->PrepareDraw();
+
+#pragma region ゲームシーンの描画
 
 #pragma region 法線を計算
 		for (int i = 0; i < _countof(indices) / 3; i++)
@@ -1068,6 +1087,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 #pragma endregion
 
+#pragma region 設定コマンド
+
 		//パイプラインステートとルートシグネチャの設定コマンド
 		dXBas->GetCommandList()->SetPipelineState(pipelineState.Get());
 		dXBas->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
@@ -1105,15 +1126,21 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			DrawObject3d(&object3ds[i], dXBas->GetCommandList(), vbView, ibView, _countof(indices));
 		}
 
+#pragma endregion
+
+#pragma endregion
+
 		//描画後処理
 		dXBas->PostDraw();
-
-		//windowsのメッセージ処理
-		if (winApp->ProcessMessage()) {
-			//ループを抜ける
-			break;
-		}
 	}
+
+#pragma endregion
+
+#pragma region ゲームシーンの破棄
+
+#pragma endregion
+
+#pragma region 基盤終了処理
 
 	//WindowsAPI終了処理
 	winApp->Finalize();
@@ -1129,6 +1156,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//WinAppの解放
 	delete winApp;
 	winApp = nullptr;
+
+#pragma endregion
 
 	return 0;
 }
