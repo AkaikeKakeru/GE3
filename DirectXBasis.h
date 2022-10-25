@@ -4,6 +4,7 @@
 #include <dxgi1_6.h>
 #include <wrl.h>
 #include <vector>
+#include "FixFPS.h"
 
 class DirectXBasis {
 
@@ -92,4 +93,9 @@ private://よく使うメンバ変数
 	//フェンス値
 	UINT64 fenceVal_ = 0;
 
+	///FPS固定
+	FixFPS* fixFPS_ = nullptr;
+
+public: //デストラクタ
+	~DirectXBasis();
 };
