@@ -87,7 +87,7 @@ Vector3 transform(const Vector3& v, const Matrix4& m){
 	float v_[4] = {v.x,v.y,v.z,1};
 
 	//v.x * m.m[0][3] + v.y * m.m[1][3] + v.z * m.m[2][3] + (1 * ) m.m[3][3];
-	float w;
+	float w = 0;
 		
 	for (int i = 0; i < 4; i++){
 		w += (v_[i] *  m.m[i][3]);
