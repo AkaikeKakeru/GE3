@@ -9,6 +9,7 @@
 
 #include "Vector2.h"
 #include "Vector3.h"
+#include "Vector4.h"
 #include "Matrix4.h"
 
 #include <string>
@@ -26,13 +27,13 @@
 
 #pragma comment(lib, "d3dcompiler.lib")//シェーダ用コンパイラ
 
-//using namespace DirectX;
+using namespace DirectX;
 using namespace Microsoft::WRL;
 
 //定数バッファ用データ構造体(マテリアル)
 struct ConstBufferDataMaterial
 {
-	XMFLOAT4 color; //色(RGBA)
+	Vector4 color; //色(RGBA)
 };
 
 //資料05-02で追加
@@ -214,21 +215,21 @@ void UpdateObject3d(Object3d* object, Matrix4& matView, Matrix4& matProjection)
 	Matrix4 matScale, matRot, matTrans;
 
 	//スケール、回転、平行移動行列の計算
-	matScale = MatScale(object->scale.x, object->scale.y, object->scale.z);
-	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(object->rotation.z);
-	matRot *= XMMatrixRotationX(object->rotation.x);
-	matRot *= XMMatrixRotationY(object->rotation.y);
-	matTrans = XMMatrixTranslation(
-		object->position.x, object->position.y, object->position.z);
+	matScale = MatScale(object->scale);
+	matRot = MatIdentity();
+	matRot *= MatRotationZ(object->rotation.z);
+	matRot *= MatRotationX(object->rotation.x);
+	matRot *= MatRotationY(object->rotation.y);
+	matTrans = MatTranslation(
+		object->position);
 
 	//ワールド行列の合成
-	object->matWorld = XMMatrixIdentity();	//変形リセット
+	object->matWorld = MatIdentity();	//変形リセット
 	object->matWorld *= matScale;	//ワールド行列のスケーリングを反映
 	object->matWorld *= matRot;	//ワールド行列に回転を反映
 	object->matWorld *= matTrans;	//ワールド行列に平行移動を反映
 
-									//親オブジェクトがあれば
+	//親オブジェクトがあれば
 	if (object->parent != nullptr) {
 		//親オブジェクトのワールド行列を掛ける
 		object->matWorld *= object->parent->matWorld;
@@ -326,16 +327,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	float angle = 0.0f; //カメラの回転角
 
 						//拡縮倍率
-	XMFLOAT3 scale;
+	Vector3 scale;
 	//回転角
-	XMFLOAT3 rotation;
+	Vector3 rotation;
 	//座標
-	XMFLOAT3 position;
+	Vector3 position;
 	//座標
-	//XMFLOAT3 position1;
+	//Vector3 position1;
 
 	//拡縮倍率
-	MatScale = { 1.0f,1.0f,1.0f };
+	scale = {1.0f,1.0f,1.0f };
 	//回転角
 	rotation = { 00.0f,00.0f,00.0f };
 	//座標
@@ -760,7 +761,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial); //マッピング
 
 																			// 値を書き込むと自動的に転送される
-	constMapMaterial->color = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f); //RGBAで半透明の赤
+	constMapMaterial->color = Vector4(0.5f, 0.5f, 0.5f, 1.0f); //RGBAで半透明の赤
 
 																//マッピング解除
 	constBuffMaterial->Unmap(0, nullptr);
@@ -790,9 +791,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//3Dオブジェクトの配列
 	Object3d object3ds[kObjectCount];
 
-	XMFLOAT3 rndScale;
-	XMFLOAT3 rndRota;
-	XMFLOAT3 rndPos;
+	Vector3 rndScale;
+	Vector3 rndRota;
+	Vector3 rndPos;
 
 	//配列内の全オブジェクトに対して
 	for (int i = 0; i < _countof(object3ds); i++)
@@ -876,16 +877,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma region ワールド変換行列
 
-	//XMMATRIX matWorld;
-	//matWorld = XMMatrixIdentity();
+	//Matrix4 matWorld;
+	//matWorld = MatIdentity();
 
-	//XMMATRIX matScale; //スケーリング行列
+	//Matrix4 matScale; //スケーリング行列
 
-	//XMMATRIX matRot; //回転行列
-	//matRot = XMMatrixIdentity();
+	//Matrix4 matRot; //回転行列
+	//matRot = MatIdentity();
 
-	//XMMATRIX matTrans; //平行移動行列
-	//matTrans = XMMatrixTranslation(0, 0, 0);
+	//Matrix4 matTrans; //平行移動行列
+	//matTrans = MatTranslation(0, 0, 0);
 
 	//matWorld *= matTrans; //ワールド行列に平行移動を反映
 
