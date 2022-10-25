@@ -8,7 +8,7 @@ void DirectXBasis::Initialize(WinApp* winApp) {
 	
 	//FPS固定初期化
 	fixFPS_ = new FixFPS();
-	fixFPS_->GetInitialize();
+	fixFPS_->Initialize();
 
 #pragma region Initialize
 	InitDevice();
@@ -331,7 +331,7 @@ void DirectXBasis::PostDraw(){
 #pragma endregion
 
 	//FPS固定更新
-	fixFPS_->GetUpdate();
+	fixFPS_->Update();
 
 #pragma region コマンドリストのリセット
 	//アロケーターをリセット
