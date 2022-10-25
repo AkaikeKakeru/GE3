@@ -43,6 +43,11 @@ struct ConstBufferDataTransform {
 	Matrix4 mat; //3D変換行列
 };
 
+struct ConstBufferDataViewProjection {
+	Matrix4 view;
+	Matrix4 projection;
+};
+
 //3Dオブジェクト型
 struct Object3d
 {
@@ -210,7 +215,7 @@ void SetIntializeObject3ds(Object3d* object, ID3D12Device* device, int objectNum
 }
 
 //オブジェクト更新処理
-void UpdateObject3d(Object3d* object, Matrix4& matView, Matrix4& matProjection)
+void UpdateObject3d(Object3d* object,ConstBufferDataViewProjection viewProjection)
 {
 	Matrix4 matScale, matRot, matTrans;
 
@@ -236,7 +241,9 @@ void UpdateObject3d(Object3d* object, Matrix4& matView, Matrix4& matProjection)
 	}
 
 	//定数バッファへデータ転送
-	object->constMapTransform->mat = object->matWorld * matView * matProjection;
+	object->constMapTransform->mat = object->matWorld *
+		viewProjection.view * 
+		viewProjection.projection;
 }
 
 void DrawObject3d(Object3d* object, ID3D12GraphicsCommandList* commandList, D3D12_VERTEX_BUFFER_VIEW& vbView,
@@ -855,22 +862,45 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region 投資投影変換行列の計算
-
-	XMMATRIX matProjection =
+	
+	ConstBufferDataViewProjection viewProjection;
+	XMMATRIX matPro;
+	matPro	=
 		XMMatrixPerspectiveFovLH(
 			XMConvertToRadians(45.0f),//上下画角45度
 			(float)WinApp::WinWidth / WinApp::WinHeight,//アスペクト比(画面横幅/画面縦幅)
 			0.1f, 1000.0f
 		);//前端、奥端
 
+
 #pragma region ビュー行列の作成
 	XMMATRIX matView;
+	//Vector3 eye(0, 0, -100);	//視点座標
+	//Vector3 target(0, 0, 0);	//注視点座標
+	//Vector3 up(0, 1, 0);		//上方向ベクトル
+
 	XMFLOAT3 eye(0, 0, -100);	//視点座標
 	XMFLOAT3 target(0, 0, 0);	//注視点座標
 	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
-	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye),
-		XMLoadFloat3(&target), XMLoadFloat3(&up));
 
+
+	matView	= XMMatrixLookAtLH(
+		XMLoadFloat3(&eye),
+		XMLoadFloat3(&target), 
+		XMLoadFloat3(&up));
+
+	for (int i = 0; i < 4; i++)
+	{
+		viewProjection.projection.m[i][0] = XMVectorGetX(matPro.r[i]);
+		viewProjection.projection.m[i][1] = XMVectorGetY(matPro.r[i]);
+		viewProjection.projection.m[i][2] = XMVectorGetZ(matPro.r[i]);
+		viewProjection.projection.m[i][3] = XMVectorGetW(matPro.r[i]);
+
+		viewProjection.view.m[i][0] = XMVectorGetX(matView.r[i]);
+		viewProjection.view.m[i][1] = XMVectorGetY(matView.r[i]);
+		viewProjection.view.m[i][2] = XMVectorGetZ(matView.r[i]);
+		viewProjection.view.m[i][3] = XMVectorGetW(matView.r[i]);
+	}
 #pragma endregion
 
 #pragma endregion
@@ -1046,19 +1076,27 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			matView = XMMatrixLookAtLH(XMLoadFloat3(&eye),
 				XMLoadFloat3(&target), XMLoadFloat3(&up));
 
-			object3ds[0].constMapTransform->mat = matView * matProjection;
+			for (int i = 0; i < 4; i++)
+			{
+				viewProjection.view.m[i][0] = XMVectorGetX(matView.r[i]);
+				viewProjection.view.m[i][1] = XMVectorGetY(matView.r[i]);
+				viewProjection.view.m[i][2] = XMVectorGetZ(matView.r[i]);
+				viewProjection.view.m[i][3] = XMVectorGetW(matView.r[i]);
+			}
+
+			object3ds[0].constMapTransform->mat = viewProjection.view * viewProjection.projection;
 		}
 #pragma endregion
 
 #pragma region 連続移動
+		UpdateObjectControll(&object3ds[0], input);
 
 		for (size_t i = 0; i < _countof(object3ds); i++)
 		{
-			UpdateObject3d(&object3ds[i], matView, matProjection);
+			UpdateObject3d(&object3ds[i], viewProjection);
 
 		}
 
-		UpdateObjectControll(&object3ds[0], input);
 
 #pragma endregion
 
