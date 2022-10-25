@@ -7,6 +7,10 @@
 #include <DirectXMath.h>
 #include <DirectXTex.h>
 
+#include "Vector2.h"
+#include "Vector3.h"
+#include "Matrix4.h"
+
 #include <string>
 
 #include <d3d12.h>
@@ -22,7 +26,7 @@
 
 #pragma comment(lib, "d3dcompiler.lib")//シェーダ用コンパイラ
 
-using namespace DirectX;
+//using namespace DirectX;
 using namespace Microsoft::WRL;
 
 //定数バッファ用データ構造体(マテリアル)
@@ -35,7 +39,7 @@ struct ConstBufferDataMaterial
 #pragma region 3D変換行列
 //定数バッファ用データ構造体(3D変換行列)
 struct ConstBufferDataTransform {
-	XMMATRIX mat; //3D変換行列
+	Matrix4 mat; //3D変換行列
 };
 
 //3Dオブジェクト型
@@ -48,12 +52,12 @@ struct Object3d
 	ConstBufferDataTransform* constMapTransform = {};
 
 	//アフィン変換情報
-	XMFLOAT3 scale = { 1,1,1 };
-	XMFLOAT3 rotation = { 0,0,0 };
-	XMFLOAT3 position = { 0,0,0 };
+	Vector3 scale = { 1,1,1 };
+	Vector3 rotation = { 0,0,0 };
+	Vector3 position = { 0,0,0 };
 
 	//ワールド変換行列
-	XMMATRIX matWorld = {};
+	Matrix4 matWorld = {};
 
 	//親オブジェクトへのポインタ
 	Object3d* parent = nullptr;
@@ -205,12 +209,12 @@ void SetIntializeObject3ds(Object3d* object, ID3D12Device* device, int objectNum
 }
 
 //オブジェクト更新処理
-void UpdateObject3d(Object3d* object, XMMATRIX& matView, XMMATRIX& matProjection)
+void UpdateObject3d(Object3d* object, Matrix4& matView, Matrix4& matProjection)
 {
-	XMMATRIX matScale, matRot, matTrans;
+	Matrix4 matScale, matRot, matTrans;
 
 	//スケール、回転、平行移動行列の計算
-	matScale = XMMatrixScaling(object->scale.x, object->scale.y, object->scale.z);
+	matScale = MatScale(object->scale.x, object->scale.y, object->scale.z);
 	matRot = XMMatrixIdentity();
 	matRot *= XMMatrixRotationZ(object->rotation.z);
 	matRot *= XMMatrixRotationX(object->rotation.x);
@@ -331,7 +335,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//XMFLOAT3 position1;
 
 	//拡縮倍率
-	scale = { 1.0f,1.0f,1.0f };
+	MatScale = { 1.0f,1.0f,1.0f };
 	//回転角
 	rotation = { 00.0f,00.0f,00.0f };
 	//座標
