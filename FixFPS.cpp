@@ -26,7 +26,7 @@ void FixFPS::Update(){
 		= std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
 
 	// 1/60秒 (よりわずかに短い時間)立ってないなら
-	if (elapsed < kMinTime) {
+	if (elapsed < kMinCheckTime) {
 		// 1/60秒経過するまで微小なスリープを繰り返す
 		while (std::chrono::steady_clock::now() - reference_ < kMinTime) {
 			// 1マイクロ秒スリープ
