@@ -3,7 +3,7 @@
 #include <cmath> //sin cos
 
 // ’PˆÊs—ñ‚ğ‹‚ß‚é
-Matrix4 identity(){
+Matrix4 MatIdentity(){
 	static const Matrix4 result{
 		1.0f,0.0f,0.0f,0.0f,
 		0.0f,1.0f,0.0f,0.0f,
