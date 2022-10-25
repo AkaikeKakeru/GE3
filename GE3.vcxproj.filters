@@ -31,6 +31,12 @@
     <Filter Include="リソース ファイル\Shader">
       <UniqueIdentifier>{4f439576-1a0e-4253-bf0e-310b5910453a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\math">
+      <UniqueIdentifier>{42cf21f6-a965-45b9-b834-55d17527ea24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Math">
+      <UniqueIdentifier>{49a74e80-fe20-4216-8f34-7b0ccd9fcabe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -53,6 +59,9 @@
     </ClCompile>
     <ClCompile Include="FixFPS.cpp">
       <Filter>ソース ファイル\Basis</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>ソース ファイル\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -78,7 +87,7 @@
       <Filter>ヘッダー ファイル\Struct</Filter>
     </ClInclude>
     <ClInclude Include="Vector3.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
