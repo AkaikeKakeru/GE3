@@ -14,15 +14,15 @@ Matrix4 MatIdentity();
 Matrix4 MatScale(const Vector3& s);
 
 // 回転行列の設定
-Matrix4 MatRotateX(float angle);
-Matrix4 MatRotateY(float angle);
-Matrix4 MatRotateZ(float angle);
+Matrix4 MatRotationX(float angle);
+Matrix4 MatRotationY(float angle);
+Matrix4 MatRotationZ(float angle);
 
 //平行移動行列の設定
-Matrix4 MatTranslate(const Vector3& t);
+Matrix4 MatTranslation(const Vector3& t);
 
 // 座標変換 (ベクトルと行列の掛け算をする)
-Vector3 MatTransform(const Vector3& v, const Matrix4& m);
+Vector3 Vec3Transform(const Vector3& v, const Matrix4& m);
 
 // 代入演算子オーバーロード
 Matrix4& operator*=(Matrix4& m1, const Matrix4& m2);
