@@ -5,6 +5,10 @@ void DirectXBasis::Initialize(WinApp* winApp) {
 	//nullチェック
 	assert(winApp);
 	winApp_ = winApp;
+	
+	//FPS固定初期化
+	fixFPS_ = new FixFPS();
+	fixFPS_->GetInitialize();
 
 #pragma region Initialize
 	InitDevice();
@@ -326,6 +330,9 @@ void DirectXBasis::PostDraw(){
 	}
 #pragma endregion
 
+	//FPS固定更新
+	fixFPS_->GetUpdate();
+
 #pragma region コマンドリストのリセット
 	//アロケーターをリセット
 	result = commandAllocator_->Reset();
@@ -342,4 +349,9 @@ void DirectXBasis::PostDraw(){
 	result = device_->GetDeviceRemovedReason();
 	assert(SUCCEEDED(result));
 #pragma endregion
+}
+
+DirectXBasis::~DirectXBasis(){
+	delete fixFPS_;
+	fixFPS_ = nullptr;
 }
