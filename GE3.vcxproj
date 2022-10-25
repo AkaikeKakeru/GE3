@@ -142,17 +142,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DirectXBasis.cpp" />
-    <ClCompile Include="Drawer.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Model.cpp" />
     <ClCompile Include="WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectXBasis.h" />
-    <ClInclude Include="Drawer.h" />
     <ClInclude Include="Input.h" />
-    <ClInclude Include="Model.h" />
     <ClInclude Include="Struct.h" />
     <ClInclude Include="WinApp.h" />
   </ItemGroup>
