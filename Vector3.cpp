@@ -13,13 +13,13 @@ Vector3::Vector3(float x, float y, float z)
 }
 
 //ƒmƒ‹ƒ€
-float Vector3::length() const{
+float Vector3::Vec3Length() const{
 	return sqrt((x * x) + (y * y) + (z * z));
 }
 
 //³‹K‰»
-Vector3& Vector3::normalize(){
-	float len = length();
+Vector3& Vector3::Vec3Normalize(){
+	float len = Vec3Length();
 	if(len != 0)
 	{
 		return *this /= len;
@@ -28,12 +28,12 @@ Vector3& Vector3::normalize(){
 }
 
 //“àÏ
-float Vector3::dot(const Vector3& v) const{
+float Vector3::Vec3Dot(const Vector3& v) const{
 	return this->x * v.x + this->y * v.y + this->z * v.z; 
 }
 
 //ŠOÏ
-Vector3 Vector3::cross(const Vector3& v) const{
+Vector3 Vector3::Vec3Cross(const Vector3& v) const{
 	return Vector3(this->y * v.z - this->z * v.y,
 		this->z * v.x - this->x * v.z,
 		this->x * v.y - this->y * v.x);

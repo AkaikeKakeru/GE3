@@ -9,12 +9,12 @@ Vector2::Vector2(float x, float y)
 	: x(x),y(y){
 }
 
-float Vector2::length() const{
+float Vector2::Vec2Length() const{
 	return sqrt((x * x) + (y * y));
 }
 
-Vector2& Vector2::normalize() {
-	float len = length();
+Vector2& Vector2::Vec2Normalize() {
+	float len = Vec2Length();
 	if(len != 0)
 	{
 		return *this /= len;
@@ -22,11 +22,11 @@ Vector2& Vector2::normalize() {
 	return *this;
 }
 
-float Vector2::dot(const Vector2& v) const{
+float Vector2::Vec2Dot(const Vector2& v) const{
 	return this->x* v.x + this->y*v.y;
 }
 
-float Vector2::cross(const Vector2& v) const{
+float Vector2::Vec2Cross(const Vector2& v) const{
 	return this->x* v.y - this->y*v.x;
 }
 

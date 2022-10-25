@@ -16,7 +16,7 @@ Matrix4 identity(){
 
 
 //拡大縮小行列の設定
-Matrix4 scale(const Vector3& s) {
+Matrix4 MatScale(const Vector3& s) {
 	Matrix4 result{
 		s.x,0.0f,0.0f,0.0f,
 		0.0f, s.y,0.0f,0.0f,
@@ -28,7 +28,7 @@ Matrix4 scale(const Vector3& s) {
 }
 
 // 回転行列の設定
-Matrix4 rotateX(float angle){
+Matrix4 MatRotateX(float angle){
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
 
@@ -42,7 +42,7 @@ Matrix4 rotateX(float angle){
 	return result;
 }
 
-Matrix4 rotateY(float angle){
+Matrix4 MatRotateY(float angle){
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
 
@@ -56,7 +56,7 @@ Matrix4 rotateY(float angle){
 	return result;
 }
 
-Matrix4 rotateZ(float angle){
+Matrix4 MatRotateZ(float angle){
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
 
@@ -71,7 +71,7 @@ Matrix4 rotateZ(float angle){
 }
 
 //平行移動行列の設定
-Matrix4 translate(const Vector3& t){
+Matrix4 MatTranslate(const Vector3& t){
 	Matrix4 result{
 		1.0f,0.0f,0.0f,0.0f,
 		0.0f,1.0f,0.0f,0.0f,
@@ -83,7 +83,7 @@ Matrix4 translate(const Vector3& t){
 }
 
 // 座標変換 (ベクトルと行列の掛け算をする)
-Vector3 transform(const Vector3& v, const Matrix4& m){
+Vector3 MatTransform(const Vector3& v, const Matrix4& m){
 	float v_[4] = {v.x,v.y,v.z,1};
 
 	//v.x * m.m[0][3] + v.y * m.m[1][3] + v.z * m.m[2][3] + (1 * ) m.m[3][3];
@@ -138,5 +138,5 @@ const Matrix4 operator*(const Matrix4& m1, const Matrix4& m2){
 }
 
 const Vector3 operator*(const Vector3& v, const Matrix4& m){
-	return transform(v,m);
+	return MatTransform(v,m);
 }

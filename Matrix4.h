@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Vector3.h"
-/*#include <DxLib.h>*/
 
 //Matrix4 構造体
 struct Matrix4{
@@ -12,18 +11,18 @@ struct Matrix4{
 Matrix4 identity();
 
 //拡大縮小行列の設定
-Matrix4 scale(const Vector3& s);
+Matrix4 MatScale(const Vector3& s);
 
 // 回転行列の設定
-Matrix4 rotateX(float angle);
-Matrix4 rotateY(float angle);
-Matrix4 rotateZ(float angle);
+Matrix4 MatRotateX(float angle);
+Matrix4 MatRotateY(float angle);
+Matrix4 MatRotateZ(float angle);
 
 //平行移動行列の設定
-Matrix4 translate(const Vector3& t);
+Matrix4 MatTranslate(const Vector3& t);
 
 // 座標変換 (ベクトルと行列の掛け算をする)
-Vector3 transform(const Vector3& v, const Matrix4& m);
+Vector3 MatTransform(const Vector3& v, const Matrix4& m);
 
 // 代入演算子オーバーロード
 Matrix4& operator*=(Matrix4& m1, const Matrix4& m2);
