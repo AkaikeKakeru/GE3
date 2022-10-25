@@ -146,6 +146,7 @@
     <ClCompile Include="FixFPS.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Matrix4.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="DrawBasis.h" />
     <ClInclude Include="FixFPS.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Matrix4.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Struct.h" />
     <ClInclude Include="Vector2.h" />
