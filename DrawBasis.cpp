@@ -16,8 +16,6 @@
 using namespace DirectX;
 
 void DrawBasis::Initialize(DirectXBasis* dXBas){
-	HRESULT result;
-
 	LoadInstance(dXBas);
 
 	CompileShaderFile();
@@ -39,7 +37,9 @@ void DrawBasis::Draw(){
 	dXBas_->GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);
 
 	//描画コマンド
-	dXBas_->GetCommandList()->DrawInstanced(_countof(vertices), 1, 0, 0);
+	dXBas_->GetCommandList()->DrawInstanced(
+		//_countof(vertices)
+		VerticesNum, 1, 0, 0);
 }
 
 void DrawBasis::LoadInstance(DirectXBasis* dXBas){
@@ -49,7 +49,24 @@ void DrawBasis::LoadInstance(DirectXBasis* dXBas){
 void DrawBasis::CreateVertexBufferView(){
 	HRESULT result;
 
-	AssembleVetices();
+	typedef enum VerticesParts {
+		LeftBottom,
+		LeftTop,
+		RightBottom,
+	}VerticesParts;
+
+	float left = -5.0f;
+	float right = +5.0f;
+	float top = +5.0f;
+	float bottom = -5.0f;
+
+	//頂点データ
+	Vector3 vertices[VerticesNum];
+
+	vertices[LeftBottom] = Vector3( left,bottom,0 );
+	vertices[LeftTop] = Vector3( left,bottom,0 );
+	vertices[RightBottom] = Vector3( left,bottom,0 );
+	//AssembleVetices();
 
 	//頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(Vector3) * _countof(vertices));
@@ -115,6 +132,8 @@ void DrawBasis::AssembleVetices(){
 	float bottom = -5.0f;
 
 	//頂点データ
+	Vector3 vertices[VerticesNum];
+
 	vertices[LeftBottom] = { left,bottom,0 };
 	vertices[LeftTop] = { left,bottom,0 };
 	vertices[RightBottom] = { left,bottom,0 };

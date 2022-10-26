@@ -46,7 +46,8 @@ private:
 
 	DirectXBasis* dXBas_ = nullptr;
 
-	Vector3 vertices[VerticesNum];//頂点データ
+	//頂点データ
+	/*Vector3 vertices_[VerticesNum];*/
 
 	D3D12_VERTEX_BUFFER_VIEW vbView_{};//頂点バッファビュー
 
