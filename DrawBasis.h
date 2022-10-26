@@ -25,6 +25,9 @@ private:
 
 	ComPtr<ID3DBlob> vsBlob_ = nullptr;//頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> psBlob_ = nullptr;//ピクセルシェーダオブジェクト
+	ComPtr<ID3DBlob> errorBlob_ = nullptr;//エラーオブジェクト
 
-	D3D12_INPUT_ELEMENT_DESC inputLayout_[ElementDescNum];
+	D3D12_INPUT_ELEMENT_DESC inputLayout_[ElementDescNum];//頂点レイアウト
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_{};//グラフィックスパイプラインデスク
 };
