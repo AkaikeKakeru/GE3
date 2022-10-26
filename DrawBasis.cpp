@@ -7,6 +7,8 @@
 
 #include <d3d12.h>
 #include <d3dcompiler.h>//シェーダ用コンパイラ
+
+#include <string>
 #include <cassert>
 
 #pragma comment(lib, "d3dcompiler.lib")//シェーダ用コンパイラ
