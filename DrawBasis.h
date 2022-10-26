@@ -10,6 +10,8 @@ private:
 public: //基本的なメンバ関数
 	void Initialize(DirectXBasis* dXBas);
 
+	void Draw();
+
 private: //固有のメンバ関数
 	//インスタンスのポインタを読み込んで、メンバ変数にセットする
 	void LoadInstance(DirectXBasis* dXBas);
@@ -29,6 +31,12 @@ private: //固有のメンバ関数
 	void SettingGraphicsPopelineDesc();
 	//ルートシグネチャを生成
 	void CreateRootSignature();
+
+
+	//描画準備
+	void PrepareDraw();
+	//描画後処理
+	void PostDraw();
 
 private:
 	static const int ElementDescNum = 1;//inputLayout_のエレメント数

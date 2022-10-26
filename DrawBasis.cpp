@@ -27,6 +27,9 @@ void DrawBasis::Initialize(DirectXBasis* dXBas){
 	CreateGraphicsPopeline();
 }
 
+void DrawBasis::Draw(){
+}
+
 void DrawBasis::LoadInstance(DirectXBasis* dXBas){
 	dXBas_ = dXBas;
 }
@@ -243,4 +246,11 @@ void DrawBasis::CreateRootSignature(){
 
 	//パイプラインにルートシグネイチャをセット
 	pipelineDesc_.pRootSignature = rootSignature.Get();
+}
+
+void DrawBasis::PrepareDraw(){
+}
+
+void DrawBasis::PostDraw(){
+
 }
