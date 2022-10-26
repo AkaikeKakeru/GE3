@@ -16,6 +16,7 @@ private: //ŒÅ—L‚Ìƒƒ“ƒoŠÖ”
 	void CompileShaderFile();
 	void InputVertexLayout();
 	void CreateGraphicsPopeline();
+	void SettingGraphicsPopelineDesc();
 	void CreateRootSignature();
 
 private:
