@@ -1,7 +1,18 @@
 #pragma once
+#include "DirectXBasis.h"
 
 class DrawBasis
 {
+private:
+	template <class Type>
+	using ComPtr = Microsoft::WRL::ComPtr<Type>;
+
 public: //基本的なメンバ関数
-	void Initialize();
+	void Initialize(DirectXBasis* dXBas);
+
+private: //固有のメンバ関数
+	void LoadInstance(DirectXBasis* dXBas);
+
+private:
+	DirectXBasis* dXBas_ = nullptr;
 };

@@ -1,11 +1,20 @@
+#include <Windows.h>
+
 #include "DrawBasis.h"
 #include <DirectXMath.h>
 #include "Vector3.h"
 #include <wrl.h>
 
+#include <d3d12.h>
+#include <cassert>
+
 using namespace DirectX;
 
-void DrawBasis::Initialize(){
+void DrawBasis::Initialize(DirectXBasis* dXBas){
+	HRESULT result;
+
+	LoadInstance(dXBas);
+
 	//頂点データ
 	Vector3 vertices[] = {
 		//x		 y		z
@@ -33,7 +42,7 @@ void DrawBasis::Initialize(){
 
 	//頂点バッファの生成
 	ComPtr<ID3D12Resource> vertBuff = nullptr;
-	result = dXBas->GetDevice()->CreateCommittedResource(
+	result = dXBas_->GetDevice()->CreateCommittedResource(
 		&heapProp,//ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
 		&resDesc,//リソース設定
@@ -54,4 +63,8 @@ void DrawBasis::Initialize(){
 
 	//繋がりを解除
 	vertBuff->Unmap(0, nullptr);
+}
+
+void DrawBasis::LoadInstance(DirectXBasis* dXBas){
+	dXBas_ = dXBas;
 }

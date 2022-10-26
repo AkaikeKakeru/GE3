@@ -309,7 +309,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	DrawBasis* drawBas = nullptr;
 	//DrawBasis‰Šú‰»
 	drawBas = new DrawBasis();
-	drawBas->Initialize();
+	drawBas->Initialize(dXBas);
 #pragma endregion
 #pragma endregion
 #pragma endregion
