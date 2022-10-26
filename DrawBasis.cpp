@@ -170,6 +170,12 @@ void DrawBasis::CreateGraphicsPopeline(){
 	SettingGraphicsPopelineDesc();
 
 	CreateRootSignature();
+
+	//パイプラインステートの生成
+	ComPtr<ID3D12PipelineState> pipelineState = nullptr;
+	result = dXBas->GetDevice()->CreateGraphicsPipelineState(&pipelineDesc,
+		IID_PPV_ARGS(&pipelineState));
+	assert(SUCCEEDED(result));
 }
 
 void DrawBasis::SettingGraphicsPopelineDesc(){
