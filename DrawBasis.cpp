@@ -166,6 +166,8 @@ void DrawBasis::InputVertexLayout(){
 }
 
 void DrawBasis::CreateGraphicsPopeline(){
+	HRESULT result;
+
 	//グラフィックスパイプライン設定
 	SettingGraphicsPopelineDesc();
 
@@ -173,7 +175,7 @@ void DrawBasis::CreateGraphicsPopeline(){
 
 	//パイプラインステートの生成
 	ComPtr<ID3D12PipelineState> pipelineState = nullptr;
-	result = dXBas->GetDevice()->CreateGraphicsPipelineState(&pipelineDesc,
+	result = dXBas_->GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_,
 		IID_PPV_ARGS(&pipelineState));
 	assert(SUCCEEDED(result));
 }
