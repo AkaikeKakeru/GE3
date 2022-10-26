@@ -18,12 +18,14 @@ private: //固有のメンバ関数
 
 	//頂点バッファビューの作成
 	void CreateVertexBufferView();
-	
+	//頂点データを組み立てる
+	void AssembleVetices();
+
 	//シェーダファイルを読み込み、コンパイルする
 	void CompileShaderFile();
 
 	//頂点レイアウトを組み立てる
-	void InputVertexLayout();
+	void AssembleVertexLayout();
 
 	//グラフィックスパイプラインを生成
 	void CreateGraphicsPopeline();
@@ -40,8 +42,13 @@ private: //固有のメンバ関数
 
 private:
 	static const int ElementDescNum = 1;//inputLayout_のエレメント数
+	static const int VerticesNum = 3;//verticesの頂点数
 
 	DirectXBasis* dXBas_ = nullptr;
+
+	Vector3 vertices[VerticesNum];//頂点データ
+
+	D3D12_VERTEX_BUFFER_VIEW vbView_{};//頂点バッファビュー
 
 	ComPtr<ID3DBlob> vsBlob_ = nullptr;//頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> psBlob_ = nullptr;//ピクセルシェーダオブジェクト
@@ -50,4 +57,8 @@ private:
 	D3D12_INPUT_ELEMENT_DESC inputLayout_[ElementDescNum];//頂点レイアウト
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_{};//グラフィックスパイプラインデスク
+
+	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;//ルートシグネチャ
+
+	ComPtr<ID3D12PipelineState> pipelineState_ = nullptr;//パイプラインステート
 };

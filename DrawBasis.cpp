@@ -22,24 +22,24 @@ void DrawBasis::Initialize(DirectXBasis* dXBas){
 
 	CompileShaderFile();
 
-	InputVertexLayout();
+	AssembleVertexLayout();
 
 	CreateGraphicsPopeline();
 }
 
 void DrawBasis::Draw(){
 	//パイプラインステートとルートシグネチャの設定コマンド
-	dXBas->GetCommandList()->SetPipelineState(pipelineState.Get());
-	dXBas->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
+	dXBas_->GetCommandList()->SetPipelineState(pipelineState_.Get());
+	dXBas_->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
 
 	//プリミティブ形状の設定コマンド
-	dXBas->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
+	dXBas_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
 
 	//頂点バッファビューの設定コマンド
-	dXBas->GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
+	dXBas_->GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);
 
 	//描画コマンド
-	commandList->DrawInstanced(_countof(vertices), 1, 0, 0, 0);
+	dXBas_->GetCommandList()->DrawInstanced(_countof(vertices), 1, 0, 0);
 }
 
 void DrawBasis::LoadInstance(DirectXBasis* dXBas){
@@ -49,13 +49,7 @@ void DrawBasis::LoadInstance(DirectXBasis* dXBas){
 void DrawBasis::CreateVertexBufferView(){
 	HRESULT result;
 
-	//頂点データ
-	Vector3 vertices[] = {
-		//x		 y		z
-		{-5.0f, -5.0f, -5.0f},//左下
-		{-5.0f,  5.0f, -5.0f},//左上
-		{ 5.0f, -5.0f, -5.0f},//右下
-	};
+	AssembleVetices();
 
 	//頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(Vector3) * _countof(vertices));
@@ -99,13 +93,31 @@ void DrawBasis::CreateVertexBufferView(){
 	vertBuff->Unmap(0, nullptr);
 
 	//頂点バッファビューの作成
-	D3D12_VERTEX_BUFFER_VIEW vbView{};
+	/*D3D12_VERTEX_BUFFER_VIEW vbView{};*/
 	//GPU仮想アドレス
-	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
+	vbView_.BufferLocation = vertBuff->GetGPUVirtualAddress();
 	//頂点バッファのサイズ
-	vbView.SizeInBytes = sizeVB;
+	vbView_.SizeInBytes = sizeVB;
 	//頂点１つ分のデータサイズ
-	vbView.StrideInBytes = sizeof(Vector3);
+	vbView_.StrideInBytes = sizeof(Vector3);
+}
+
+void DrawBasis::AssembleVetices(){
+	typedef enum VerticesParts {
+		LeftBottom,
+		LeftTop,
+		RightBottom,
+	}VerticesParts;
+
+	float left = -5.0f;
+	float right = +5.0f;
+	float top = +5.0f;
+	float bottom = -5.0f;
+
+	//頂点データ
+	vertices[LeftBottom] = { left,bottom,0 };
+	vertices[LeftTop] = { left,bottom,0 };
+	vertices[RightBottom] = { left,bottom,0 };
 }
 
 void DrawBasis::CompileShaderFile(){
@@ -162,7 +174,7 @@ void DrawBasis::CompileShaderFile(){
 	}
 }
 
-void DrawBasis::InputVertexLayout(){
+void DrawBasis::AssembleVertexLayout(){
 	typedef enum ElementName {
 		Position,
 	}ElementName;
@@ -189,9 +201,9 @@ void DrawBasis::CreateGraphicsPopeline(){
 	CreateRootSignature();
 
 	//パイプラインステートの生成
-	ComPtr<ID3D12PipelineState> pipelineState = nullptr;
+	/*ComPtr<ID3D12PipelineState> pipelineState = nullptr;*/
 	result = dXBas_->GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_,
-		IID_PPV_ARGS(&pipelineState));
+		IID_PPV_ARGS(&pipelineState_));
 	assert(SUCCEEDED(result));
 }
 
@@ -233,7 +245,7 @@ void DrawBasis::CreateRootSignature(){
 	HRESULT result;
 
 	//ルートシグネチャ
-	ComPtr<ID3D12RootSignature> rootSignature;
+	//ComPtr<ID3D12RootSignature> rootSignature;
 
 	//ルートシグネチャの設定
 	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
@@ -253,11 +265,11 @@ void DrawBasis::CreateRootSignature(){
 		0,
 		rootSigBlob->GetBufferPointer(),
 		rootSigBlob->GetBufferSize(),
-		IID_PPV_ARGS(&rootSignature));
+		IID_PPV_ARGS(&rootSignature_));
 	assert(SUCCEEDED(result));
 
 	//パイプラインにルートシグネイチャをセット
-	pipelineDesc_.pRootSignature = rootSignature.Get();
+	pipelineDesc_.pRootSignature = rootSignature_.Get();
 }
 
 void DrawBasis::PrepareDraw(){
