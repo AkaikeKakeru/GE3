@@ -23,8 +23,7 @@ void DrawBasis::Initialize(DirectXBasis* dXBas){
 	CompileShaderFile();
 
 	//頂点レイアウト
-	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
-		{
+	inputLayout_[0] = {
 			//xyz座標
 			"POSITION",									//セマンティック名
 			0,											//同じセマンティック名が複数あるときに使うインデックス(0でよい)
@@ -33,7 +32,6 @@ void DrawBasis::Initialize(DirectXBasis* dXBas){
 			D3D12_APPEND_ALIGNED_ELEMENT,				//データのオフセット値　(D3D12_APPEND_ALIGNED_ELEMENTだと自動設定)
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,	//入力データ種別　(標準はD3D12_INPUT_CLASSIFICATION_PER_VERTEX_DAT
 			0											//一度に描画するインスタンス数(0でよい)
-		},
 	};
 
 	CreateGraphicsPopeline();
@@ -184,8 +182,8 @@ void DrawBasis::CreateGraphicsPopeline(){
 		= D3D12_COLOR_WRITE_ENABLE_ALL;//RGB全てのチャネルを描画
 
 	//頂点レイアウトの設定
-	pipelineDesc.InputLayout.pInputElementDescs = inputLayout;
-	pipelineDesc.InputLayout.NumElements = _countof(inputLayout);
+	pipelineDesc.InputLayout.pInputElementDescs = inputLayout_;
+	pipelineDesc.InputLayout.NumElements = ElementDescNum;//_countof(inputLayout_);
 
 	//図形の形状設定
 	pipelineDesc.PrimitiveTopologyType
