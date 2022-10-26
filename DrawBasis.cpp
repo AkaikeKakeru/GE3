@@ -28,6 +28,18 @@ void DrawBasis::Initialize(DirectXBasis* dXBas){
 }
 
 void DrawBasis::Draw(){
+	//パイプラインステートとルートシグネチャの設定コマンド
+	dXBas->GetCommandList()->SetPipelineState(pipelineState.Get());
+	dXBas->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
+
+	//プリミティブ形状の設定コマンド
+	dXBas->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
+
+	//頂点バッファビューの設定コマンド
+	dXBas->GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
+
+	//描画コマンド
+	commandList->DrawInstanced(_countof(vertices), 1, 0, 0, 0);
 }
 
 void DrawBasis::LoadInstance(DirectXBasis* dXBas){
@@ -249,6 +261,7 @@ void DrawBasis::CreateRootSignature(){
 }
 
 void DrawBasis::PrepareDraw(){
+
 }
 
 void DrawBasis::PostDraw(){
