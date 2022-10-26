@@ -280,7 +280,7 @@ void UpdateObjectControll(Object3d* object, Input* input) {
 }
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
-	HRESULT result;
+	//HRESULT result;
 #pragma region Šî”Õ‰Šú‰»
 #pragma region WindowsAPI
 	//ƒ|ƒCƒ“ƒ^
