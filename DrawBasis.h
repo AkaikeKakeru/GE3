@@ -16,6 +16,7 @@ private: //固有のメンバ関数
 	void CompileShaderFile();
 	void InputVertexLayout();
 	void CreateGraphicsPopeline();
+	void CreateRootSignature();
 
 private:
 	static const int ElementDescNum = 1;//inputLayout_のエレメント数
