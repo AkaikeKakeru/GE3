@@ -6,7 +6,10 @@
 #include <wrl.h>
 
 #include <d3d12.h>
+#include <d3dcompiler.h>//シェーダ用コンパイラ
 #include <cassert>
+
+#pragma comment(lib, "d3dcompiler.lib")//シェーダ用コンパイラ
 
 using namespace DirectX;
 
@@ -72,6 +75,61 @@ void DrawBasis::Initialize(DirectXBasis* dXBas){
 	vbView.SizeInBytes = sizeVB;
 	//頂点１つ分のデータサイズ
 	vbView.StrideInBytes = sizeof(Vector3);
+
+	ComPtr<ID3DBlob> vsBlob = nullptr;//頂点シェーダオブジェクト
+	ComPtr<ID3DBlob> psBlob = nullptr;//ピクセルシェーダオブジェクト
+	ComPtr<ID3DBlob> errorBlob = nullptr;//エラーオブジェクト
+
+
+	//頂点シェーダの読み込みとコンパイル
+	result = D3DCompileFromFile(
+		L"BasicVS.hlsl",//シェーダファイル名
+		nullptr,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,//インクルード可能にする
+		"main", "vs_5_0",//エントリーポイント名、シェーダ―モデル指定
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,//デバッグ用設定
+		0,
+		&vsBlob, &errorBlob);
+
+	//エラーなら
+	if (FAILED(result)) {
+		//errorBlobからエラー内容をstring型にコピー
+		std::string error;
+		error.resize(errorBlob->GetBufferSize());
+
+		std::copy_n((char*)errorBlob->GetBufferPointer(),
+			errorBlob->GetBufferSize(),
+			error.begin());
+		error += "\n";
+		//エラー内容を出力ウィンドウに表示
+		OutputDebugStringA(error.c_str());
+		assert(0);
+	}
+
+	//ピクセルシェーダの読み込みとコンパイル
+	result = D3DCompileFromFile(
+		L"BasicPS.hlsl",//シェーダファイル名
+		nullptr,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,//インクルード可能にする
+		"main", "ps_5_0",//エントリーポイント名、シェーダーモデル指定
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,//デバッグ用設定
+		0,
+		&psBlob, &errorBlob);
+
+	//エラーなら
+	if (FAILED(result)) {
+		//errorBlobからエラー内容をstring型にコピー
+		std::string error;
+		error.resize(errorBlob->GetBufferSize());
+
+		std::copy_n((char*)errorBlob->GetBufferPointer(),
+			errorBlob->GetBufferSize(),
+			error.begin());
+		error += "\n";
+		//エラー内容を出力ウィンドウに表示
+		OutputDebugStringA(error.c_str());
+		assert(0);
+	}
 }
 
 void DrawBasis::LoadInstance(DirectXBasis* dXBas){
