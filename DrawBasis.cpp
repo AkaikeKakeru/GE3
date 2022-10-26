@@ -63,6 +63,15 @@ void DrawBasis::Initialize(DirectXBasis* dXBas){
 
 	//繋がりを解除
 	vertBuff->Unmap(0, nullptr);
+
+	//頂点バッファビューの作成
+	D3D12_VERTEX_BUFFER_VIEW vbView{};
+	//GPU仮想アドレス
+	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
+	//頂点バッファのサイズ
+	vbView.SizeInBytes = sizeVB;
+	//頂点１つ分のデータサイズ
+	vbView.StrideInBytes = sizeof(Vector3);
 }
 
 void DrawBasis::LoadInstance(DirectXBasis* dXBas){
