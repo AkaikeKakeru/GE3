@@ -20,6 +20,16 @@ void DrawBasis::Initialize(DirectXBasis* dXBas){
 
 	LoadInstance(dXBas);
 
+	CompileShaderFile();
+}
+
+void DrawBasis::LoadInstance(DirectXBasis* dXBas){
+	dXBas_ = dXBas;
+}
+
+void DrawBasis::CreateVertexBufferView(){
+	HRESULT result;
+
 	//頂点データ
 	Vector3 vertices[] = {
 		//x		 y		z
@@ -77,11 +87,14 @@ void DrawBasis::Initialize(DirectXBasis* dXBas){
 	vbView.SizeInBytes = sizeVB;
 	//頂点１つ分のデータサイズ
 	vbView.StrideInBytes = sizeof(Vector3);
+}
+
+void DrawBasis::CompileShaderFile(){
+	HRESULT result;
 
 	ComPtr<ID3DBlob> vsBlob = nullptr;//頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> psBlob = nullptr;//ピクセルシェーダオブジェクト
 	ComPtr<ID3DBlob> errorBlob = nullptr;//エラーオブジェクト
-
 
 	//頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
@@ -132,8 +145,4 @@ void DrawBasis::Initialize(DirectXBasis* dXBas){
 		OutputDebugStringA(error.c_str());
 		assert(0);
 	}
-}
-
-void DrawBasis::LoadInstance(DirectXBasis* dXBas){
-	dXBas_ = dXBas;
 }

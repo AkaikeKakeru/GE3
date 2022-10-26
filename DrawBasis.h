@@ -12,6 +12,8 @@ public: //基本的なメンバ関数
 
 private: //固有のメンバ関数
 	void LoadInstance(DirectXBasis* dXBas);
+	void CreateVertexBufferView();
+	void CompileShaderFile();
 
 private:
 	DirectXBasis* dXBas_ = nullptr;
