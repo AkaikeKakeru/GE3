@@ -1128,40 +1128,40 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma region 設定コマンド
 
-		//パイプラインステートとルートシグネチャの設定コマンド
-		dXBas->GetCommandList()->SetPipelineState(pipelineState.Get());
-		dXBas->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
+		////パイプラインステートとルートシグネチャの設定コマンド
+		//dXBas->GetCommandList()->SetPipelineState(pipelineState.Get());
+		//dXBas->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
 
-		//プリミティブ形状の設定コマンド
-		dXBas->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
+		////プリミティブ形状の設定コマンド
+		//dXBas->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
 
-		//頂点バッファビューの設定コマンド
-		dXBas->GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
+		////頂点バッファビューの設定コマンド
+		//dXBas->GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
 
-		//定数バッファビュー(CBV)の設定コマンド
-		dXBas->GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+		////定数バッファビュー(CBV)の設定コマンド
+		//dXBas->GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
-		//SRVヒープの設定コマンド
-		dXBas->GetCommandList()->SetDescriptorHeaps(1, &srvHeap);
+		////SRVヒープの設定コマンド
+		//dXBas->GetCommandList()->SetDescriptorHeaps(1, &srvHeap);
 
-		//SRVヒープの先頭ハンドルを取得(SRVを指しているはず)
-		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-		//SRVヒープの先頭にあるSRVをルートパラメータ1番に設定
-		dXBas->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+		////SRVヒープの先頭ハンドルを取得(SRVを指しているはず)
+		//D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
+		////SRVヒープの先頭にあるSRVをルートパラメータ1番に設定
+		//dXBas->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 
-		if (ifOneTextureNum == false) {
-			//2枚目を指し示すようにしたSRVのハンドルをルートパラメータに設定
-			srvGpuHandle.ptr += incrementSize;
-			dXBas->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
-		}
+		//if (ifOneTextureNum == false) {
+		//	//2枚目を指し示すようにしたSRVのハンドルをルートパラメータに設定
+		//	srvGpuHandle.ptr += incrementSize;
+		//	dXBas->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+		//}
 
-		//インデックスバッファビューの設定コマンド
-		dXBas->GetCommandList()->IASetIndexBuffer(&ibView);
+		////インデックスバッファビューの設定コマンド
+		//dXBas->GetCommandList()->IASetIndexBuffer(&ibView);
 
-		//全オブジェクトについて処理
-		for (int i = 0; i < _countof(object3ds); i++) {
-			DrawObject3d(&object3ds[i], dXBas->GetCommandList(), vbView, ibView, _countof(indices));
-		}
+		////全オブジェクトについて処理
+		//for (int i = 0; i < _countof(object3ds); i++) {
+		//	DrawObject3d(&object3ds[i], dXBas->GetCommandList(), vbView, ibView, _countof(indices));
+		//}
 
 #pragma endregion
 
