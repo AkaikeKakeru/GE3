@@ -14,6 +14,7 @@ private: //ŒÅ—L‚Ìƒƒ“ƒoŠÖ”
 	void LoadInstance(DirectXBasis* dXBas);
 	void CreateVertexBufferView();
 	void CompileShaderFile();
+	void CreateGraphicsPopeline();
 
 private:
 	DirectXBasis* dXBas_ = nullptr;

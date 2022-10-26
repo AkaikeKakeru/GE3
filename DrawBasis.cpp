@@ -35,6 +35,8 @@ void DrawBasis::Initialize(DirectXBasis* dXBas){
 			0											//一度に描画するインスタンス数(0でよい)
 		},
 	};
+
+	CreateGraphicsPopeline();
 }
 
 void DrawBasis::LoadInstance(DirectXBasis* dXBas){
@@ -159,4 +161,15 @@ void DrawBasis::CompileShaderFile(){
 		OutputDebugStringA(error.c_str());
 		assert(0);
 	}
+}
+
+void DrawBasis::CreateGraphicsPopeline(){
+	//グラフィックスパイプライン設定
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc{};
+
+	//シェーダーの設定
+	pipelineDesc.VS.pShaderBytecode = vsBlob->GetBufferPointer();
+	pipelineDesc.VS.BytecodeLength = vsBlob->GetBufferSize();
+	pipelineDesc.PS.pShaderBytecode = psBlob->GetBufferPointer();
+	pipelineDesc.PS.BytecodeLength = psBlob->GetBufferSize();
 }
