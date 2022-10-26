@@ -11,12 +11,23 @@ public: //基本的なメンバ関数
 	void Initialize(DirectXBasis* dXBas);
 
 private: //固有のメンバ関数
+	//インスタンスのポインタを読み込んで、メンバ変数にセットする
 	void LoadInstance(DirectXBasis* dXBas);
+
+	//頂点バッファビューの作成
 	void CreateVertexBufferView();
+	
+	//シェーダファイルを読み込み、コンパイルする
 	void CompileShaderFile();
+
+	//頂点レイアウトを組み立てる
 	void InputVertexLayout();
+
+	//グラフィックスパイプラインを生成
 	void CreateGraphicsPopeline();
+	//グラフィックスパイプラインデスクの中身を設定
 	void SettingGraphicsPopelineDesc();
+	//ルートシグネチャを生成
 	void CreateRootSignature();
 
 private:
