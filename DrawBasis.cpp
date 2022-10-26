@@ -182,4 +182,12 @@ void DrawBasis::CreateGraphicsPopeline(){
 	//ブレンドステート
 	pipelineDesc.BlendState.RenderTarget[0].RenderTargetWriteMask
 		= D3D12_COLOR_WRITE_ENABLE_ALL;//RGB全てのチャネルを描画
+
+	//頂点レイアウトの設定
+	pipelineDesc.InputLayout.pInputElementDescs = inputLayout;
+	pipelineDesc.InputLayout.NumElements = _countof(inputLayout);
+
+	//図形の形状設定
+	pipelineDesc.PrimitiveTopologyType
+		= D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 }
