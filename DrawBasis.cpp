@@ -22,7 +22,7 @@ void DrawBasis::Initialize(DirectXBasis* dXBas){
 
 	AssembleVertexLayout();
 
-	CreateGraphicsPopeline();
+	CreateGraphicsPipeline();
 }
 
 void DrawBasis::Draw(){
@@ -211,11 +211,11 @@ void DrawBasis::AssembleVertexLayout(){
 	};
 }
 
-void DrawBasis::CreateGraphicsPopeline(){
+void DrawBasis::CreateGraphicsPipeline(){
 	HRESULT result;
 
 	//グラフィックスパイプライン設定
-	SettingGraphicsPopelineDesc();
+	SettingGraphicsPipelineDesc();
 
 	CreateRootSignature();
 
@@ -226,7 +226,7 @@ void DrawBasis::CreateGraphicsPopeline(){
 	assert(SUCCEEDED(result));
 }
 
-void DrawBasis::SettingGraphicsPopelineDesc(){
+void DrawBasis::SettingGraphicsPipelineDesc(){
 	//シェーダーの設定
 	pipelineDesc_.VS.pShaderBytecode = vsBlob_->GetBufferPointer();
 	pipelineDesc_.VS.BytecodeLength = vsBlob_->GetBufferSize();

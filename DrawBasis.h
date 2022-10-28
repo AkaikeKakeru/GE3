@@ -28,9 +28,9 @@ private: //固有のメンバ関数
 	void AssembleVertexLayout();
 
 	//グラフィックスパイプラインを生成
-	void CreateGraphicsPopeline();
+	void CreateGraphicsPipeline();
 	//グラフィックスパイプラインデスクの中身を設定
-	void SettingGraphicsPopelineDesc();
+	void SettingGraphicsPipelineDesc();
 	//ルートシグネチャを生成
 	void CreateRootSignature();
 
