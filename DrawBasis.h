@@ -10,14 +10,12 @@ private:
 public: //基本的なメンバ関数
 	void Initialize(DirectXBasis* dXBas);
 
-	void Draw();
+	void Draw(DirectXBasis* dXBas);
 
 private: //固有のメンバ関数
-	//インスタンスのポインタを読み込んで、メンバ変数にセットする
-	void LoadInstance(DirectXBasis* dXBas);
 
 	//頂点バッファビューの作成
-	void CreateVertexBufferView();
+	void CreateVertexBufferView(DirectXBasis* dXBas);
 	//頂点データを組み立てる
 	void AssembleVetices();
 
@@ -28,12 +26,11 @@ private: //固有のメンバ関数
 	void AssembleVertexLayout();
 
 	//グラフィックスパイプラインを生成
-	void CreateGraphicsPipeline();
+	void CreateGraphicsPipeline(DirectXBasis* dXBas);
 	//グラフィックスパイプラインデスクの中身を設定
 	void SettingGraphicsPipelineDesc();
 	//ルートシグネチャを生成
-	void CreateRootSignature();
-
+	void CreateRootSignature(DirectXBasis* dXBas);
 
 	//描画準備
 	void PrepareDraw();
@@ -43,11 +40,6 @@ private: //固有のメンバ関数
 private:
 	static const int ElementDescNum = 1;//inputLayout_のエレメント数
 	static const int VerticesNum = 3;//verticesの頂点数
-
-	DirectXBasis* dXBas_ = nullptr;
-
-	//頂点データ
-	/*Vector3 vertices_[VerticesNum];*/
 
 	D3D12_VERTEX_BUFFER_VIEW vbView_{};//頂点バッファビュー
 

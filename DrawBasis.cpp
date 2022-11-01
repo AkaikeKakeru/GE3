@@ -16,37 +16,33 @@
 using namespace DirectX;
 
 void DrawBasis::Initialize(DirectXBasis* dXBas){
-	LoadInstance(dXBas);
+	CreateVertexBufferView(dXBas);
 
 	CompileShaderFile();
 
 	AssembleVertexLayout();
 
-	CreateGraphicsPipeline();
+	CreateGraphicsPipeline(dXBas);
 }
 
-void DrawBasis::Draw(){
+void DrawBasis::Draw(DirectXBasis* dXBas){
 	//パイプラインステートとルートシグネチャの設定コマンド
-	dXBas_->GetCommandList()->SetPipelineState(pipelineState_.Get());
-	dXBas_->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
+	dXBas->GetCommandList()->SetPipelineState(pipelineState_.Get());
+	dXBas->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
 
 	//プリミティブ形状の設定コマンド
-	dXBas_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
+	dXBas->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
 
 	//頂点バッファビューの設定コマンド
-	dXBas_->GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);
+	dXBas->GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);
 
 	//描画コマンド
-	dXBas_->GetCommandList()->DrawInstanced(
+	dXBas->GetCommandList()->DrawInstanced(
 		//_countof(vertices)
 		VerticesNum, 1, 0, 0);
 }
 
-void DrawBasis::LoadInstance(DirectXBasis* dXBas){
-	dXBas_ = dXBas;
-}
-
-void DrawBasis::CreateVertexBufferView(){
+void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas){
 	HRESULT result;
 
 	typedef enum VerticesParts {
@@ -87,7 +83,7 @@ void DrawBasis::CreateVertexBufferView(){
 
 	//頂点バッファの生成
 	ComPtr<ID3D12Resource> vertBuff = nullptr;
-	result = dXBas_->GetDevice()->CreateCommittedResource(
+	result = dXBas->GetDevice()->CreateCommittedResource(
 		&heapProp,//ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
 		&resDesc,//リソース設定
@@ -211,17 +207,17 @@ void DrawBasis::AssembleVertexLayout(){
 	};
 }
 
-void DrawBasis::CreateGraphicsPipeline(){
+void DrawBasis::CreateGraphicsPipeline(DirectXBasis* dXBas){
 	HRESULT result;
 
 	//グラフィックスパイプライン設定
 	SettingGraphicsPipelineDesc();
 
-	CreateRootSignature();
+	CreateRootSignature(dXBas);
 
 	//パイプラインステートの生成
 	/*ComPtr<ID3D12PipelineState> pipelineState = nullptr;*/
-	result = dXBas_->GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_,
+	result = dXBas->GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_,
 		IID_PPV_ARGS(&pipelineState_));
 	assert(SUCCEEDED(result));
 }
@@ -247,7 +243,7 @@ void DrawBasis::SettingGraphicsPipelineDesc(){
 
 	//頂点レイアウトの設定
 	pipelineDesc_.InputLayout.pInputElementDescs = inputLayout_;
-	pipelineDesc_.InputLayout.NumElements = ElementDescNum;//_countof(inputLayout_);
+	pipelineDesc_.InputLayout.NumElements = _countof(inputLayout_);//_countof(inputLayout_);
 
 	//図形の形状設定
 	pipelineDesc_.PrimitiveTopologyType
@@ -257,10 +253,9 @@ void DrawBasis::SettingGraphicsPipelineDesc(){
 	pipelineDesc_.NumRenderTargets = 1;//描画対象は1つ
 	pipelineDesc_.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;//0～255指定のRGBA
 	pipelineDesc_.SampleDesc.Count = 1;//1ピクセルにつき1回サンプリング
-
 }
 
-void DrawBasis::CreateRootSignature(){
+void DrawBasis::CreateRootSignature(DirectXBasis* dXBas){
 	HRESULT result;
 
 	//ルートシグネチャ
@@ -280,7 +275,7 @@ void DrawBasis::CreateRootSignature(){
 	assert(SUCCEEDED(result));
 
 	//ルートシグネチャの生成
-	result = dXBas_->GetDevice()->CreateRootSignature(
+	result = dXBas->GetDevice()->CreateRootSignature(
 		0,
 		rootSigBlob->GetBufferPointer(),
 		rootSigBlob->GetBufferSize(),
