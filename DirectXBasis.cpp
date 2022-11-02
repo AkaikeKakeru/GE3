@@ -125,8 +125,8 @@ void DirectXBasis::InitSwapChain() {
 	ComPtr<IDXGISwapChain1> swapChain1;
 
 	//スワップチェーンの設定
-	swapChainDesc_.Width = 1280;
-	swapChainDesc_.Height = 720;
+	swapChainDesc_.Width = winApp_->WinWidth;
+	swapChainDesc_.Height = winApp_->WinHeight;
 	swapChainDesc_.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	swapChainDesc_.SampleDesc.Count = 1;
 	swapChainDesc_.BufferUsage = DXGI_USAGE_BACK_BUFFER;
