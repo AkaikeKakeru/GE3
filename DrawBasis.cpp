@@ -82,7 +82,7 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas){
 	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
 	//頂点バッファの生成
-	ComPtr<ID3D12Resource> vertBuff = nullptr;
+	/*ComPtr<ID3D12Resource> vertBuff = nullptr;*/
 	result = dXBas->GetDevice()->CreateCommittedResource(
 		&heapProp,//ヒープ設定
 		D3D12_HEAP_FLAG_NONE,

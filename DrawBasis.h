@@ -41,6 +41,7 @@ private:
 	static const int ElementDescNum = 1;//inputLayout_のエレメント数
 	static const int VerticesNum = 3;//verticesの頂点数
 
+	ComPtr<ID3D12Resource> vertBuff = nullptr;//頂点バッファ
 	D3D12_VERTEX_BUFFER_VIEW vbView_{};//頂点バッファビュー
 
 	ComPtr<ID3DBlob> vsBlob_ = nullptr;//頂点シェーダオブジェクト
