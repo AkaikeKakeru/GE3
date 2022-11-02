@@ -60,8 +60,8 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas){
 	Vector3 vertices[VerticesNum];
 
 	vertices[LeftBottom] = Vector3( left,bottom,0 );
-	vertices[LeftTop] = Vector3( left,bottom,0 );
-	vertices[RightBottom] = Vector3( left,bottom,0 );
+	vertices[LeftTop] = Vector3( left,top,0 );
+	vertices[RightBottom] = Vector3( right,bottom,0 );
 	//AssembleVetices();
 
 	//頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
