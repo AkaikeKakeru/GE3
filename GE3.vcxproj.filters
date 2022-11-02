@@ -89,9 +89,6 @@
     <ClInclude Include="Sprite.h">
       <Filter>ヘッダー ファイル\Drawer</Filter>
     </ClInclude>
-    <ClInclude Include="DrawBasis.h">
-      <Filter>ヘッダー ファイル\Basis</Filter>
-    </ClInclude>
     <ClInclude Include="Struct.h">
       <Filter>ヘッダー ファイル\Struct</Filter>
     </ClInclude>
@@ -106,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="Vector4.h">
       <Filter>ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawBasis.h">
+      <Filter>ヘッダー ファイル\Drawer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

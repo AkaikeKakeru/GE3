@@ -16,8 +16,6 @@ private: //固有のメンバ関数
 
 	//頂点バッファビューの作成
 	void CreateVertexBufferView(DirectXBasis* dXBas);
-	//頂点データを組み立てる
-	void AssembleVetices();
 
 	//シェーダファイルを読み込み、コンパイルする
 	void CompileShaderFile();

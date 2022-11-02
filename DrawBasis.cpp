@@ -16,12 +16,16 @@
 using namespace DirectX;
 
 void DrawBasis::Initialize(DirectXBasis* dXBas){
+	//頂点バッファビューの作成
 	CreateVertexBufferView(dXBas);
 
+	//シェーダファイルを読み込み、コンパイルする
 	CompileShaderFile();
 
+	//頂点レイアウトを組み立てる
 	AssembleVertexLayout();
 
+	//グラフィックスパイプラインを生成
 	CreateGraphicsPipeline(dXBas);
 }
 
@@ -44,25 +48,26 @@ void DrawBasis::Draw(DirectXBasis* dXBas){
 
 void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas){
 	HRESULT result;
+	//頂点データ
+	Vector3 vertices[VerticesNum];
 
+	//頂点部位
 	typedef enum VerticesParts {
 		LeftBottom,
 		LeftTop,
 		RightBottom,
 	}VerticesParts;
 
+	//各初期位置関係
 	float left = -5.0f;
 	float right = +5.0f;
 	float top = +5.0f;
 	float bottom = -5.0f;
 
-	//頂点データ
-	Vector3 vertices[VerticesNum];
-
+	//各部位に、初期位置関係を設定
 	vertices[LeftBottom] = Vector3( left,bottom,0 );
 	vertices[LeftTop] = Vector3( left,top,0 );
 	vertices[RightBottom] = Vector3( right,bottom,0 );
-	//AssembleVetices();
 
 	//頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(Vector3) * _countof(vertices));
@@ -71,7 +76,7 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas){
 	//ヒープ設定
 	D3D12_HEAP_PROPERTIES heapProp{};
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUの転送用
-										   //リソース設定
+	//リソース設定
 	D3D12_RESOURCE_DESC resDesc{};
 	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 	resDesc.Width = sizeVB;//頂点データ全体のサイズ
@@ -82,7 +87,6 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas){
 	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
 	//頂点バッファの生成
-	/*ComPtr<ID3D12Resource> vertBuff = nullptr;*/
 	result = dXBas->GetDevice()->CreateCommittedResource(
 		&heapProp,//ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
@@ -106,33 +110,12 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas){
 	vertBuff->Unmap(0, nullptr);
 
 	//頂点バッファビューの作成
-	/*D3D12_VERTEX_BUFFER_VIEW vbView{};*/
 	//GPU仮想アドレス
 	vbView_.BufferLocation = vertBuff->GetGPUVirtualAddress();
 	//頂点バッファのサイズ
 	vbView_.SizeInBytes = sizeVB;
 	//頂点１つ分のデータサイズ
 	vbView_.StrideInBytes = sizeof(Vector3);
-}
-
-void DrawBasis::AssembleVetices(){
-	typedef enum VerticesParts {
-		LeftBottom,
-		LeftTop,
-		RightBottom,
-	}VerticesParts;
-
-	float left = -5.0f;
-	float right = +5.0f;
-	float top = +5.0f;
-	float bottom = -5.0f;
-
-	//頂点データ
-	Vector3 vertices[VerticesNum];
-
-	vertices[LeftBottom] = { left,bottom,0 };
-	vertices[LeftTop] = { left,bottom,0 };
-	vertices[RightBottom] = { left,bottom,0 };
 }
 
 void DrawBasis::CompileShaderFile(){
@@ -190,8 +173,9 @@ void DrawBasis::CompileShaderFile(){
 }
 
 void DrawBasis::AssembleVertexLayout(){
+	//要素名
 	typedef enum ElementName {
-		Position,
+		Position,//座標
 	}ElementName;
 
 	//頂点レイアウト
@@ -210,13 +194,13 @@ void DrawBasis::AssembleVertexLayout(){
 void DrawBasis::CreateGraphicsPipeline(DirectXBasis* dXBas){
 	HRESULT result;
 
-	//グラフィックスパイプライン設定
+	//グラフィックスパイプラインデスクの中身を設定
 	SettingGraphicsPipelineDesc();
 
+	//ルートシグネチャを生成
 	CreateRootSignature(dXBas);
 
 	//パイプラインステートの生成
-	/*ComPtr<ID3D12PipelineState> pipelineState = nullptr;*/
 	result = dXBas->GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_,
 		IID_PPV_ARGS(&pipelineState_));
 	assert(SUCCEEDED(result));
@@ -243,7 +227,7 @@ void DrawBasis::SettingGraphicsPipelineDesc(){
 
 	//頂点レイアウトの設定
 	pipelineDesc_.InputLayout.pInputElementDescs = inputLayout_;
-	pipelineDesc_.InputLayout.NumElements = _countof(inputLayout_);//_countof(inputLayout_);
+	pipelineDesc_.InputLayout.NumElements = _countof(inputLayout_);
 
 	//図形の形状設定
 	pipelineDesc_.PrimitiveTopologyType
@@ -257,9 +241,6 @@ void DrawBasis::SettingGraphicsPipelineDesc(){
 
 void DrawBasis::CreateRootSignature(DirectXBasis* dXBas){
 	HRESULT result;
-
-	//ルートシグネチャ
-	//ComPtr<ID3D12RootSignature> rootSignature;
 
 	//ルートシグネチャの設定
 	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
