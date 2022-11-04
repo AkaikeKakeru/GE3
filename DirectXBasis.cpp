@@ -11,6 +11,14 @@ void DirectXBasis::Initialize(WinApp* winApp) {
 	fixFPS_->Initialize();
 
 #pragma region Initialize
+#ifdef _DEBUG
+	//デバッグレイヤーをオンに
+	ComPtr<ID3D12Debug1> debugController;
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
+		debugController->EnableDebugLayer();
+		debugController->SetEnableGPUBasedValidation(TRUE);
+	}
+#endif
 	InitDevice();
 	InitCommand();
 	InitSwapChain();
@@ -21,15 +29,6 @@ void DirectXBasis::Initialize(WinApp* winApp) {
 }
 
 void DirectXBasis::InitDevice() {
-#ifdef _DEBUG
-	//デバッグレイヤーをオンに
-	ComPtr<ID3D12Debug1> debugController;
-	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
-		debugController->EnableDebugLayer();
-		debugController->SetEnableGPUBasedValidation(TRUE);
-	}
-#endif
-
 	HRESULT result;
 
 	//DXGIファクトリー生成
@@ -325,6 +324,13 @@ void DirectXBasis::PostDraw(){
 	commandQueue_->ExecuteCommandLists(1, commandLists);
 #pragma endregion
 
+#pragma region バッファをフリップ
+	//画面に表示するバッファをフリップ(裏表の入れ替え)
+	result = swapChain_->Present(1, 0);
+	result = device_->GetDeviceRemovedReason();
+	assert(SUCCEEDED(result));
+#pragma endregion
+
 #pragma region 実行完了まで待つ
 	//コマンドの実行完了を待つ
 	commandQueue_->Signal(fence_.Get(), ++fenceVal_);
@@ -350,13 +356,6 @@ void DirectXBasis::PostDraw(){
 
 	//コマンドリストをリセット
 	result = commandList_->Reset(commandAllocator_.Get(), nullptr);
-	assert(SUCCEEDED(result));
-#pragma endregion
-
-#pragma region バッファをフリップ
-	//画面に表示するバッファをフリップ(裏表の入れ替え)
-	result = swapChain_->Present(1, 0);
-	result = device_->GetDeviceRemovedReason();
 	assert(SUCCEEDED(result));
 #pragma endregion
 }
