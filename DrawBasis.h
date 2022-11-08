@@ -35,9 +35,14 @@ private: //固有のメンバ関数
 	//描画後処理
 	void PostDraw();
 
+public: //ゲッター
+	DirectXBasis* GetDXBasis() const { return dXBas_; }
+	D3D12_VERTEX_BUFFER_VIEW GetVBView() const { return vbView_; }
 private:
 	static const int ElementDescNum = 1;//inputLayout_のエレメント数
 	static const int VerticesNum = 3;//verticesの頂点数
+
+	DirectXBasis* dXBas_ = nullptr; //DirectX基盤
 
 	ComPtr<ID3D12Resource> vertBuff = nullptr;//頂点バッファ
 	D3D12_VERTEX_BUFFER_VIEW vbView_{};//頂点バッファビュー

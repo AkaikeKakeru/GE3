@@ -16,8 +16,11 @@
 using namespace DirectX;
 
 void DrawBasis::Initialize(DirectXBasis* dXBas){
+	assert(dXBas);
+	dXBas_ = dXBas;
+
 	//頂点バッファビューの作成
-	CreateVertexBufferView(dXBas);
+	CreateVertexBufferView(dXBas_);
 
 	//シェーダファイルを読み込み、コンパイルする
 	CompileShaderFile();
@@ -26,7 +29,7 @@ void DrawBasis::Initialize(DirectXBasis* dXBas){
 	AssembleVertexLayout();
 
 	//グラフィックスパイプラインを生成
-	CreateGraphicsPipeline(dXBas);
+	CreateGraphicsPipeline(dXBas_);
 }
 
 void DrawBasis::Draw(DirectXBasis* dXBas){
@@ -198,7 +201,7 @@ void DrawBasis::CreateGraphicsPipeline(DirectXBasis* dXBas){
 	SettingGraphicsPipelineDesc();
 
 	//ルートシグネチャを生成
-	CreateRootSignature(dXBas);
+	CreateRootSignature(dXBas_);
 
 	//パイプラインステートの生成
 	result = dXBas->GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_,
