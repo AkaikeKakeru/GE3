@@ -1238,9 +1238,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 #pragma region ゲームシーンの初期設定
 	//ポインタ
-	//Sprite* sprite = new Sprite();
+	Sprite* sprite = new Sprite();
 	//Sprite初期化
-	//sprite->Initialize();
+	sprite->Initialize(drawBas);
 
 #pragma endregion
 
@@ -1262,7 +1262,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		dXBas->PrepareDraw();
 
 		//描画本体
-		drawBas->Draw(dXBas);
+		sprite->Draw();
 
 		//描画後処理
 		dXBas->PostDraw();
@@ -1280,8 +1280,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	winApp->Finalize();
 
 	//Spriteの解放
-	//delete sprite;
-	//sprite = nullptr;
+	delete sprite;
+	sprite = nullptr;
 
 	//DrawBasis基盤の解放
 	delete drawBas;
