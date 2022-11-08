@@ -12,6 +12,10 @@ public: //基本的なメンバ関数
 
 	void Draw(DirectXBasis* dXBas);
 
+	//描画準備
+	void PrepareDraw();
+	//描画後処理
+	void PostDraw();
 private: //固有のメンバ関数
 
 	//頂点バッファビューの作成
@@ -30,10 +34,6 @@ private: //固有のメンバ関数
 	//ルートシグネチャを生成
 	void CreateRootSignature(DirectXBasis* dXBas);
 
-	//描画準備
-	void PrepareDraw();
-	//描画後処理
-	void PostDraw();
 
 public: //ゲッター
 	DirectXBasis* GetDXBasis() const { return dXBas_; }

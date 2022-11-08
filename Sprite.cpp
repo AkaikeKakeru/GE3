@@ -15,13 +15,6 @@ void Sprite::Initialize(DrawBasis* drawBas){
 }
 
 void Sprite::Draw(){
-	//パイプラインステートとルートシグネチャの設定コマンド
-	dXBas_->GetCommandList()->SetPipelineState(pipelineState_.Get());
-	dXBas_->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
-
-	//プリミティブ形状の設定コマンド
-	dXBas_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
-
 	//頂点バッファビューの設定コマンド
 	dXBas_->GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);
 

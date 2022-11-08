@@ -271,7 +271,12 @@ void DrawBasis::CreateRootSignature(DirectXBasis* dXBas){
 }
 
 void DrawBasis::PrepareDraw(){
+	//パイプラインステートとルートシグネチャの設定コマンド
+	dXBas_->GetCommandList()->SetPipelineState(pipelineState_.Get());
+	dXBas_->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
 
+	//プリミティブ形状の設定コマンド
+	dXBas_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
 }
 
 void DrawBasis::PostDraw(){
