@@ -10,6 +10,8 @@ void Sprite::Initialize(DrawBasis* drawBas){
 
 	dXBas_ = drawBas_->GetDXBasis();
 	vbView_ = drawBas_->GetVBView();
+	pipelineState_ = drawBas_->GetPipelineState();
+	rootSignature_ = drawBas_->GetRootSignature();
 }
 
 void Sprite::Draw(){

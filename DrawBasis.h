@@ -38,6 +38,8 @@ private: //固有のメンバ関数
 public: //ゲッター
 	DirectXBasis* GetDXBasis() const { return dXBas_; }
 	D3D12_VERTEX_BUFFER_VIEW GetVBView() const { return vbView_; }
+	ComPtr<ID3D12PipelineState> GetPipelineState() const { return pipelineState_; }
+	ComPtr<ID3D12RootSignature> GetRootSignature() const { return rootSignature_; }
 private:
 	static const int ElementDescNum = 1;//inputLayout_のエレメント数
 	static const int VerticesNum = 3;//verticesの頂点数
