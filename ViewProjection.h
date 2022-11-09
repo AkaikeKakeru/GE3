@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "Matrix4.h"
 #include "Vector3.h"
 
@@ -23,6 +22,14 @@ public: //構造体
 public: // 基本的なメンバ関数
 	void Initialize();
 	void Update();
+
+public: //ゲッター
+	ConstBufferDataViewProjection GetViewProjection() const { return viewPro_; };
+
+public: //セッター
+	void SetCameraEye(Vector3 eye) { cameraStatus_.eye_ = eye; };
+	void SetCameraTarget(Vector3 target) { cameraStatus_.target_ = target; };
+	void SetCameraUp(Vector3 up) { cameraStatus_.up_ = up; };
 
 private: //メンバ変数
 	XMMATRIX xmMatPro = {}; //xmプロジェクション行列
