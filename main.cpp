@@ -320,7 +320,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//ViewProjection初期化
 	viewPro = new ViewProjection();
 
-
 	////ポインタ
 	//Sprite* sprite = new Sprite();
 	////Sprite初期化
@@ -857,70 +856,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	}
 #pragma endregion
 
-#pragma region 投資投影変換行列の計算
-
-	//	ConstBufferDataViewProjection viewProjection;
-	//	XMMATRIX matPro;
-	//	matPro =
-	//		XMMatrixPerspectiveFovLH(
-	//			XMConvertToRadians(45.0f),//上下画角45度
-	//			(float)WinApp::WinWidth / WinApp::WinHeight,//アスペクト比(画面横幅/画面縦幅)
-	//			0.1f, 1000.0f
-	//		);//前端、奥端
-
-#pragma region ビュー行列の作成
-
-//	XMMATRIX matView;
-//	//Vector3 eye(0, 0, -100);	//視点座標
-//	//Vector3 target(0, 0, 0);	//注視点座標
-//	//Vector3 up(0, 1, 0);		//上方向ベクトル
-//
-//	XMFLOAT3 eye(0, 0, -100);	//視点座標
-//	XMFLOAT3 target(0, 0, 0);	//注視点座標
-//	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
-//
-//	matView = XMMatrixLookAtLH(
-//		XMLoadFloat3(&eye),
-//		XMLoadFloat3(&target),
-//		XMLoadFloat3(&up));
-//
-//	for (int i = 0; i < 4; i++) {
-//		viewProjection.projection.m[i][0] = XMVectorGetX(matPro.r[i]);
-//		viewProjection.projection.m[i][1] = XMVectorGetY(matPro.r[i]);
-//		viewProjection.projection.m[i][2] = XMVectorGetZ(matPro.r[i]);
-//		viewProjection.projection.m[i][3] = XMVectorGetW(matPro.r[i]);
-//
-//		viewProjection.view.m[i][0] = XMVectorGetX(matView.r[i]);
-//		viewProjection.view.m[i][1] = XMVectorGetY(matView.r[i]);
-//		viewProjection.view.m[i][2] = XMVectorGetZ(matView.r[i]);
-//		viewProjection.view.m[i][3] = XMVectorGetW(matView.r[i]);
-//	}
-	////配列内の全オブジェクトに対して
-	//for (int i = 0; i < _countof(object3ds); i++) {
-	//	object3ds[i].viewProjection_ = viewProjection;
-	//}
-
-#pragma endregion
-
-#pragma endregion
-
-#pragma region ワールド変換行列
-
-	//Matrix4 matWorld;
-	//matWorld = MatIdentity();
-
-	//Matrix4 matScale; //スケーリング行列
-
-	//Matrix4 matRot; //回転行列
-	//matRot = MatIdentity();
-
-	//Matrix4 matTrans; //平行移動行列
-	//matTrans = MatTranslation(0, 0, 0);
-
-	//matWorld *= matTrans; //ワールド行列に平行移動を反映
-
-#pragma endregion
-
 #pragma endregion
 
 	// インデックスデータ全体のサイズ
@@ -1065,14 +1000,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			else if (input->ifKeyPress(DIK_A)) { angle -= XMConvertToRadians(1.0f); }
 
 			//angleラジアンだけY軸周りに回転、半径は-100
-			//eye.x = -100 * sinf(angle);
-			//eye.z = -100 * cosf(angle);
-
-			viewPro->SetCameraEye(Vector3(
-				-100 * sinf(angle),
-				0,
-				-100 * cosf(angle)
-			));
+			viewPro->SetCameraEye(Vector3(-100 * sinf(angle), 0, -100 * cosf(angle)));
 
 			//ビュープロジェクション更新
 			viewPro->Update();
@@ -1085,21 +1013,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 					object3ds[i].viewProjection_.view * object3ds[i].viewProjection_.projection;
 
 			}
-
-			//matView = XMMatrixLookAtLH(XMLoadFloat3(&eye),
-			//	XMLoadFloat3(&target), XMLoadFloat3(&up));
-
-			//for (int i = 0; i < 4; i++) {
-			//	viewProjection.view.m[i][0] = XMVectorGetX(matView.r[i]);
-			//	viewProjection.view.m[i][1] = XMVectorGetY(matView.r[i]);
-			//	viewProjection.view.m[i][2] = XMVectorGetZ(matView.r[i]);
-			//	viewProjection.view.m[i][3] = XMVectorGetW(matView.r[i]);
-			//}
-
-			//object3ds[0].viewProjection_ = viewProjection;
-
-			//object3ds[0].constMapTransform_->mat =
-			//	object3ds[0].viewProjection_.view * object3ds[0].viewProjection_.projection;
 		}
 #pragma endregion
 
