@@ -847,19 +847,26 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region ビュープロ使用
+	//ビュープロジェクション初期化
 	viewPro->Initialize();
+
+	//配列内の全オブジェクトに対して
+	for (int i = 0; i < _countof(object3ds); i++) {
+		object3ds[i].viewProjection_.projection = viewPro->GetViewProjection().matPro_;
+		object3ds[i].viewProjection_.view = viewPro->GetViewProjection().matView_;
+	}
 #pragma endregion
 
 #pragma region 投資投影変換行列の計算
 
-//	ConstBufferDataViewProjection viewProjection;
-//	XMMATRIX matPro;
-//	matPro =
-//		XMMatrixPerspectiveFovLH(
-//			XMConvertToRadians(45.0f),//上下画角45度
-//			(float)WinApp::WinWidth / WinApp::WinHeight,//アスペクト比(画面横幅/画面縦幅)
-//			0.1f, 1000.0f
-//		);//前端、奥端
+	//	ConstBufferDataViewProjection viewProjection;
+	//	XMMATRIX matPro;
+	//	matPro =
+	//		XMMatrixPerspectiveFovLH(
+	//			XMConvertToRadians(45.0f),//上下画角45度
+	//			(float)WinApp::WinWidth / WinApp::WinHeight,//アスペクト比(画面横幅/画面縦幅)
+	//			0.1f, 1000.0f
+	//		);//前端、奥端
 
 #pragma region ビュー行列の作成
 
@@ -888,10 +895,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 //		viewProjection.view.m[i][2] = XMVectorGetZ(matView.r[i]);
 //		viewProjection.view.m[i][3] = XMVectorGetW(matView.r[i]);
 //	}
-	//配列内の全オブジェクトに対して
-	for (int i = 0; i < _countof(object3ds); i++) {
-		object3ds[i].viewProjection_ = viewProjection;
-	}
+	////配列内の全オブジェクトに対して
+	//for (int i = 0; i < _countof(object3ds); i++) {
+	//	object3ds[i].viewProjection_ = viewProjection;
+	//}
 
 #pragma endregion
 
@@ -1058,10 +1065,27 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			else if (input->ifKeyPress(DIK_A)) { angle -= XMConvertToRadians(1.0f); }
 
 			//angleラジアンだけY軸周りに回転、半径は-100
-			eye.x = -100 * sinf(angle);
-			eye.z = -100 * cosf(angle);
+			//eye.x = -100 * sinf(angle);
+			//eye.z = -100 * cosf(angle);
 
+			viewPro->SetCameraEye(Vector3(
+				-100 * sinf(angle),
+				0,
+				-100 * cosf(angle)
+			));
+
+			//ビュープロジェクション更新
 			viewPro->Update();
+
+			//配列内の全オブジェクトに対して
+			for (int i = 0; i < _countof(object3ds); i++) {
+				object3ds[i].viewProjection_.view = viewPro->GetViewProjection().matView_;
+
+				object3ds[i].constMapTransform_->mat =
+					object3ds[i].viewProjection_.view * object3ds[i].viewProjection_.projection;
+
+			}
+
 			//matView = XMMatrixLookAtLH(XMLoadFloat3(&eye),
 			//	XMLoadFloat3(&target), XMLoadFloat3(&up));
 
@@ -1072,10 +1096,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			//	viewProjection.view.m[i][3] = XMVectorGetW(matView.r[i]);
 			//}
 
-			object3ds[0].viewProjection_ = viewProjection;
+			//object3ds[0].viewProjection_ = viewProjection;
 
-			object3ds[0].constMapTransform_->mat =
-				object3ds[0].viewProjection_.view * object3ds[0].viewProjection_.projection;
+			//object3ds[0].constMapTransform_->mat =
+			//	object3ds[0].viewProjection_.view * object3ds[0].viewProjection_.projection;
 		}
 #pragma endregion
 
