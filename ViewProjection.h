@@ -32,12 +32,12 @@ public: //セッター
 	void SetCameraUp(Vector3 up) { cameraStatus_.up_ = up; };
 
 private: //メンバ変数
-	XMMATRIX xmMatPro = {}; //xmプロジェクション行列
-	XMMATRIX xmMatView = {}; //xmビュー行列
+	//XMMATRIX xmMatPro; //xmプロジェクション行列
+	//XMMATRIX xmMatView; //xmビュー行列
 
-	XMFLOAT3 xmEye_;	//xm視点座標
-	XMFLOAT3 xmTarget_;	//xm注視点座標
-	XMFLOAT3 xmUp_;		//xm上方向ベクトル
+	//XMFLOAT3 xmEye_;	//xm視点座標
+	//XMFLOAT3 xmTarget_;	//xm注視点座標
+	//XMFLOAT3 xmUp_;		//xm上方向ベクトル
 
 	ConstBufferDataViewProjection viewPro_ = {};
 	CameraStatus cameraStatus_ = {};
