@@ -1,8 +1,7 @@
 #pragma once
 #include "DrawBasis.h"
 
-class Sprite
-{
+class Sprite{
 private:
 	template <class Type>
 	using ComPtr = Microsoft::WRL::ComPtr<Type>;
@@ -15,6 +14,7 @@ public: //基本的なメンバ関数
 	void PrepareDraw();
 	//描画後処理
 	void PostDraw();
+
 private: //メンバ変数
 	static const int VerticesNum = 3;//verticesの頂点数
 

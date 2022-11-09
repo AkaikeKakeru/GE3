@@ -1,16 +1,13 @@
 #pragma once
 #include "DirectXBasis.h"
 
-class DrawBasis
-{
+class DrawBasis{
 private:
 	template <class Type>
 	using ComPtr = Microsoft::WRL::ComPtr<Type>;
 
 public: //基本的なメンバ関数
 	void Initialize(DirectXBasis* dXBas);
-
-	void Draw(DirectXBasis* dXBas);
 
 	//描画準備
 	void PrepareDraw();
@@ -34,12 +31,12 @@ private: //固有のメンバ関数
 	//ルートシグネチャを生成
 	void CreateRootSignature(DirectXBasis* dXBas);
 
-
 public: //ゲッター
 	DirectXBasis* GetDXBasis() const { return dXBas_; }
 	D3D12_VERTEX_BUFFER_VIEW GetVBView() const { return vbView_; }
 	ComPtr<ID3D12PipelineState> GetPipelineState() const { return pipelineState_; }
 	ComPtr<ID3D12RootSignature> GetRootSignature() const { return rootSignature_; }
+
 private:
 	static const int ElementDescNum = 1;//inputLayout_のエレメント数
 	static const int VerticesNum = 3;//verticesの頂点数

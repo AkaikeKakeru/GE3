@@ -1,8 +1,5 @@
 #include "Sprite.h"
-#include <DirectXMath.h>
 #include <cassert>
-
-using namespace DirectX;
 
 void Sprite::Initialize(DrawBasis* drawBas){
 	assert(drawBas);
@@ -20,19 +17,11 @@ void Sprite::Draw(){
 
 	//描画コマンド
 	dXBas_->GetCommandList()->DrawInstanced(
-		//_countof(vertices)
 		VerticesNum, 1, 0, 0);
 }
 
 void Sprite::PrepareDraw() {
-	//パイプラインステートとルートシグネチャの設定コマンド
-	dXBas_->GetCommandList()->SetPipelineState(pipelineState_.Get());
-	dXBas_->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
-
-	//プリミティブ形状の設定コマンド
-	dXBas_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
 }
 
 void Sprite::PostDraw(){
-	//dXBas_->GetCommandList() = nullptr;
 }

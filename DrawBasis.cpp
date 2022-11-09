@@ -32,23 +32,6 @@ void DrawBasis::Initialize(DirectXBasis* dXBas){
 	CreateGraphicsPipeline(dXBas_);
 }
 
-void DrawBasis::Draw(DirectXBasis* dXBas){
-	//パイプラインステートとルートシグネチャの設定コマンド
-	dXBas->GetCommandList()->SetPipelineState(pipelineState_.Get());
-	dXBas->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
-
-	//プリミティブ形状の設定コマンド
-	dXBas->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
-
-	//頂点バッファビューの設定コマンド
-	dXBas->GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);
-
-	//描画コマンド
-	dXBas->GetCommandList()->DrawInstanced(
-		//_countof(vertices)
-		VerticesNum, 1, 0, 0);
-}
-
 void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas){
 	HRESULT result;
 	//頂点データ
