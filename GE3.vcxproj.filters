@@ -37,6 +37,12 @@
     <Filter Include="ソース ファイル\Math">
       <UniqueIdentifier>{49a74e80-fe20-4216-8f34-7b0ccd9fcabe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Camera">
+      <UniqueIdentifier>{c5f7c6c2-444f-47d2-ac68-f8c67b218add}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Camera">
+      <UniqueIdentifier>{acc33de1-7ac8-47d2-a9fa-0716ed9ab0b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -72,6 +78,9 @@
     <ClCompile Include="Vector4.cpp">
       <Filter>ソース ファイル\Math</Filter>
     </ClCompile>
+    <ClCompile Include="ViewProjection.cpp">
+      <Filter>ソース ファイル\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectXBasis.h">
@@ -89,9 +98,6 @@
     <ClInclude Include="Sprite.h">
       <Filter>ヘッダー ファイル\Drawer</Filter>
     </ClInclude>
-    <ClInclude Include="DrawBasis.h">
-      <Filter>ヘッダー ファイル\Basis</Filter>
-    </ClInclude>
     <ClInclude Include="Struct.h">
       <Filter>ヘッダー ファイル\Struct</Filter>
     </ClInclude>
@@ -106,6 +112,12 @@
     </ClInclude>
     <ClInclude Include="Vector4.h">
       <Filter>ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawBasis.h">
+      <Filter>ヘッダー ファイル\Drawer</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewProjection.h">
+      <Filter>ヘッダー ファイル\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
