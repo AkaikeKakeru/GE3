@@ -1,11 +1,11 @@
 #include "ViewProjection.h"
+#include "WinApp.h"
+#include <DirectXMath.h>
+using namespace DirectX;
 
 void ViewProjection::Initialize(){
 #pragma region 投資投影変換行列の計算
-
-	ConstBufferDataViewProjection viewProjection;
-	XMMATRIX matPro;
-	matPro =
+	xmMatPro =
 		XMMatrixPerspectiveFovLH(
 			XMConvertToRadians(45.0f),//上下画角45度
 			(float)WinApp::WinWidth / WinApp::WinHeight,//アスペクト比(画面横幅/画面縦幅)
@@ -14,48 +14,46 @@ void ViewProjection::Initialize(){
 
 
 #pragma region ビュー行列の作成
-	XMMATRIX matView;
-	//Vector3 eye(0, 0, -100);	//視点座標
-	//Vector3 target(0, 0, 0);	//注視点座標
-	//Vector3 up(0, 1, 0);		//上方向ベクトル
 
-	XMFLOAT3 eye(0, 0, -100);	//視点座標
-	XMFLOAT3 target(0, 0, 0);	//注視点座標
-	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
+	cameraStatus_.eye_ = { 0, 0, -100 };	//視点座標
+	cameraStatus_.target_ = { 0, 0, 0 };	//注視点座標
+	cameraStatus_.up_ = {0, 1, 0};		//上方向ベクトル
 
+	xmEye_ = { cameraStatus_.eye_.x,cameraStatus_.eye_.y,cameraStatus_.eye_.z };	//視点座標
+	xmTarget_ = { cameraStatus_.target_.x,cameraStatus_.target_.y,cameraStatus_.target_.z };	//注視点座標
+	xmUp_ = {cameraStatus_.up_.x,cameraStatus_.up_.y,cameraStatus_.up_.z};		//上方向ベクトル
 
-	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&eye),
-		XMLoadFloat3(&target),
-		XMLoadFloat3(&up));
+	xmMatView = XMMatrixLookAtLH(
+		XMLoadFloat3(&xmEye_),
+		XMLoadFloat3(&xmTarget_),
+		XMLoadFloat3(&xmUp_));
 
 	for (int i = 0; i < 4; i++) {
-		viewProjection.projection.m[i][0] = XMVectorGetX(matPro.r[i]);
-		viewProjection.projection.m[i][1] = XMVectorGetY(matPro.r[i]);
-		viewProjection.projection.m[i][2] = XMVectorGetZ(matPro.r[i]);
-		viewProjection.projection.m[i][3] = XMVectorGetW(matPro.r[i]);
+		viewPro_.matPro_.m[i][0] = XMVectorGetX(xmMatPro.r[i]);
+		viewPro_.matPro_.m[i][1] = XMVectorGetY(xmMatPro.r[i]);
+		viewPro_.matPro_.m[i][2] = XMVectorGetZ(xmMatPro.r[i]);
+		viewPro_.matPro_.m[i][3] = XMVectorGetW(xmMatPro.r[i]);
 
-		viewProjection.view.m[i][0] = XMVectorGetX(matView.r[i]);
-		viewProjection.view.m[i][1] = XMVectorGetY(matView.r[i]);
-		viewProjection.view.m[i][2] = XMVectorGetZ(matView.r[i]);
-		viewProjection.view.m[i][3] = XMVectorGetW(matView.r[i]);
-	}
-	//配列内の全オブジェクトに対して
-	for (int i = 0; i < _countof(object3ds); i++) {
-		object3ds[i].viewProjection_ = viewProjection;
+		viewPro_.matView_.m[i][0] = XMVectorGetX(xmMatView.r[i]);
+		viewPro_.matView_.m[i][1] = XMVectorGetY(xmMatView.r[i]);
+		viewPro_.matView_.m[i][2] = XMVectorGetZ(xmMatView.r[i]);
+		viewPro_.matView_.m[i][3] = XMVectorGetW(xmMatView.r[i]);
 	}
 #pragma endregion
 
 }
 
 void ViewProjection::Update(){
-	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye),
-		XMLoadFloat3(&target), XMLoadFloat3(&up));
+
+	xmMatView = XMMatrixLookAtLH(
+		XMLoadFloat3(&xmEye_),
+		XMLoadFloat3(&xmTarget_),
+		XMLoadFloat3(&xmUp_));
 
 	for (int i = 0; i < 4; i++) {
-		viewProjection.view.m[i][0] = XMVectorGetX(matView.r[i]);
-		viewProjection.view.m[i][1] = XMVectorGetY(matView.r[i]);
-		viewProjection.view.m[i][2] = XMVectorGetZ(matView.r[i]);
-		viewProjection.view.m[i][3] = XMVectorGetW(matView.r[i]);
+		viewPro_.matView_.m[i][0] = XMVectorGetX(xmMatView.r[i]);
+		viewPro_.matView_.m[i][1] = XMVectorGetY(xmMatView.r[i]);
+		viewPro_.matView_.m[i][2] = XMVectorGetZ(xmMatView.r[i]);
+		viewPro_.matView_.m[i][3] = XMVectorGetW(xmMatView.r[i]);
 	}
 }
