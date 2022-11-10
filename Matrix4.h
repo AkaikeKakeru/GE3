@@ -21,6 +21,9 @@ Matrix4 Mat4RotationZ(float angle);
 //平行移動行列の設定
 Matrix4 Mat4Translation(const Vector3& t);
 
+//転置行列を求める
+Matrix4 Mat4Transposed(const Matrix4& m);
+
 // 座標変換 (ベクトルと行列の掛け算をする)
 Vector3 Vec3Transform(const Vector3& v, const Matrix4& m);
 
