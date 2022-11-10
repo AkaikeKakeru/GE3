@@ -96,15 +96,25 @@ Matrix4 Mat4Inverse(const Matrix4& m) {
 	//行数
 	const int LineNum = 4;
 
+	//現在行
+	int i = 0;
+	//現在列
+	int j = 0;
+	//注目中の対角成分が、存在する列
+	int focus = 0;
+
+	//最終出力
 	Matrix4 result = {};
+	//掃き出し法用行列
 	float sweep[LineNum][LineNum * 2] = {};
 
 	//sweepに、対象行列と単位行列をセット
-	for (int i = 0; i < LineNum; i++) {
-		for (int j = 0; j < LineNum; j++) {
-
+	for (i = 0; i < LineNum; i++) {
+		for (j = 0; j < LineNum; j++) {
+			//左半分に対象行列を
 			sweep[i][j] = m.m[i][j];
 
+			//右半分に単位行列を
 			if (i == j) {
 				sweep[i][LineNum + j] = 1;
 			}
@@ -116,31 +126,32 @@ Matrix4 Mat4Inverse(const Matrix4& m) {
 
 	//掃き出し法における、[注目中の対角成分が、存在する列]を focus とする。
 	//全ての列の対角成分が終わるまで繰り返す。
-	for (int focus = 0; focus < LineNum; focus++) {
+	for (focus = 0; focus < LineNum; focus++) {
 		/*0除算をしないよう、対策処理*/
 		//最大の絶対値を、注目中の対角成分の絶対値であると、仮に定める。
 		float max = fabs(sweep[focus][focus]);
 		int max_i = focus;
 
 		//focus列目が最大の絶対値になる行を探す。
-		for (int i = focus + 1; i < LineNum; i++) {
+		for (i = focus + 1; i < LineNum; i++) {
 			//暫定最大絶対値よりも、絶対値が大きい物を見つけたら、暫定入れ替え
 			if (fabs(sweep[i][focus]) > max) {
 				max = fabs(sweep[i][focus]);
 				max_i = i;
 			}
-
 		}
 
+		//逆行列計算が不可能だと判断する限界点
 		const double MAX_ERR = 1e-10;
-		//逆行列の計算が不可能と判断した場合
+
+		//逆行列の計算が不可能と判断した場合、強制終了
 		if (static_cast<double>(fabs(sweep[max_i][focus])) <= MAX_ERR) {
 			return m;
 		}
 
 		//focus行目とmax_i行目を入れ替える
 		if (focus != max_i) {
-			for (int j = 0; j < LineNum * 2; j++){
+			for (j = 0; j < LineNum * 2; j++) {
 				float tmp = sweep[max_i][j];
 				sweep[max_i][j] = sweep[focus][j];
 				sweep[focus][j] = tmp;
@@ -152,13 +163,13 @@ Matrix4 Mat4Inverse(const Matrix4& m) {
 		float normalize = 1 / sweep[focus][focus];
 
 		//focus行目をnormalize倍にする
-		for (int j = 0; j < LineNum * 2; j++) {
+		for (j = 0; j < LineNum * 2; j++) {
 			//対角線上の成分が1になる。
 			sweep[focus][j] *= normalize;
 		}
 
 		/*forcus行目以外の、focus列目を0にする*/
-		for (int i = 0; i < LineNum; i++) {
+		for (i = 0; i < LineNum; i++) {
 			//focus行目はスルー(対角線上成分を除く)
 			if (i == focus) {
 				continue;
@@ -169,15 +180,15 @@ Matrix4 Mat4Inverse(const Matrix4& m) {
 			float zeroization = -sweep[i][focus];
 
 			//対角線上以外を0にする。
-			for (int j = 0; j < LineNum * 2; j++) {
+			for (j = 0; j < LineNum * 2; j++) {
 				sweep[i][j] += sweep[focus][j] * zeroization;
 			}
 		}
 	}
 
 	/*sweepの右半分を出力する*/
-	for (int i = 0; i < LineNum; i++) {
-		for (int j = 0; j < LineNum; j++) {
+	for (i = 0; i < LineNum; i++) {
+		for (j = 0; j < LineNum; j++) {
 			result.m[i][j] = sweep[i][LineNum + j];
 		}
 	}
