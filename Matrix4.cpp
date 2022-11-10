@@ -117,6 +117,36 @@ Matrix4 Mat4Inverse(const Matrix4& m) {
 	//掃き出し法における、[注目中の対角成分が、存在する列]を focus とする。
 	//全ての列の対角成分が終わるまで繰り返す。
 	for (int focus = 0; focus < LineNum; focus++) {
+		/*0除算をしないよう、対策処理*/
+		//最大の絶対値を、注目中の対角成分の絶対値であると、仮に定める。
+		float max = fabs(sweep[focus][focus]);
+		int max_i = focus;
+
+		//focus列目が最大の絶対値になる行を探す。
+		for (int i = focus + 1; i < LineNum; i++) {
+			//暫定最大絶対値よりも、絶対値が大きい物を見つけたら、暫定入れ替え
+			if (fabs(sweep[i][focus]) > max) {
+				max = fabs(sweep[i][focus]);
+				max_i = i;
+			}
+
+		}
+
+		const double MAX_ERR = 1e-10;
+		//逆行列の計算が不可能と判断した場合
+		if (static_cast<double>(fabs(sweep[max_i][focus])) <= MAX_ERR) {
+			return m;
+		}
+
+		//focus行目とmax_i行目を入れ替える
+		if (focus != max_i) {
+			for (int j = 0; j < LineNum * 2; j++){
+				float tmp = sweep[max_i][j];
+				sweep[max_i][j] = sweep[focus][j];
+				sweep[focus][j] = tmp;
+			}
+		}
+
 		/*対角線上成分を正規化する*/
 		//sweep[focus][focus]に掛けると、1になる値
 		float normalize = 1 / sweep[focus][focus];
