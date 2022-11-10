@@ -21,6 +21,9 @@ public: // 基本的なメンバ関数
 	void Initialize();
 	void Update();
 
+private: //固有のメンバ関数
+	void CreateCameraCoordinateAxis(Vector3 eye,Vector3 target,Vector3 up);
+
 public: //ゲッター
 	ConstBufferDataViewProjection GetViewProjection() const { return viewPro_; };
 

@@ -71,3 +71,14 @@ void ViewProjection::Update() {
 		viewPro_.matView_.m[i][3] = XMVectorGetW(xmMatView.r[i]);
 	}
 }
+
+void ViewProjection::CreateCameraCoordinateAxis(Vector3 eye, Vector3 target, Vector3 up){
+	Vector3 VecAxisX, VecAxisY, VecAxisZ;
+
+	//視点→注視点へのベクトルをZ軸ベクトルとする。
+	VecAxisZ = Vec3Normalize(target - eye);
+	//上方向ベクトルとZ軸ベクトルの外積をX軸ベクトルとする。
+	VecAxisX = Vec3Normalize(Vec3Cross(up, VecAxisZ));
+	//Z軸ベクトルとX軸ベクトルの外積をY軸ベクトルとする。
+	VecAxisY = Vec3Cross(VecAxisZ, VecAxisX);
+}
