@@ -82,7 +82,7 @@ Matrix4 Mat4Translation(const Vector3& t) {
 	return result;
 }
 
-Matrix4 Mat4Transposed(const Matrix4& m){
+Matrix4 Mat4Transposed(const Matrix4& m) {
 	Matrix4 result{
 		m.m[0][0],m.m[1][0],m.m[2][0],m.m[3][0],
 		m.m[0][1],m.m[1][1],m.m[2][1],m.m[3][1],
@@ -93,20 +93,17 @@ Matrix4 Mat4Transposed(const Matrix4& m){
 	return result;
 }
 
-Matrix4 Mat4Inverse(const Matrix4& m){
+Matrix4 Mat4Inverse(const Matrix4& m) {
 	//行数
 	const int LineNum = 4;
 
 	Matrix4 result = {};
-	Matrix4 inverse = {};
-
 	float sweep[LineNum][LineNum * 2] = {};
 
-
 	//sweepに、対象行列と単位行列をセット
-	for (int i = 0; i < LineNum; i++){
-		for (int j = 0; j < LineNum; j++){
-			
+	for (int i = 0; i < LineNum; i++) {
+		for (int j = 0; j < LineNum; j++) {
+
 			sweep[i][j] = m.m[i][j];
 
 			if (i == j) {
@@ -118,12 +115,34 @@ Matrix4 Mat4Inverse(const Matrix4& m){
 		}
 	}
 
-	//対角線上の成分を正規化する。
-	for (int i = 0; i < LineNum; i++){
-		float normalize = 1 / sweep[i][i];
+	//掃き出し法における、[注目中の対角成分が、存在する列]を focus とする。
+	//全ての列の対角成分が終わるまで繰り返す。
+	for (int focus = 0; focus < LineNum; focus++) {
+		/*対角線上成分を正規化する*/
+		//sweep[focus][focus]に掛けると、1になる値
+		float normalize = 1 / sweep[focus][focus];
 
-		for (int j = 0; j < LineNum * 2; j++){
-			sweep[i][j] *= normalize;
+		//focus行目をnormalize倍にする
+		for (int j = 0; j < LineNum * 2; j++) {
+			//対角線上の成分が1になる。
+			sweep[focus][j] *= normalize;
+		}
+
+		/*forcus行目以外の、focus列目を0にする*/
+		for (int i = 0; i < LineNum; i++) {
+			//focus行目はスルー(対角線上成分を除く)
+			if (i == focus) {
+				continue;
+			}
+
+			//sweep[i][focus]の符号を入れ替えた値
+			//※本来の意味は、不正な解析や改竄が発覚したとき、機密情報を消去したりして漏洩しないようにすること
+			float zeroization = -sweep[i][focus];
+
+			//対角線上以外を0にする。
+			for (int j = 0; j < LineNum * 2; j++) {
+				sweep[i][j] += sweep[focus][j] * zeroization;
+			}
 		}
 	}
 
