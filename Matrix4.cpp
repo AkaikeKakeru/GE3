@@ -93,6 +93,15 @@ Matrix4 Mat4Transposed(const Matrix4& m){
 	return result;
 }
 
+Matrix4 Mat4Inverse(const Matrix4& m){
+	Matrix4 result = {};
+	Matrix4 inv = {};
+
+	double sweep[4][8] = {};
+
+	return result;
+}
+
 // 座標変換 (ベクトルと行列の掛け算をする)
 Vector3 Vec3Transform(const Vector3& v, const Matrix4& m) {
 	float v_[4] = { v.x,v.y,v.z,1 };

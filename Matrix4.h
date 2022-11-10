@@ -24,6 +24,9 @@ Matrix4 Mat4Translation(const Vector3& t);
 //転置行列を求める
 Matrix4 Mat4Transposed(const Matrix4& m);
 
+//逆行列を求める
+Matrix4 Mat4Inverse(const Matrix4& m);
+
 // 座標変換 (ベクトルと行列の掛け算をする)
 Vector3 Vec3Transform(const Vector3& v, const Matrix4& m);
 
