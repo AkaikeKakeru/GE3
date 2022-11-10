@@ -3,7 +3,7 @@
 #include <cmath> //sin cos
 
 // 単位行列を求める
-Matrix4 MatIdentity() {
+Matrix4 Mat4Identity() {
 	static const Matrix4 result{
 		1.0f,0.0f,0.0f,0.0f,
 		0.0f,1.0f,0.0f,0.0f,
@@ -16,7 +16,7 @@ Matrix4 MatIdentity() {
 
 
 //拡大縮小行列の設定
-Matrix4 MatScale(const Vector3& s) {
+Matrix4 Mat4Scale(const Vector3& s) {
 	Matrix4 result{
 		s.x,0.0f,0.0f,0.0f,
 		0.0f, s.y,0.0f,0.0f,
@@ -28,7 +28,7 @@ Matrix4 MatScale(const Vector3& s) {
 }
 
 // 回転行列の設定
-Matrix4 MatRotationX(float angle) {
+Matrix4 Mat4RotationX(float angle) {
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
 
@@ -42,7 +42,7 @@ Matrix4 MatRotationX(float angle) {
 	return result;
 }
 
-Matrix4 MatRotationY(float angle) {
+Matrix4 Mat4RotationY(float angle) {
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
 
@@ -56,7 +56,7 @@ Matrix4 MatRotationY(float angle) {
 	return result;
 }
 
-Matrix4 MatRotationZ(float angle) {
+Matrix4 Mat4RotationZ(float angle) {
 	float sin = std::sin(angle);
 	float cos = std::cos(angle);
 
@@ -71,7 +71,7 @@ Matrix4 MatRotationZ(float angle) {
 }
 
 //平行移動行列の設定
-Matrix4 MatTranslation(const Vector3& t) {
+Matrix4 Mat4Translation(const Vector3& t) {
 	Matrix4 result{
 		1.0f,0.0f,0.0f,0.0f,
 		0.0f,1.0f,0.0f,0.0f,

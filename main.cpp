@@ -216,19 +216,19 @@ void UpdateObject3d(Object3d* object) {
 	Matrix4 matScale, matRota, matTrans, matX, matY, matZ;
 
 	//スケール、回転、平行移動行列の計算
-	matScale = MatScale(object->scale_);
-	matRota = MatIdentity();
+	matScale = Mat4Scale(object->scale_);
+	matRota = Mat4Identity();
 
-	matZ = MatRotationZ(object->rotation_.z);
-	matX = MatRotationX(object->rotation_.x);
-	matY = MatRotationY(object->rotation_.y);
+	matZ = Mat4RotationZ(object->rotation_.z);
+	matX = Mat4RotationX(object->rotation_.x);
+	matY = Mat4RotationY(object->rotation_.y);
 
 	matRota = matRota * matZ * matX * matY;
 
-	matTrans = MatTranslation(object->position_);
+	matTrans = Mat4Translation(object->position_);
 
 	//ワールド行列の合成
-	object->matWorld_ = MatIdentity();	//変形リセット
+	object->matWorld_ = Mat4Identity();	//変形リセット
 
 	object->matWorld_ *= matScale;	//ワールド行列のスケーリングを反映
 	object->matWorld_ *= matRota;	//ワールド行列に回転を反映
