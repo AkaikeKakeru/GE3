@@ -16,6 +16,10 @@ void ViewProjection::Initialize() {
 	cameraStatus_.target_ = { 0, 0, 0 };	//注視点座標
 	cameraStatus_.up_ = { 0, 1, 0 };		//上方向ベクトル
 
+	scale_ = { 1,1,1 };
+	rotation_ = { 0, 0, 0 };
+	position_ = { 0,0,0 };
+
 #pragma region 投資投影変換行列の計算
 	xmMatPro =
 		XMMatrixPerspectiveFovLH(
@@ -81,4 +85,27 @@ void ViewProjection::CreateCameraCoordinateAxis(Vector3 eye, Vector3 target, Vec
 	VecAxisX = Vec3Normalize(Vec3Cross(up, VecAxisZ));
 	//Z軸ベクトルとX軸ベクトルの外積をY軸ベクトルとする。
 	VecAxisY = Vec3Cross(VecAxisZ, VecAxisX);
+}
+
+void ViewProjection::UpdateMatWorld(){
+	Matrix4 matScale, matRota, matTrans, matX, matY, matZ;
+
+	//スケール、回転、平行移動行列の計算
+	matScale = Mat4Scale(scale_);
+	matRota = Mat4Identity();
+
+	matZ = Mat4RotationZ(rotation_.z);
+	matX = Mat4RotationX(rotation_.x);
+	matY = Mat4RotationY(rotation_.y);
+
+	matRota = matRota * matZ * matX * matY;
+
+	matTrans = Mat4Translation(position_);
+
+	//ワールド行列の合成
+	matWorld_ = Mat4Identity();	//変形リセット
+
+	matWorld_ *= matScale;	//ワールド行列のスケーリングを反映
+	matWorld_ *= matRota;	//ワールド行列に回転を反映
+	matWorld_ *= matTrans;	//ワールド行列に平行移動を反映
 }
