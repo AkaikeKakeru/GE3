@@ -14,7 +14,6 @@ Matrix4 Mat4Identity() {
 	return result;
 }
 
-
 //Šg‘åk¬s—ñ‚Ìİ’è
 Matrix4 Mat4Scale(const Vector3& s) {
 	Matrix4 result{
@@ -143,6 +142,13 @@ Matrix4 Mat4Inverse(const Matrix4& m) {
 			for (int j = 0; j < LineNum * 2; j++) {
 				sweep[i][j] += sweep[focus][j] * zeroization;
 			}
+		}
+	}
+
+	/*sweep‚Ì‰E”¼•ª‚ğo—Í‚·‚é*/
+	for (int i = 0; i < LineNum; i++) {
+		for (int j = 0; j < LineNum; j++) {
+			result.m[i][j] = sweep[i][LineNum + j];
 		}
 	}
 
