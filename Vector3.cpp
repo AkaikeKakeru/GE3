@@ -153,8 +153,7 @@ const Vector3 EaseInOut(const Vector3& start, const Vector3& end, const float t)
 	return start * (1.0f - y) + end * y;
 }
 
-const Vector3 CatmullRomSpline(Vector3 P0,Vector3 P1,Vector3 P2,Vector3 P3,float t)
-{
+const Vector3 CatmullRomSpline(Vector3 P0,Vector3 P1,Vector3 P2,Vector3 P3,float t){
 	Vector3 a = (2 * P1) + ((-P0 + P2) * t);
 
 	Vector3 b = ((2 * P0) - (5 * P1) + (4 * P2) - P3) * t * t;
@@ -162,13 +161,4 @@ const Vector3 CatmullRomSpline(Vector3 P0,Vector3 P1,Vector3 P2,Vector3 P3,float
 	Vector3 c = (-P0 + (3 * P1) - (3 * P2) + P3) * t * t * t;
 
 	return 0.5f * (a + b + c);
-}
-
-const Vector3 CreateCameraCoordinateAxis(Vector3 eye, Vector3 target, Vector3 up){
-	Vector3 result;
-	Vector3 AxisZ = target - eye;
-	
-	AxisZ = Vec3Normalize(AxisZ);
-
-	return result;
 }
