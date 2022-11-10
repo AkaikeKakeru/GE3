@@ -94,10 +94,29 @@ Matrix4 Mat4Transposed(const Matrix4& m){
 }
 
 Matrix4 Mat4Inverse(const Matrix4& m){
-	Matrix4 result = {};
-	Matrix4 inv = {};
+	//行数
+	const int LineNum = 4;
 
-	double sweep[4][8] = {};
+	Matrix4 result = {};
+	Matrix4 inverse = {};
+
+	float sweep[LineNum][LineNum * 2] = {};
+
+	//sweepに、対象行列と単位行列をセット
+	for (int i = 0; i < LineNum; i++){
+		for (int j = 0; j < LineNum; j++){
+			
+			sweep[i][j] = m.m[i][j];
+
+			if (i == j) {
+				sweep[i][LineNum + j] = 1;
+			}
+			else {
+				sweep[i][LineNum + j] = 0;
+			}
+		}
+	}
+
 
 	return result;
 }
