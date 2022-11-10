@@ -13,13 +13,13 @@ Vector3::Vector3(float x, float y, float z)
 }
 
 //ÉmÉãÉÄ
-float Vector3::Vec3Length() const{
+float Vector3::Length() const{
 	return sqrt((x * x) + (y * y) + (z * z));
 }
 
-//ê≥ãKâª
-Vector3& Vector3::Vec3Normalize(){
-	float len = Vec3Length();
+//ê≥ãKâª(íPà âªÇ∆Ç‡åæÇ¡ÇΩÇ¡ÇØ?)
+Vector3& Vector3::Normalize(){
+	float len = Length();
 	if(len != 0)
 	{
 		return *this /= len;
@@ -28,12 +28,12 @@ Vector3& Vector3::Vec3Normalize(){
 }
 
 //ì‡êœ
-float Vector3::Vec3Dot(const Vector3& v) const{
+float Vector3::Dot(const Vector3& v) const{
 	return this->x * v.x + this->y * v.y + this->z * v.z; 
 }
 
 //äOêœ
-Vector3 Vector3::Vec3Cross(const Vector3& v) const{
+Vector3 Vector3::Cross(const Vector3& v) const{
 	return Vector3(this->y * v.z - this->z * v.y,
 		this->z * v.x - this->x * v.z,
 		this->x * v.y - this->y * v.x);
@@ -75,6 +75,28 @@ Vector3& Vector3::operator/=(float s){
 	y /= s;
 	z /= s;
 	return *this;
+}
+
+const float Vec3Length(Vector3 v){
+	return sqrt((v.x * v.x) + (v.y * v.y) + (v.z * v.z));
+}
+
+const Vector3& Vec3Normalize(Vector3 v){
+	float len = Vec3Length(v);
+	if(len != 0){
+		return v /= len;
+	}
+	return v;
+}
+
+const float Vec3Dot(const Vector3& v1,const Vector3& v2){
+	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z; 
+}
+
+const Vector3 Vec3Cross(const Vector3& v1,const Vector3& v2){	
+	return Vector3(v1.y * v2.z - v1.z * v2.y,
+		v1.z * v2.x - v1.x * v2.z,
+		v1.x * v2.y - v1.y * v2.x);
 }
 
 //Vector3Å@ÉNÉâÉXÇ…ëÆÇ≥Ç»Ç¢ä÷êîåQ
@@ -140,4 +162,13 @@ const Vector3 CatmullRomSpline(Vector3 P0,Vector3 P1,Vector3 P2,Vector3 P3,float
 	Vector3 c = (-P0 + (3 * P1) - (3 * P2) + P3) * t * t * t;
 
 	return 0.5f * (a + b + c);
+}
+
+const Vector3 CreateCameraCoordinateAxis(Vector3 eye, Vector3 target, Vector3 up){
+	Vector3 result;
+	Vector3 AxisZ = target - eye;
+	
+	AxisZ = Vec3Normalize(AxisZ);
+
+	return result;
 }
