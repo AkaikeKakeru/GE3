@@ -24,6 +24,7 @@ public: // 基本的なメンバ関数
 private: //固有のメンバ関数
 	void CreateCameraCoordinateAxis(Vector3 eye,Vector3 target,Vector3 up);
 	void UpdateMatWorld();
+	void CreateMatView();
 
 public: //ゲッター
 	ConstBufferDataViewProjection GetViewProjection() const { return viewPro_; };
@@ -34,14 +35,28 @@ public: //セッター
 	void SetCameraUp(Vector3 up) { cameraStatus_.up_ = up; };
 
 private: //メンバ変数
+	//ビュープロジェクション
 	ConstBufferDataViewProjection viewPro_ = {};
+	//カメラ状態
 	CameraStatus cameraStatus_ = {};
 
-	//アフィン変換情報
+	///アフィン変換情報
+	//スケール
 	Vector3 scale_ = {};
+	//回転
 	Vector3 rotation_ = {};
+	//位置
 	Vector3 position_ = {};
 
 	//ワールド変換行列
 	Matrix4 matWorld_ = {};
+
+	//カメラX軸
+	Vector3 axisX_ = {};
+	//カメラY軸
+	Vector3 axisY_ = {};
+	//カメラZ軸
+	Vector3 axisZ_ = {};
+	//カメラ移動値
+	Vector3 cameraMoveVal_ = {};
 };

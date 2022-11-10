@@ -20,6 +20,12 @@ void ViewProjection::Initialize() {
 	rotation_ = { 0, 0, 0 };
 	position_ = { 0,0,0 };
 
+	axisX_ = { 0,0,0 };
+	axisY_ = { 0,0,0 };
+	axisZ_ = { 0,0,0 };
+
+	cameraMoveVal_ = { 0,0,0 };
+
 #pragma region 投資投影変換行列の計算
 	xmMatPro =
 		XMMatrixPerspectiveFovLH(
@@ -76,18 +82,16 @@ void ViewProjection::Update() {
 	}
 }
 
-void ViewProjection::CreateCameraCoordinateAxis(Vector3 eye, Vector3 target, Vector3 up){
-	Vector3 VecAxisX, VecAxisY, VecAxisZ;
-
+void ViewProjection::CreateCameraCoordinateAxis(Vector3 eye, Vector3 target, Vector3 up) {
 	//視点→注視点へのベクトルをZ軸ベクトルとする。
-	VecAxisZ = Vec3Normalize(target - eye);
+	axisZ_ = Vec3Normalize(target - eye);
 	//上方向ベクトルとZ軸ベクトルの外積をX軸ベクトルとする。
-	VecAxisX = Vec3Normalize(Vec3Cross(up, VecAxisZ));
+	axisX_ = Vec3Normalize(Vec3Cross(up, axisZ_));
 	//Z軸ベクトルとX軸ベクトルの外積をY軸ベクトルとする。
-	VecAxisY = Vec3Cross(VecAxisZ, VecAxisX);
+	axisY_ = Vec3Cross(axisZ_, axisX_);
 }
 
-void ViewProjection::UpdateMatWorld(){
+void ViewProjection::UpdateMatWorld() {
 	Matrix4 matScale, matRota, matTrans, matX, matY, matZ;
 
 	//スケール、回転、平行移動行列の計算
@@ -108,4 +112,21 @@ void ViewProjection::UpdateMatWorld(){
 	matWorld_ *= matScale;	//ワールド行列のスケーリングを反映
 	matWorld_ *= matRota;	//ワールド行列に回転を反映
 	matWorld_ *= matTrans;	//ワールド行列に平行移動を反映
+}
+
+void ViewProjection::CreateMatView() {
+	cameraMoveVal_ = {
+		Vec3Dot(cameraStatus_.eye_,axisX_),
+		Vec3Dot(cameraStatus_.eye_,axisY_),
+		Vec3Dot(cameraStatus_.eye_,axisZ_)
+	};
+
+	viewPro_.matView_ = {
+		axisX_.x,axisX_.y,axisX_.z,0,
+		axisY_.x,axisY_.y,axisY_.z,0,
+		axisZ_.x,axisZ_.y,axisZ_.z,0,
+		cameraMoveVal_.x,cameraMoveVal_.y,cameraMoveVal_.z,1
+	};
+
+	viewPro_.matView_ = Mat4Inverse(viewPro_.matView_);
 }
