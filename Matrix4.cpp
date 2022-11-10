@@ -102,6 +102,7 @@ Matrix4 Mat4Inverse(const Matrix4& m){
 
 	float sweep[LineNum][LineNum * 2] = {};
 
+
 	//sweepに、対象行列と単位行列をセット
 	for (int i = 0; i < LineNum; i++){
 		for (int j = 0; j < LineNum; j++){
@@ -117,6 +118,14 @@ Matrix4 Mat4Inverse(const Matrix4& m){
 		}
 	}
 
+	//対角線上の成分を正規化する。
+	for (int i = 0; i < LineNum; i++){
+		float normalize = 1 / sweep[i][i];
+
+		for (int j = 0; j < LineNum * 2; j++){
+			sweep[i][j] *= normalize;
+		}
+	}
 
 	return result;
 }
