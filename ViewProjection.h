@@ -18,20 +18,29 @@ public: //構造体
 	}CameraStatus;
 
 public: // 基本的なメンバ関数
+	//初期化
 	void Initialize();
+	//更新
 	void Update();
 
 private: //固有のメンバ関数
+	//カメラ座標軸作成
 	void CreateCameraCoordinateAxis(Vector3 eye,Vector3 target,Vector3 up);
+	//ワールド座標行列の更新
 	void UpdateMatWorld();
+	//ビュー行列作成
 	void CreateMatView();
 
 public: //ゲッター
+	//ビュープロのゲッター
 	ConstBufferDataViewProjection GetViewProjection() const { return viewPro_; };
 
 public: //セッター
+	//視点セッター
 	void SetCameraEye(Vector3 eye) { cameraStatus_.eye_ = eye; };
+	//注視点セッター
 	void SetCameraTarget(Vector3 target) { cameraStatus_.target_ = target; };
+	//上方向セッター
 	void SetCameraUp(Vector3 up) { cameraStatus_.up_ = up; };
 
 private: //メンバ変数
