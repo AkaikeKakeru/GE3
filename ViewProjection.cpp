@@ -6,10 +6,6 @@ using namespace DirectX;
 void ViewProjection::Initialize() {
 	//今だけは致し方なく宣言(後々なくしたい)
 	XMMATRIX xmMatPro; //xmプロジェクション行列
-	//XMMATRIX xmMatView; //xmビュー行列
-	//XMFLOAT3 xmEye_;	//xm視点座標
-	//XMFLOAT3 xmTarget_;	//xm注視点座標
-	//XMFLOAT3 xmUp_;		//xm上方向ベクトル
 
 	//初期化
 	cameraStatus_.eye_ = { 0, 0, -100 };	//視点座標
@@ -35,25 +31,11 @@ void ViewProjection::Initialize() {
 		);//前端、奥端
 
 #pragma region ビュー行列の作成
-	//xmEye_ = { cameraStatus_.eye_.x,cameraStatus_.eye_.y,cameraStatus_.eye_.z };	//視点座標
-	//xmTarget_ = { cameraStatus_.target_.x,cameraStatus_.target_.y,cameraStatus_.target_.z };	//注視点座標
-	//xmUp_ = { cameraStatus_.up_.x,cameraStatus_.up_.y,cameraStatus_.up_.z };		//上方向ベクトル
-
-	//xmMatView = XMMatrixLookAtLH(
-	//	XMLoadFloat3(&xmEye_),
-	//	XMLoadFloat3(&xmTarget_),
-	//	XMLoadFloat3(&xmUp_));
-
 	for (int i = 0; i < 4; i++) {
 		viewPro_.matPro_.m[i][0] = XMVectorGetX(xmMatPro.r[i]);
 		viewPro_.matPro_.m[i][1] = XMVectorGetY(xmMatPro.r[i]);
 		viewPro_.matPro_.m[i][2] = XMVectorGetZ(xmMatPro.r[i]);
 		viewPro_.matPro_.m[i][3] = XMVectorGetW(xmMatPro.r[i]);
-
-		//viewPro_.matView_.m[i][0] = XMVectorGetX(xmMatView.r[i]);
-		//viewPro_.matView_.m[i][1] = XMVectorGetY(xmMatView.r[i]);
-		//viewPro_.matView_.m[i][2] = XMVectorGetZ(xmMatView.r[i]);
-		//viewPro_.matView_.m[i][3] = XMVectorGetW(xmMatView.r[i]);
 	}
 
 	CreateCameraCoordinateAxis(
@@ -67,29 +49,6 @@ void ViewProjection::Initialize() {
 }
 
 void ViewProjection::Update() {
-	//今だけは致し方なく宣言(後々なくしたい)
-	//XMMATRIX xmMatView; //xmビュー行列
-	//XMFLOAT3 xmEye_;	//xm視点座標
-	//XMFLOAT3 xmTarget_;	//xm注視点座標
-	//XMFLOAT3 xmUp_;		//xm上方向ベクトル
-
-	//xmEye_ = { cameraStatus_.eye_.x,cameraStatus_.eye_.y,cameraStatus_.eye_.z };	//視点座標
-	//xmTarget_ = { cameraStatus_.target_.x,cameraStatus_.target_.y,cameraStatus_.target_.z };	//注視点座標
-	//xmUp_ = { cameraStatus_.up_.x,cameraStatus_.up_.y,cameraStatus_.up_.z };		//上方向ベクトル
-
-	//xmMatView = XMMatrixLookAtLH(
-	//	XMLoadFloat3(&xmEye_),
-	//	XMLoadFloat3(&xmTarget_),
-	//	XMLoadFloat3(&xmUp_));
-
-
-	//for (int i = 0; i < 4; i++) {
-	//	viewPro_.matView_.m[i][0] = XMVectorGetX(xmMatView.r[i]);
-	//	viewPro_.matView_.m[i][1] = XMVectorGetY(xmMatView.r[i]);
-	//	viewPro_.matView_.m[i][2] = XMVectorGetZ(xmMatView.r[i]);
-	//	viewPro_.matView_.m[i][3] = XMVectorGetW(xmMatView.r[i]);
-	//}
-
 	CreateCameraCoordinateAxis(
 		cameraStatus_.eye_,
 		cameraStatus_.target_,
@@ -142,10 +101,6 @@ void ViewProjection::CreateMatView() {
 		axisX_.x,axisX_.y,axisX_.z,0,
 		axisY_.x,axisY_.y,axisY_.z,0,
 		axisZ_.x,axisZ_.y,axisZ_.z,0,
-		cameraMoveVal_.x,cameraMoveVal_.y,cameraMoveVal_.z,1
+		-cameraMoveVal_.x,-cameraMoveVal_.y,-cameraMoveVal_.z,1
 	};
-
-	Matrix4 debugMat = viewPro_.matView_;
-
-	viewPro_.matView_ = Mat4Inverse(viewPro_.matView_);
 }
