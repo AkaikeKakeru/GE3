@@ -39,22 +39,22 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 
 	//頂点部位
 	typedef enum VerticesParts {
-		LeftBottom,
-		LeftTop,
-		RightBottom,
-		RightTop,
+		LeftBottom,//左下
+		RightBottom,//右下
+		LeftTop,//左上
+		RightTop,//右上
 	}VerticesParts;
 
 	//各初期位置関係
-	float left = -5.0f;
-	float right = +5.0f;
-	float top = +5.0f;
-	float bottom = -5.0f;
+	float left = -0.5f;//左
+	float right = +0.5f;//右
+	float top = +0.5f;//上
+	float bottom = -0.5f;//下
 
 	//各部位に、初期位置関係を設定
 	vertices[LeftBottom] = Vector3(left, bottom, 0);
-	vertices[LeftTop] = Vector3(left, top, 0);
 	vertices[RightBottom] = Vector3(right, bottom, 0);
+	vertices[LeftTop] = Vector3(left, top, 0);
 	vertices[RightTop] = Vector3(right, top, 0);
 
 	//頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
