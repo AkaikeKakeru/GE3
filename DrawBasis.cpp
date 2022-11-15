@@ -42,6 +42,7 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 		LeftBottom,
 		LeftTop,
 		RightBottom,
+		RightTop,
 	}VerticesParts;
 
 	//各初期位置関係
@@ -54,6 +55,7 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 	vertices[LeftBottom] = Vector3(left, bottom, 0);
 	vertices[LeftTop] = Vector3(left, top, 0);
 	vertices[RightBottom] = Vector3(right, bottom, 0);
+	vertices[RightTop] = Vector3(right, top, 0);
 
 	//頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(Vector3) * _countof(vertices));
@@ -338,7 +340,8 @@ void DrawBasis::PrepareDraw() {
 	dXBas_->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
 
 	//プリミティブ形状の設定コマンド
-	dXBas_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
+	//dXBas_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
+	dXBas_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);//三角形リスト
 
 	// 定数バッファビュー(CBV)の設定コマンド
 	dXBas_->GetCommandList()->SetGraphicsRootConstantBufferView(

@@ -16,7 +16,7 @@ public: //基本的なメンバ関数
 	void PostDraw();
 
 private: //メンバ変数
-	static const int VerticesNum = 3;//verticesの頂点数
+	static const int VerticesNum = 4;//verticesの頂点数
 
 	DirectXBasis* dXBas_ = nullptr; //DirectX基盤
 
