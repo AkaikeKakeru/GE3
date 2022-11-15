@@ -66,7 +66,11 @@ private:
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_{};//グラフィックスパイプラインデスク
 
+	D3D12_ROOT_PARAMETER rootParam_ = {};//ルートパラメータ
+
 	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;//ルートシグネチャ
 
 	ComPtr<ID3D12PipelineState> pipelineState_ = nullptr;//パイプラインステート
+
+	ConstBufferDataMaterial* constMapMaterial_ = nullptr;//マテリアル定数マップ
 };

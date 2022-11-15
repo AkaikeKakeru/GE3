@@ -254,11 +254,10 @@ void DrawBasis::SettingGraphicsPipelineDesc() {
 
 void DrawBasis::SettingRootParameter() {
 	//ルートパラメータの設定
-	D3D12_ROOT_PARAMETER rootParam = {};
-	rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//定数バッファビュー
-	rootParam.Descriptor.ShaderRegister = 0;					//定数バッファ番号
-	rootParam.Descriptor.RegisterSpace = 0;						//デフォルト
-	rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
+	rootParam_.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//定数バッファビュー
+	rootParam_.Descriptor.ShaderRegister = 0;					//定数バッファ番号
+	rootParam_.Descriptor.RegisterSpace = 0;						//デフォルト
+	rootParam_.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
 }
 
 void DrawBasis::CreateRootSignature(DirectXBasis* dXBas) {
@@ -318,14 +317,12 @@ void DrawBasis::CreateConstBuffer() {
 	assert(SUCCEEDED(result));
 
 	//定数バッファのマッピング
-	ConstBufferDataMaterial* constMapMaterial = nullptr;
-
 	result = constBuffMaterial->Map(0, nullptr,
-		(void**)&constMapMaterial); //マッピング
+		(void**)&constMapMaterial_); //マッピング
 	assert(SUCCEEDED(result));
 
 	//値を書き込むと自動的に転送される
-	constMapMaterial->color = Vector4(1, 0, 0, 0.5f);
+	constMapMaterial_->color = Vector4(1, 0, 0, 0.5f);
 }
 
 void DrawBasis::PrepareDraw() {
