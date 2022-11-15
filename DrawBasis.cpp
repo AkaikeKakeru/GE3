@@ -15,7 +15,7 @@
 
 using namespace DirectX;
 
-void DrawBasis::Initialize(DirectXBasis* dXBas){
+void DrawBasis::Initialize(DirectXBasis* dXBas) {
 	assert(dXBas);
 	dXBas_ = dXBas;
 
@@ -32,7 +32,7 @@ void DrawBasis::Initialize(DirectXBasis* dXBas){
 	CreateGraphicsPipeline(dXBas_);
 }
 
-void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas){
+void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 	HRESULT result;
 	//頂点データ
 	Vector3 vertices[VerticesNum];
@@ -51,9 +51,9 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas){
 	float bottom = -5.0f;
 
 	//各部位に、初期位置関係を設定
-	vertices[LeftBottom] = Vector3( left,bottom,0 );
-	vertices[LeftTop] = Vector3( left,top,0 );
-	vertices[RightBottom] = Vector3( right,bottom,0 );
+	vertices[LeftBottom] = Vector3(left, bottom, 0);
+	vertices[LeftTop] = Vector3(left, top, 0);
+	vertices[RightBottom] = Vector3(right, bottom, 0);
 
 	//頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(Vector3) * _countof(vertices));
@@ -104,7 +104,7 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas){
 	vbView_.StrideInBytes = sizeof(Vector3);
 }
 
-void DrawBasis::CompileShaderFile(){
+void DrawBasis::CompileShaderFile() {
 	HRESULT result;
 
 	//頂点シェーダの読み込みとコンパイル
@@ -158,7 +158,7 @@ void DrawBasis::CompileShaderFile(){
 	}
 }
 
-void DrawBasis::AssembleVertexLayout(){
+void DrawBasis::AssembleVertexLayout() {
 	//要素名
 	typedef enum ElementName {
 		Position,//座標
@@ -177,7 +177,7 @@ void DrawBasis::AssembleVertexLayout(){
 	};
 }
 
-void DrawBasis::CreateGraphicsPipeline(DirectXBasis* dXBas){
+void DrawBasis::CreateGraphicsPipeline(DirectXBasis* dXBas) {
 	HRESULT result;
 
 	//グラフィックスパイプラインデスクの中身を設定
@@ -192,7 +192,7 @@ void DrawBasis::CreateGraphicsPipeline(DirectXBasis* dXBas){
 	assert(SUCCEEDED(result));
 }
 
-void DrawBasis::SettingGraphicsPipelineDesc(){
+void DrawBasis::SettingGraphicsPipelineDesc() {
 	//シェーダーの設定
 	pipelineDesc_.VS.pShaderBytecode = vsBlob_->GetBufferPointer();
 	pipelineDesc_.VS.BytecodeLength = vsBlob_->GetBufferSize();
@@ -211,7 +211,34 @@ void DrawBasis::SettingGraphicsPipelineDesc(){
 	D3D12_RENDER_TARGET_BLEND_DESC& blenddesc = pipelineDesc_.BlendState.RenderTarget[0];
 	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;//RGB全てのチャネルを描画
 
-	//頂点レイアウトの設定
+	//アルファ値共通設定
+	blenddesc.BlendEnable = true; // ブレンド有効にする
+	blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD; //ブレンドを有効にする
+	blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE; //加算
+	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO; //デストの値を 0%使う　
+
+	//加算合成
+	//blenddesc.BlendOp = D3D12_BLEND_OP_ADD; //加算
+	//blenddesc.SrcBlend = D3D12_BLEND_ONE; //ソースの値を100%使う
+	//blenddesc.DestBlend = D3D12_BLEND_ONE; //デストの値を100%使う
+
+	//減算合成
+	//blenddesc.BlendOp = D3D12_BLEND_OP_REV_SUBTRACT; //減算
+	//blenddesc.SrcBlend = D3D12_BLEND_ONE; //ソースの値を100%使う
+	//blenddesc.DestBlend = D3D12_BLEND_ONE; //デストの値を100%使う
+
+	//色反転
+	//blenddesc.BlendOp = D3D12_BLEND_OP_ADD; //加算
+	//blenddesc.SrcBlend = D3D12_BLEND_INV_DEST_COLOR; //1.0f-デストから－の値
+	//blenddesc.DestBlend = D3D12_BLEND_ZERO; //使わない
+
+	//半透明合成
+	blenddesc.BlendOp = D3D12_BLEND_OP_ADD; //加算
+	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA; //ソースの値をアルファ値
+	blenddesc.DestBlend = D3D12_BLEND_SRC_ALPHA; //1.0f-ソースのアルファ値
+
+
+//頂点レイアウトの設定
 	pipelineDesc_.InputLayout.pInputElementDescs = inputLayout_;
 	pipelineDesc_.InputLayout.NumElements = _countof(inputLayout_);
 
@@ -225,7 +252,7 @@ void DrawBasis::SettingGraphicsPipelineDesc(){
 	pipelineDesc_.SampleDesc.Count = 1;//1ピクセルにつき1回サンプリング
 }
 
-void DrawBasis::CreateRootSignature(DirectXBasis* dXBas){
+void DrawBasis::CreateRootSignature(DirectXBasis* dXBas) {
 	HRESULT result;
 
 	//ルートシグネチャの設定
@@ -253,7 +280,7 @@ void DrawBasis::CreateRootSignature(DirectXBasis* dXBas){
 	pipelineDesc_.pRootSignature = rootSignature_.Get();
 }
 
-void DrawBasis::PrepareDraw(){
+void DrawBasis::PrepareDraw() {
 	//パイプラインステートとルートシグネチャの設定コマンド
 	dXBas_->GetCommandList()->SetPipelineState(pipelineState_.Get());
 	dXBas_->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
@@ -262,6 +289,6 @@ void DrawBasis::PrepareDraw(){
 	dXBas_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
 }
 
-void DrawBasis::PostDraw(){
+void DrawBasis::PostDraw() {
 
 }
