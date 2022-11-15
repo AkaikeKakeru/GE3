@@ -280,6 +280,45 @@ void DrawBasis::CreateRootSignature(DirectXBasis* dXBas) {
 	pipelineDesc_.pRootSignature = rootSignature_.Get();
 }
 
+void DrawBasis::CreateConstBuffer() {
+	HRESULT result;
+
+	//ヒープ設定
+	D3D12_HEAP_PROPERTIES cbHeapProp{};
+	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用
+											//リソース設定
+	D3D12_RESOURCE_DESC cbResDesc{};
+	cbResDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	cbResDesc.Width = (sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff; //256バイトアラインメント
+	cbResDesc.Height = 1;
+	cbResDesc.DepthOrArraySize = 1;
+	cbResDesc.MipLevels = 1;
+	cbResDesc.SampleDesc.Count = 1;
+	cbResDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+	ID3D12Resource* constBuffMaterial = nullptr;
+
+	//定数バッファの生成
+	result = dXBas_->GetDevice()->CreateCommittedResource(
+		&cbHeapProp, //ヒープ設定
+		D3D12_HEAP_FLAG_NONE,
+		&cbResDesc, //リソース設定
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&constBuffMaterial));
+	assert(SUCCEEDED(result));
+
+	//定数バッファのマッピング
+	ConstBufferDataMaterial* constMapMaterial = nullptr;
+
+	result = constBuffMaterial->Map(0, nullptr,
+		(void**)&constMapMaterial); //マッピング
+	assert(SUCCEEDED(result));
+
+	//値を書き込むと自動的に転送される
+	constMapMaterial->color = Vector4(1, 0, 0, 0.5f);
+}
+
 void DrawBasis::PrepareDraw() {
 	//パイプラインステートとルートシグネチャの設定コマンド
 	dXBas_->GetCommandList()->SetPipelineState(pipelineState_.Get());

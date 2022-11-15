@@ -1,5 +1,6 @@
 #pragma once
 #include "DirectXBasis.h"
+#include "Vector4.h"
 
 class DrawBasis{
 private:
@@ -36,6 +37,9 @@ private: //固有のメンバ関数
 	void SettingGraphicsPipelineDesc();
 	//ルートシグネチャを生成
 	void CreateRootSignature(DirectXBasis* dXBas);
+
+	//定数バッファの生成
+	void CreateConstBuffer();
 
 public: //ゲッター
 	DirectXBasis* GetDXBasis() const { return dXBas_; }
