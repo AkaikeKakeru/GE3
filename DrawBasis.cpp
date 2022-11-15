@@ -54,10 +54,17 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 	}VerticesParts;
 
 	//各初期位置関係
-	float left = -0.5f;//左
-	float right = +0.5f;//右
-	float top = +0.5f;//上
-	float bottom = -0.5f;//下
+	/*アスペクト比を考慮したうえで正方形っぽくする*/
+	float left = -0.4f;//左
+	float right = +0.4f;//右
+	float top = +0.7f;//上
+	float bottom = -0.7f;//下
+
+	/*初期タイプ*/
+	//float left = -0.5f;//左
+	//float right = +0.5f;//右
+	//float top = +0.5f;//上
+	//float bottom = -0.5f;//下
 
 	float uvLeft = 0.0f;//uv左
 	float uvRight = 1.0f;//uv右
