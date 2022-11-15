@@ -3,6 +3,7 @@
 #include "DrawBasis.h"
 #include <DirectXMath.h>
 #include "Vector3.h"
+#include "Vector2.h"
 #include <wrl.h>
 
 #include <d3d12.h>
@@ -34,14 +35,21 @@ void DrawBasis::Initialize(DirectXBasis* dXBas) {
 
 void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 	HRESULT result;
+
+	//頂点データ構造体
+	struct Vertex {
+		Vector3 pos;//xyz座標
+		Vector2 uv;//uv座標
+	};
+
 	//頂点データ
-	Vector3 vertices[VerticesNum];
+	Vertex vertices[VerticesNum];
 
 	//頂点部位
 	typedef enum VerticesParts {
 		LeftBottom,//左下
-		RightBottom,//右下
 		LeftTop,//左上
+		RightBottom,//右下
 		RightTop,//右上
 	}VerticesParts;
 
@@ -51,11 +59,21 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 	float top = +0.5f;//上
 	float bottom = -0.5f;//下
 
+	float uvLeft = 0.0f;//uv左
+	float uvRight = 0.0f;//uv右
+	float uvTop = 0.0f;//uv上
+	float uvBottom = 0.0f;//uv下
+
 	//各部位に、初期位置関係を設定
-	vertices[LeftBottom] = Vector3(left, bottom, 0);
-	vertices[RightBottom] = Vector3(right, bottom, 0);
-	vertices[LeftTop] = Vector3(left, top, 0);
-	vertices[RightTop] = Vector3(right, top, 0);
+	vertices[LeftBottom].pos = Vector3(left, bottom, 0);
+	vertices[LeftTop].pos = Vector3(left, top, 0);
+	vertices[RightBottom].pos = Vector3(right, bottom, 0);
+	vertices[RightTop].pos = Vector3(right, top, 0);
+
+	vertices[LeftBottom].uv = Vector2(uvLeft, uvBottom);
+	vertices[LeftTop].uv = Vector2(uvLeft, uvTop);
+	vertices[RightBottom].uv = Vector2(uvRight,uvBottom);
+	vertices[RightTop].uv = Vector2(uvRight, uvTop);
 
 	//頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(Vector3) * _countof(vertices));
