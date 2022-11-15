@@ -121,7 +121,7 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 	//頂点バッファのサイズ
 	vbView_.SizeInBytes = sizeVB;
 	//頂点１つ分のデータサイズ
-	vbView_.StrideInBytes = sizeof(Vector3);
+	vbView_.StrideInBytes = sizeof(vertices[0]);
 }
 
 void DrawBasis::CompileShaderFile() {
