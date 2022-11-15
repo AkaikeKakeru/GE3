@@ -252,6 +252,15 @@ void DrawBasis::SettingGraphicsPipelineDesc() {
 	pipelineDesc_.SampleDesc.Count = 1;//1ピクセルにつき1回サンプリング
 }
 
+void DrawBasis::SettingRootParameter() {
+	//ルートパラメータの設定
+	D3D12_ROOT_PARAMETER rootParam = {};
+	rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//定数バッファビュー
+	rootParam.Descriptor.ShaderRegister = 0;					//定数バッファ番号
+	rootParam.Descriptor.RegisterSpace = 0;						//デフォルト
+	rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
+}
+
 void DrawBasis::CreateRootSignature(DirectXBasis* dXBas) {
 	HRESULT result;
 

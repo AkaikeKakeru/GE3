@@ -35,6 +35,8 @@ private: //固有のメンバ関数
 	void CreateGraphicsPipeline(DirectXBasis* dXBas);
 	//グラフィックスパイプラインデスクの中身を設定
 	void SettingGraphicsPipelineDesc();
+	//ルートパラメータの設定
+	void SettingRootParameter();
 	//ルートシグネチャを生成
 	void CreateRootSignature(DirectXBasis* dXBas);
 
