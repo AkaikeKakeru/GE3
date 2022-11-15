@@ -6,6 +6,12 @@ private:
 	template <class Type>
 	using ComPtr = Microsoft::WRL::ComPtr<Type>;
 
+public: //構造体
+	//定数バッファ用データ構造体(マテリアル)
+	struct ConstBufferDataMaterial {
+		Vector4 color; //色(RGBA)
+	};
+
 public: //基本的なメンバ関数
 	void Initialize(DirectXBasis* dXBas);
 
