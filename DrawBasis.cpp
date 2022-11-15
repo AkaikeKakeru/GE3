@@ -60,9 +60,9 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 	float bottom = -0.5f;//下
 
 	float uvLeft = 0.0f;//uv左
-	float uvRight = 0.0f;//uv右
+	float uvRight = 1.0f;//uv右
 	float uvTop = 0.0f;//uv上
-	float uvBottom = 0.0f;//uv下
+	float uvBottom = 1.0f;//uv下
 
 	//各部位に、初期位置関係を設定
 	vertices[LeftBottom].pos = Vector3(left, bottom, 0);
