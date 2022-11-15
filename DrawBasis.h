@@ -72,5 +72,6 @@ private:
 
 	ComPtr<ID3D12PipelineState> pipelineState_ = nullptr;//パイプラインステート
 
+	ComPtr<ID3D12Resource> constBuffMaterial_ = nullptr;//マテリアル定数バッファ
 	ConstBufferDataMaterial* constMapMaterial_ = nullptr;//マテリアル定数マップ
 };
