@@ -50,7 +50,7 @@ public: //ゲッター
 	ComPtr<ID3D12RootSignature> GetRootSignature() const { return rootSignature_; }
 
 private:
-	static const int ElementDescNum = 1;//inputLayout_のエレメント数
+	static const int ElementDescNum = 2;//inputLayout_のエレメント数
 	static const int VerticesNum = 4;//verticesの頂点数
 
 	DirectXBasis* dXBas_ = nullptr; //DirectX基盤

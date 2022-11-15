@@ -188,7 +188,8 @@ void DrawBasis::CompileShaderFile() {
 void DrawBasis::AssembleVertexLayout() {
 	//要素名
 	typedef enum ElementName {
-		Position,//座標
+		Position,//xyz座標
+		Texcoord,//uv座標
 	}ElementName;
 
 	//頂点レイアウト
@@ -197,6 +198,17 @@ void DrawBasis::AssembleVertexLayout() {
 		"POSITION",									//セマンティック名
 		0,											//同じセマンティック名が複数あるときに使うインデックス(0でよい)
 		DXGI_FORMAT_R32G32B32_FLOAT,				//要素数とビット数を表す　(XYZの3つでfloat型なのでR32G32B32_FLOAT
+		0,											//入力スロットインデックス(0でよい)
+		D3D12_APPEND_ALIGNED_ELEMENT,				//データのオフセット値　(D3D12_APPEND_ALIGNED_ELEMENTだと自動設定)
+		D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,	//入力データ種別　(標準はD3D12_INPUT_CLASSIFICATION_PER_VERTEX_DAT
+		0											//一度に描画するインスタンス数(0でよい)
+	};
+
+	inputLayout_[ElementName::Texcoord] = {
+		//uv座標
+		"TEXCOORD",									//セマンティック名
+		0,											//同じセマンティック名が複数あるときに使うインデックス(0でよい)
+		DXGI_FORMAT_R32G32_FLOAT,				//要素数とビット数を表す　(XYZの3つでfloat型なのでR32G32B32_FLOAT
 		0,											//入力スロットインデックス(0でよい)
 		D3D12_APPEND_ALIGNED_ELEMENT,				//データのオフセット値　(D3D12_APPEND_ALIGNED_ELEMENTだと自動設定)
 		D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,	//入力データ種別　(標準はD3D12_INPUT_CLASSIFICATION_PER_VERTEX_DAT
