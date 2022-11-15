@@ -76,7 +76,7 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 	vertices[RightTop].uv = Vector2(uvRight, uvTop);
 
 	//頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
-	UINT sizeVB = static_cast<UINT>(sizeof(Vector3) * _countof(vertices));
+	UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
 
 	//頂点バッファの設定
 	//ヒープ設定
