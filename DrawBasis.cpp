@@ -183,6 +183,9 @@ void DrawBasis::CreateGraphicsPipeline(DirectXBasis* dXBas) {
 	//グラフィックスパイプラインデスクの中身を設定
 	SettingGraphicsPipelineDesc();
 
+	//ルートパラメータ設定
+	SettingRootParameter();
+
 	//ルートシグネチャを生成
 	CreateRootSignature(dXBas_);
 
@@ -190,6 +193,9 @@ void DrawBasis::CreateGraphicsPipeline(DirectXBasis* dXBas) {
 	result = dXBas->GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_,
 		IID_PPV_ARGS(&pipelineState_));
 	assert(SUCCEEDED(result));
+
+	//定数バッファ生成
+	CreateConstBuffer();
 }
 
 void DrawBasis::SettingGraphicsPipelineDesc() {
@@ -297,7 +303,7 @@ void DrawBasis::CreateConstBuffer() {
 	//ヒープ設定
 	D3D12_HEAP_PROPERTIES cbHeapProp{};
 	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用
-											//リソース設定
+											  //リソース設定
 	D3D12_RESOURCE_DESC cbResDesc{};
 	cbResDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 	cbResDesc.Width = (sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff; //256バイトアラインメント
@@ -307,8 +313,6 @@ void DrawBasis::CreateConstBuffer() {
 	cbResDesc.SampleDesc.Count = 1;
 	cbResDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
-	ID3D12Resource* constBuffMaterial = nullptr;
-
 	//定数バッファの生成
 	result = dXBas_->GetDevice()->CreateCommittedResource(
 		&cbHeapProp, //ヒープ設定
@@ -316,11 +320,11 @@ void DrawBasis::CreateConstBuffer() {
 		&cbResDesc, //リソース設定
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&constBuffMaterial));
+		IID_PPV_ARGS(&constBuffMaterial_));
 	assert(SUCCEEDED(result));
 
 	//定数バッファのマッピング
-	result = constBuffMaterial->Map(0, nullptr,
+	result = constBuffMaterial_->Map(0, nullptr,
 		(void**)&constMapMaterial_); //マッピング
 	assert(SUCCEEDED(result));
 
@@ -335,6 +339,10 @@ void DrawBasis::PrepareDraw() {
 
 	//プリミティブ形状の設定コマンド
 	dXBas_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
+
+	// 定数バッファビュー(CBV)の設定コマンド
+	dXBas_->GetCommandList()->SetGraphicsRootConstantBufferView(
+		0, constBuffMaterial_->GetGPUVirtualAddress());
 }
 
 void DrawBasis::PostDraw() {
