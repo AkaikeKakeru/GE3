@@ -338,8 +338,8 @@ void DrawBasis::CreateRootSignature(DirectXBasis* dXBas) {
 	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
 	rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 	/*ルートパラメータ情報*/
-	rootSignatureDesc.pParameters = &rootParam_;//ルートパラメータ先頭アドレス
-	rootSignatureDesc.NumParameters = 1;//ルートパラメータ数
+	rootSignatureDesc.pParameters = rootParams_;//ルートパラメータ先頭アドレス
+	rootSignatureDesc.NumParameters = _countof(rootParams_);//ルートパラメータ数
 
 	//ルートシグネチャのシリアライズ
 	ComPtr<ID3DBlob> rootSigBlob;
