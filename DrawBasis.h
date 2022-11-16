@@ -55,6 +55,9 @@ private: //固有のメンバ関数
 	//デスクリプタヒープ生成
 	void CreateDescriptorHeap();
 
+	//シェーダリソースビュー生成
+	void CreateShagerResourceView();
+
 public: //ゲッター
 	DirectXBasis* GetDXBasis() const { return dXBas_; }
 	D3D12_VERTEX_BUFFER_VIEW GetVBView() const { return vbView_; }
@@ -96,4 +99,5 @@ private:
 
 	Vector4* imageData = nullptr; //画像イメージデータ配列
 	ComPtr<ID3D12Resource> texBuff = nullptr; //テクスチャバッファ
+	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle //SRVハンドル
 };
