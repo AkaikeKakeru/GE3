@@ -387,15 +387,7 @@ void DrawBasis::CreateConstBuffer() {
 
 void DrawBasis::initializeTexture(){
 	///初期化
-
-	//横方向ピクセル
-	const size_t textureWidth = 256;
-	//縦方向ピクセル
-	const size_t textureHeight = 256;
-	//配列の要素数
-	const size_t imageDataCount = textureWidth * textureHeight;
-	//画像イメージデータ配列
-	Vector4* imageData = new Vector4[imageDataCount]; //※必ず開放する
+	imageData = new Vector4[imageDataCount]; //※必ず開放する
 
 	//全ピクセルの色を初期化
 	for (size_t i = 0; i < imageDataCount; i++){
@@ -406,6 +398,15 @@ void DrawBasis::initializeTexture(){
 	}
 
 	///テクスチャバッファ
+	//テクスチャバッファ生成
+	CreateTextureBuffer();
+	//テクスチャバッファ転送
+	TransferTextureBuffer();
+}
+
+void DrawBasis::CreateTextureBuffer(){
+	HRESULT result;
+
 	//ヒープ設定
 	D3D12_HEAP_PROPERTIES textureHeapProp{};
 	textureHeapProp.Type = D3D12_HEAP_TYPE_CUSTOM;
@@ -423,9 +424,6 @@ void DrawBasis::initializeTexture(){
 	textureResourceDesc.MipLevels = 1;
 	textureResourceDesc.SampleDesc.Count = 1;
 
-	HRESULT result;
-	ID3D12Resource* texBuff = nullptr;
-
 	result = dXBas_->GetDevice()->CreateCommittedResource(
 		&textureHeapProp,
 		D3D12_HEAP_FLAG_NONE,
@@ -433,20 +431,23 @@ void DrawBasis::initializeTexture(){
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&texBuff));
+}
 
+void DrawBasis::TransferTextureBuffer(){
+	HRESULT result;
 
-		//テクスチャバッファにデータ転送
-		result = texBuff->WriteToSubresource(
-			0,
-			nullptr,//全領域へコピー
-			imageData,//元データアドレス
-			sizeof(Vector4) * textureWidth,//1ラインサイズ
-			sizeof(Vector4) * imageDataCount//一枚サイズ
-		);
-		assert(SUCCEEDED(result));
+	//テクスチャバッファにデータ転送
+	result = texBuff->WriteToSubresource(
+		0,
+		nullptr,//全領域へコピー
+		imageData,//元データアドレス
+		sizeof(Vector4) * textureWidth,//1ラインサイズ
+		sizeof(Vector4) * imageDataCount//一枚サイズ
+	);
+	assert(SUCCEEDED(result));
 
-		//元データ解放
-		delete[] imageData;
+	//元データ解放
+	delete[] imageData;
 }
 
 void DrawBasis::PrepareDraw() {

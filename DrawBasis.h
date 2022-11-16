@@ -46,6 +46,12 @@ private: //固有のメンバ関数
 	//テクスチャ初期化
 	void initializeTexture();
 
+	///テクスチャバッファ
+	//テクスチャバッファ生成
+	void CreateTextureBuffer();
+	//テクスチャバッファ転送
+	void TransferTextureBuffer();
+
 public: //ゲッター
 	DirectXBasis* GetDXBasis() const { return dXBas_; }
 	D3D12_VERTEX_BUFFER_VIEW GetVBView() const { return vbView_; }
@@ -55,6 +61,13 @@ public: //ゲッター
 private:
 	static const int ElementDescNum = 2;//inputLayout_のエレメント数
 	static const int VerticesNum = 4;//verticesの頂点数
+
+	//横方向ピクセル
+	const size_t textureWidth = 256;
+	//縦方向ピクセル
+	const size_t textureHeight = 256;
+	//配列の要素数
+	const size_t imageDataCount = textureWidth * textureHeight;
 
 	DirectXBasis* dXBas_ = nullptr; //DirectX基盤
 
@@ -77,4 +90,7 @@ private:
 
 	ComPtr<ID3D12Resource> constBuffMaterial_ = nullptr;//マテリアル定数バッファ
 	ConstBufferDataMaterial* constMapMaterial_ = nullptr;//マテリアル定数マップ
+
+	Vector4* imageData = nullptr; //画像イメージデータ配列
+	ComPtr<ID3D12Resource> texBuff = nullptr; //テクスチャバッファ
 };
