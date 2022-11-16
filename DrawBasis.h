@@ -52,6 +52,9 @@ private: //固有のメンバ関数
 	//テクスチャバッファ転送
 	void TransferTextureBuffer();
 
+	//デスクリプタヒープ生成
+	void CreateDescriptorHeap();
+
 public: //ゲッター
 	DirectXBasis* GetDXBasis() const { return dXBas_; }
 	D3D12_VERTEX_BUFFER_VIEW GetVBView() const { return vbView_; }

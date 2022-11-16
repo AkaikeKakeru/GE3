@@ -79,7 +79,7 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 
 	vertices[LeftBottom].uv = Vector2(uvLeft, uvBottom);
 	vertices[LeftTop].uv = Vector2(uvLeft, uvTop);
-	vertices[RightBottom].uv = Vector2(uvRight,uvBottom);
+	vertices[RightBottom].uv = Vector2(uvRight, uvBottom);
 	vertices[RightTop].uv = Vector2(uvRight, uvTop);
 
 	//頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
@@ -193,8 +193,8 @@ void DrawBasis::AssembleVertexLayout() {
 	}ElementName;
 
 	//頂点レイアウト
-	for (int i = 0; i < ElementDescNum; i++){
-		switch (i){
+	for (int i = 0; i < ElementDescNum; i++) {
+		switch (i) {
 		case ElementName::Position:
 			inputLayout_[i] = {
 				//xyz座標
@@ -249,6 +249,9 @@ void DrawBasis::CreateGraphicsPipeline(DirectXBasis* dXBas) {
 
 	//テクスチャ初期化
 	initializeTexture();
+
+	//デスクリプタヒープ生成
+	CreateDescriptorHeap();
 }
 
 void DrawBasis::SettingGraphicsPipelineDesc() {
@@ -385,12 +388,12 @@ void DrawBasis::CreateConstBuffer() {
 	constMapMaterial_->color = Vector4(1, 0, 0, 0.5f);
 }
 
-void DrawBasis::initializeTexture(){
+void DrawBasis::initializeTexture() {
 	///初期化
 	imageData = new Vector4[imageDataCount]; //※必ず開放する
 
 	//全ピクセルの色を初期化
-	for (size_t i = 0; i < imageDataCount; i++){
+	for (size_t i = 0; i < imageDataCount; i++) {
 		imageData[i].x = 1.0f;	//R
 		imageData[i].y = 0.0f;	//G
 		imageData[i].z = 0.0f;	//B
@@ -404,7 +407,7 @@ void DrawBasis::initializeTexture(){
 	TransferTextureBuffer();
 }
 
-void DrawBasis::CreateTextureBuffer(){
+void DrawBasis::CreateTextureBuffer() {
 	HRESULT result;
 
 	//ヒープ設定
@@ -433,7 +436,7 @@ void DrawBasis::CreateTextureBuffer(){
 		IID_PPV_ARGS(&texBuff));
 }
 
-void DrawBasis::TransferTextureBuffer(){
+void DrawBasis::TransferTextureBuffer() {
 	HRESULT result;
 
 	//テクスチャバッファにデータ転送
@@ -448,6 +451,27 @@ void DrawBasis::TransferTextureBuffer(){
 
 	//元データ解放
 	delete[] imageData;
+}
+
+void DrawBasis::CreateDescriptorHeap() {
+	HRESULT result;
+
+	//SRVの最大個数
+	const size_t kMaxSRVCount = 2056;
+
+	//デスクリプタヒープの設定
+	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
+	srvHeapDesc.NumDescriptors = kMaxSRVCount;
+
+	//設定を基にSRV用デスクリプタヒープを生成
+	ID3D12DescriptorHeap* srvHeap = nullptr;
+	result = dXBas_->GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
+	assert(SUCCEEDED(result));
+
+	//SRVヒープの先頭ハンドルを取得
+	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
 }
 
 void DrawBasis::PrepareDraw() {
