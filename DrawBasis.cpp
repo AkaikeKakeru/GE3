@@ -233,6 +233,9 @@ void DrawBasis::CreateGraphicsPipeline(DirectXBasis* dXBas) {
 	//グラフィックスパイプラインデスクの中身を設定
 	SettingGraphicsPipelineDesc();
 
+	//デスクリプタレンジ設定
+	SettingDescriptorRange();
+
 	//ルートパラメータ設定
 	SettingRootParameter();
 
@@ -485,6 +488,15 @@ void DrawBasis::CreateShagerResourceView() {
 
 	//ハンドルの指す位置にシェーダーリソースビュー作成
 	dXBas_->GetDevice()->CreateShaderResourceView(texBuff_.Get(), &srvDesc, srvHandle_);
+}
+
+void DrawBasis::SettingDescriptorRange() {
+	//デスクリプタレンジの設定
+	D3D12_DESCRIPTOR_RANGE descriptorRange{};
+	descriptorRange.NumDescriptors = 1;//一度の描画に使うテクスチャが一枚なので1
+	descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descriptorRange.BaseShaderRegister = 0;//テクスチャレジスタ番号0番
+	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 }
 
 void DrawBasis::PrepareDraw() {

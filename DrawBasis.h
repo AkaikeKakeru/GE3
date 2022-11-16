@@ -58,6 +58,9 @@ private: //固有のメンバ関数
 	//シェーダリソースビュー生成
 	void CreateShagerResourceView();
 
+	//デスクリプタレンジの設定
+	void SettingDescriptorRange();
+
 public: //ゲッター
 	DirectXBasis* GetDXBasis() const { return dXBas_; }
 	D3D12_VERTEX_BUFFER_VIEW GetVBView() const { return vbView_; }
