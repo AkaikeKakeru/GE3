@@ -390,14 +390,14 @@ void DrawBasis::CreateConstBuffer() {
 
 void DrawBasis::initializeTexture() {
 	///初期化
-	imageData = new Vector4[imageDataCount]; //※必ず開放する
+	imageData_ = new Vector4[imageDataCount]; //※必ず開放する
 
 	//全ピクセルの色を初期化
 	for (size_t i = 0; i < imageDataCount; i++) {
-		imageData[i].x = 1.0f;	//R
-		imageData[i].y = 0.0f;	//G
-		imageData[i].z = 0.0f;	//B
-		imageData[i].w = 1.0f;	//A
+		imageData_[i].x = 1.0f;	//R
+		imageData_[i].y = 0.0f;	//G
+		imageData_[i].z = 0.0f;	//B
+		imageData_[i].w = 1.0f;	//A
 	}
 
 	///テクスチャバッファ
@@ -433,24 +433,24 @@ void DrawBasis::CreateTextureBuffer() {
 		&textureResourceDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&texBuff));
+		IID_PPV_ARGS(&texBuff_));
 }
 
 void DrawBasis::TransferTextureBuffer() {
 	HRESULT result;
 
 	//テクスチャバッファにデータ転送
-	result = texBuff->WriteToSubresource(
+	result = texBuff_->WriteToSubresource(
 		0,
 		nullptr,//全領域へコピー
-		imageData,//元データアドレス
+		imageData_,//元データアドレス
 		sizeof(Vector4) * textureWidth,//1ラインサイズ
 		sizeof(Vector4) * imageDataCount//一枚サイズ
 	);
 	assert(SUCCEEDED(result));
 
 	//元データ解放
-	delete[] imageData;
+	delete[] imageData_;
 }
 
 void DrawBasis::CreateDescriptorHeap() {
@@ -471,7 +471,7 @@ void DrawBasis::CreateDescriptorHeap() {
 	assert(SUCCEEDED(result));
 
 	//SRVヒープの先頭ハンドルを取得
-	srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
+	srvHandle_ = srvHeap->GetCPUDescriptorHandleForHeapStart();
 }
 
 void DrawBasis::CreateShagerResourceView() {
@@ -484,7 +484,7 @@ void DrawBasis::CreateShagerResourceView() {
 	srvDesc.Texture2D.MipLevels = 1;
 
 	//ハンドルの指す位置にシェーダーリソースビュー作成
-	dXBas_->GetDevice()->CreateShaderResourceView(texBuff.Get(), &srvDesc, srvHandle);
+	dXBas_->GetDevice()->CreateShaderResourceView(texBuff_.Get(), &srvDesc, srvHandle_);
 }
 
 void DrawBasis::PrepareDraw() {

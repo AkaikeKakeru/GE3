@@ -97,7 +97,7 @@ private:
 	ComPtr<ID3D12Resource> constBuffMaterial_ = nullptr;//マテリアル定数バッファ
 	ConstBufferDataMaterial* constMapMaterial_ = nullptr;//マテリアル定数マップ
 
-	Vector4* imageData = nullptr; //画像イメージデータ配列
-	ComPtr<ID3D12Resource> texBuff = nullptr; //テクスチャバッファ
-	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle //SRVハンドル
+	Vector4* imageData_ = nullptr; //画像イメージデータ配列
+	ComPtr<ID3D12Resource> texBuff_ = nullptr; //テクスチャバッファ
+	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle_; //SRVハンドル
 };
