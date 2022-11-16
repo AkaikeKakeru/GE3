@@ -8,7 +8,7 @@ cbuffer ConstBufferDataMaterial:register(b0) {
 // (頂点シェーダーからピクセルシェーダーへのやり取りに使用する)
 struct VSOutput {
 	//システム用の出力構造体
-	float4 svPos : SV_POSITION;
+	float4 svpos : SV_POSITION;
 	// uv値
 	float2 uv : TEXCOORD;
 };
