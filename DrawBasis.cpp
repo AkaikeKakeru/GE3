@@ -246,6 +246,9 @@ void DrawBasis::CreateGraphicsPipeline(DirectXBasis* dXBas) {
 
 	//定数バッファ生成
 	CreateConstBuffer();
+
+	//テクスチャ初期化
+	initializeTexture();
 }
 
 void DrawBasis::SettingGraphicsPipelineDesc() {
@@ -380,6 +383,25 @@ void DrawBasis::CreateConstBuffer() {
 
 	//値を書き込むと自動的に転送される
 	constMapMaterial_->color = Vector4(1, 0, 0, 0.5f);
+}
+
+void DrawBasis::initializeTexture(){
+	//横方向ピクセル
+	const size_t textureWidth = 256;
+	//縦方向ピクセル
+	const size_t textureHeight = 256;
+	//配列の要素数
+	const size_t imageDataCount = textureWidth * textureHeight;
+	//画像イメージデータ配列
+	Vector4* imageData = new Vector4[imageDataCount]; //※必ず開放する
+
+	//全ピクセルの色を初期化
+	for (size_t i = 0; i < imageDataCount; i++){
+		imageData[i].x = 1.0f;	//R
+		imageData[i].y = 0.0f;	//G
+		imageData[i].z = 0.0f;	//B
+		imageData[i].w = 1.0f;	//A
+	}
 }
 
 void DrawBasis::PrepareDraw() {
