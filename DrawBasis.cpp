@@ -319,10 +319,16 @@ void DrawBasis::SettingGraphicsPipelineDesc() {
 
 void DrawBasis::SettingRootParameter() {
 	//ルートパラメータの設定
-	rootParam_.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//定数バッファビュー
-	rootParam_.Descriptor.ShaderRegister = 0;					//定数バッファ番号
-	rootParam_.Descriptor.RegisterSpace = 0;						//デフォルト
-	rootParam_.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
+	//定数バッファ0番
+	rootParams_[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//定数バッファビュー
+	rootParams_[0].Descriptor.ShaderRegister = 0;					//定数バッファ番号
+	rootParams_[0].Descriptor.RegisterSpace = 0;						//デフォルト
+	rootParams_[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
+	//テクスチャレジスタ0番
+	rootParams_[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;	//デスクリプタテーブル
+	rootParams_[1].DescriptorTable.pDescriptorRanges = &descriptorRange_;				//デスクリプタレンジ
+	rootParams_[1].DescriptorTable.NumDescriptorRanges = 1;					//デスクリプタレンジ数
+	rootParams_[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
 }
 
 void DrawBasis::CreateRootSignature(DirectXBasis* dXBas) {
@@ -492,11 +498,10 @@ void DrawBasis::CreateShagerResourceView() {
 
 void DrawBasis::SettingDescriptorRange() {
 	//デスクリプタレンジの設定
-	D3D12_DESCRIPTOR_RANGE descriptorRange{};
-	descriptorRange.NumDescriptors = 1;//一度の描画に使うテクスチャが一枚なので1
-	descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRange.BaseShaderRegister = 0;//テクスチャレジスタ番号0番
-	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	descriptorRange_.NumDescriptors = 1;//一度の描画に使うテクスチャが一枚なので1
+	descriptorRange_.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descriptorRange_.BaseShaderRegister = 0;//テクスチャレジスタ番号0番
+	descriptorRange_.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 }
 
 void DrawBasis::PrepareDraw() {

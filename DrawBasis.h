@@ -70,6 +70,7 @@ public: //ゲッター
 private:
 	static const int ElementDescNum = 2;//inputLayout_のエレメント数
 	static const int VerticesNum = 4;//verticesの頂点数
+	static const int RootParamsNum = 2;//rootparamsのパラメータ数
 
 	//横方向ピクセル
 	const size_t textureWidth = 256;
@@ -91,7 +92,7 @@ private:
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_{};//グラフィックスパイプラインデスク
 
-	D3D12_ROOT_PARAMETER rootParam_ = {};//ルートパラメータ
+	D3D12_ROOT_PARAMETER rootParams_[RootParamsNum] = {};//ルートパラメータ
 
 	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;//ルートシグネチャ
 
@@ -103,4 +104,6 @@ private:
 	Vector4* imageData_ = nullptr; //画像イメージデータ配列
 	ComPtr<ID3D12Resource> texBuff_ = nullptr; //テクスチャバッファ
 	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle_; //SRVハンドル
+
+	D3D12_DESCRIPTOR_RANGE descriptorRange_{};//デスクリプタレンジ
 };
