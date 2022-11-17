@@ -37,6 +37,7 @@ private: //固有のメンバ関数
 	void SettingGraphicsPipelineDesc();
 	//ルートパラメータの設定
 	void SettingRootParameter();
+
 	//ルートシグネチャを生成
 	void CreateRootSignature(DirectXBasis* dXBas);
 
@@ -60,6 +61,9 @@ private: //固有のメンバ関数
 
 	//デスクリプタレンジの設定
 	void SettingDescriptorRange();
+
+	//テクスチャサンプラーの設定
+	void SettingTextureSampler();
 
 public: //ゲッター
 	DirectXBasis* GetDXBasis() const { return dXBas_; }
@@ -95,7 +99,7 @@ private:
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_{};//グラフィックスパイプラインデスク
 
-	D3D12_ROOT_PARAMETER rootParams_[RootParamsNum] = {};//ルートパラメータ
+	D3D12_ROOT_PARAMETER rootParams_[RootParamsNum]{};//ルートパラメータ
 
 	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;//ルートシグネチャ
 
@@ -110,4 +114,6 @@ private:
 	ID3D12DescriptorHeap* srvHeap_ = nullptr; //SRVヒープ
 
 	D3D12_DESCRIPTOR_RANGE descriptorRange_{};//デスクリプタレンジ
+
+	D3D12_STATIC_SAMPLER_DESC samplerDesc_{}; //テクスチャサンプラー
 };
