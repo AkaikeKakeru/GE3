@@ -90,20 +90,19 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 	D3D12_HEAP_PROPERTIES heapProp{};
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUの転送用
 	//リソース設定
-	D3D12_RESOURCE_DESC resDesc{};
-	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	resDesc.Width = sizeVB;//頂点データ全体のサイズ
-	resDesc.Height = 1;
-	resDesc.DepthOrArraySize = 1;
-	resDesc.MipLevels = 1;
-	resDesc.SampleDesc.Count = 1;
-	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	resDesc_.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	resDesc_.Width = sizeVB;//頂点データ全体のサイズ
+	resDesc_.Height = 1;
+	resDesc_.DepthOrArraySize = 1;
+	resDesc_.MipLevels = 1;
+	resDesc_.SampleDesc.Count = 1;
+	resDesc_.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
 	//頂点バッファの生成
 	result = dXBas->GetDevice()->CreateCommittedResource(
 		&heapProp,//ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
-		&resDesc,//リソース設定
+		&resDesc_,//リソース設定
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&vertBuff));
@@ -436,6 +435,9 @@ void DrawBasis::initializeTexture() {
 		metadata_ = scratchImg_.GetMetadata();
 	}
 
+	//読み込んだディフューズテクスチャをSRGBとして扱う
+	metadata_.format = MakeSRGB(metadata_.format);
+
 	///テクスチャバッファ
 	//テクスチャバッファ生成
 	CreateTextureBuffer();
@@ -460,11 +462,11 @@ void DrawBasis::CreateTextureBuffer() {
 	//リソース設定
 	D3D12_RESOURCE_DESC textureResourceDesc{};
 	textureResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	textureResourceDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	textureResourceDesc.Width = static_cast<UINT>(textureWidth); //幅
-	textureResourceDesc.Height = static_cast<UINT>(textureHeight); //高さ
-	textureResourceDesc.DepthOrArraySize = 1;
-	textureResourceDesc.MipLevels = 1;
+	textureResourceDesc.Format = metadata_.format;
+	textureResourceDesc.Width = metadata_.width; //幅
+	textureResourceDesc.Height = (UINT)metadata_.height; //高さ
+	textureResourceDesc.DepthOrArraySize = (UINT16)metadata_.arraySize;
+	textureResourceDesc.MipLevels = (UINT16)metadata_.mipLevels;
 	textureResourceDesc.SampleDesc.Count = 1;
 
 	result = dXBas_->GetDevice()->CreateCommittedResource(
@@ -510,11 +512,11 @@ void DrawBasis::CreateDescriptorHeap() {
 void DrawBasis::CreateShagerResourceView() {
 	//シェーダリソースビュー設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
-	srvDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;//RGBA float
+	srvDesc.Format = resDesc_.Format;//RGBA float
 	srvDesc.Shader4ComponentMapping =
 		D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-	srvDesc.Texture2D.MipLevels = 1;
+	srvDesc.Texture2D.MipLevels = resDesc_.MipLevels;
 
 	//ハンドルの指す位置にシェーダーリソースビュー作成
 	dXBas_->GetDevice()->CreateShaderResourceView(texBuff_.Get(), &srvDesc, srvHandle_);

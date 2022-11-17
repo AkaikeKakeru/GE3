@@ -91,6 +91,7 @@ private:
 
 	ComPtr<ID3D12Resource> vertBuff = nullptr;//頂点バッファ
 	D3D12_VERTEX_BUFFER_VIEW vbView_{};//頂点バッファビュー
+	D3D12_RESOURCE_DESC resDesc_{};//リソースデスク
 
 	ComPtr<ID3DBlob> vsBlob_ = nullptr;//頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> psBlob_ = nullptr;//ピクセルシェーダオブジェクト
