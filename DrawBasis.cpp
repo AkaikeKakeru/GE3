@@ -2,7 +2,6 @@
 
 #include "DrawBasis.h"
 #include <DirectXMath.h>
-#include <DirectXTex.h>
 #include "Vector3.h"
 #include "Vector2.h"
 #include <wrl.h>
@@ -408,16 +407,24 @@ void DrawBasis::CreateConstBuffer() {
 }
 
 void DrawBasis::initializeTexture() {
-	///初期化
-	imageData_ = new Vector4[imageDataCount]; //※必ず開放する
+	HRESULT result;
 
-	//全ピクセルの色を初期化
-	for (size_t i = 0; i < imageDataCount; i++) {
-		imageData_[i].x = 1.0f;	//R
-		imageData_[i].y = 0.0f;	//G
-		imageData_[i].z = 0.0f;	//B
-		imageData_[i].w = 1.0f;	//A
-	}
+	/////初期化
+	//imageData_ = new Vector4[imageDataCount]; //※必ず開放する
+
+	////全ピクセルの色を初期化
+	//for (size_t i = 0; i < imageDataCount; i++) {
+	//	imageData_[i].x = 1.0f;	//R
+	//	imageData_[i].y = 0.0f;	//G
+	//	imageData_[i].z = 0.0f;	//B
+	//	imageData_[i].w = 1.0f;	//A
+	//}
+
+	//WICテクスチャのロード
+	result = LoadFromWICFile(
+		L"Resources/smile.png",
+		WIC_FLAGS_NONE,
+		&metadata_, scratchImg_);
 
 	///テクスチャバッファ
 	//テクスチャバッファ生成
@@ -522,10 +529,6 @@ void DrawBasis::SettingTextureSampler(){
 	samplerDesc_.MinLOD = 0.0f;
 	samplerDesc_.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
 	samplerDesc_.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-}
-
-void DrawBasis::LoadTextureMetaData(){
-	
 }
 
 void DrawBasis::PrepareDraw() {

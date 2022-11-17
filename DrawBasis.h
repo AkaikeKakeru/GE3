@@ -1,4 +1,5 @@
 #pragma once
+#include <DirectXTex.h>
 #include "DirectXBasis.h"
 #include "Vector4.h"
 
@@ -65,9 +66,6 @@ private: //固有のメンバ関数
 	//テクスチャサンプラーの設定
 	void SettingTextureSampler();
 
-	//画像ファイル読み込み
-	void LoadTextureMetaData();
-
 public: //ゲッター
 	DirectXBasis* GetDXBasis() const { return dXBas_; }
 	D3D12_VERTEX_BUFFER_VIEW GetVBView() const { return vbView_; }
@@ -112,6 +110,10 @@ private:
 	ConstBufferDataMaterial* constMapMaterial_ = nullptr;//マテリアル定数マップ
 
 	Vector4* imageData_ = nullptr; //画像イメージデータ配列
+
+	TexMetadata metadata_{};
+	ScratchImage scratchImg_{};
+
 	ComPtr<ID3D12Resource> texBuff_ = nullptr; //テクスチャバッファ
 	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle_; //SRVハンドル
 	ID3D12DescriptorHeap* srvHeap_ = nullptr; //SRVヒープ
