@@ -343,6 +343,9 @@ void DrawBasis::CreateRootSignature(DirectXBasis* dXBas) {
 	/*ルートパラメータ情報*/
 	rootSignatureDesc.pParameters = rootParams_;//ルートパラメータ先頭アドレス
 	rootSignatureDesc.NumParameters = _countof(rootParams_);//ルートパラメータ数
+	/*テクスチャサンプラー情報*/
+	rootSignatureDesc.pStaticSamplers = &samplerDesc_;
+	rootSignatureDesc.NumStaticSamplers = 1;
 
 	//ルートシグネチャのシリアライズ
 	ComPtr<ID3DBlob> rootSigBlob;
