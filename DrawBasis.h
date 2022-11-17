@@ -2,7 +2,7 @@
 #include "DirectXBasis.h"
 #include "Vector4.h"
 
-class DrawBasis{
+class DrawBasis {
 private:
 	template <class Type>
 	using ComPtr = Microsoft::WRL::ComPtr<Type>;
@@ -64,6 +64,9 @@ private: //固有のメンバ関数
 
 	//テクスチャサンプラーの設定
 	void SettingTextureSampler();
+
+	//画像ファイル読み込み
+	void LoadTextureMetaData();
 
 public: //ゲッター
 	DirectXBasis* GetDXBasis() const { return dXBas_; }

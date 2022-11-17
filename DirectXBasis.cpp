@@ -1,5 +1,4 @@
 #include "DirectXBasis.h"
-#include <DirectXTex.h>
 #include <cassert>
 
 void DirectXBasis::Initialize(WinApp* winApp) {

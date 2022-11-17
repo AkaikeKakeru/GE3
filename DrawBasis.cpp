@@ -2,6 +2,7 @@
 
 #include "DrawBasis.h"
 #include <DirectXMath.h>
+#include <DirectXTex.h>
 #include "Vector3.h"
 #include "Vector2.h"
 #include <wrl.h>
@@ -521,6 +522,10 @@ void DrawBasis::SettingTextureSampler(){
 	samplerDesc_.MinLOD = 0.0f;
 	samplerDesc_.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
 	samplerDesc_.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+}
+
+void DrawBasis::LoadTextureMetaData(){
+	
 }
 
 void DrawBasis::PrepareDraw() {
