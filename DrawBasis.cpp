@@ -436,8 +436,8 @@ void DrawBasis::CreateTextureBuffer() {
 	D3D12_RESOURCE_DESC textureResourceDesc{};
 	textureResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 	textureResourceDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	textureResourceDesc.Width = textureWidth; //幅
-	textureResourceDesc.Height = textureHeight; //高さ
+	textureResourceDesc.Width = static_cast<UINT>(textureWidth); //幅
+	textureResourceDesc.Height = static_cast<UINT>(textureHeight); //高さ
 	textureResourceDesc.DepthOrArraySize = 1;
 	textureResourceDesc.MipLevels = 1;
 	textureResourceDesc.SampleDesc.Count = 1;
@@ -459,8 +459,8 @@ void DrawBasis::TransferTextureBuffer() {
 		0,
 		nullptr,//全領域へコピー
 		imageData_,//元データアドレス
-		sizeof(Vector4) * textureWidth,//1ラインサイズ
-		sizeof(Vector4) * imageDataCount//一枚サイズ
+		static_cast<UINT>(sizeof(Vector4) * textureWidth),//1ラインサイズ
+		static_cast<UINT>(sizeof(Vector4) * imageDataCount)//一枚サイズ
 	);
 	assert(SUCCEEDED(result));
 
@@ -475,7 +475,7 @@ void DrawBasis::CreateDescriptorHeap() {
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
-	srvHeapDesc.NumDescriptors = kMaxSRVCount;
+	srvHeapDesc.NumDescriptors = static_cast<UINT>(kMaxSRVCount);
 
 	//設定を基にSRV用デスクリプタヒープを生成
 	result = dXBas_->GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap_));
