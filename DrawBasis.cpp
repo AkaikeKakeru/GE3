@@ -426,6 +426,16 @@ void DrawBasis::initializeTexture() {
 		WIC_FLAGS_NONE,
 		&metadata_, scratchImg_);
 
+	//ミップマップ生成
+	ScratchImage mipChain{};
+	result = GenerateMipMaps(
+		scratchImg_.GetImages(), scratchImg_.GetImageCount(), scratchImg_.GetMetadata(),
+		TEX_FILTER_DEFAULT, 0, mipChain);
+	if (SUCCEEDED(result)) {
+		scratchImg_ = std::move(mipChain);
+		metadata_ = scratchImg_.GetMetadata();
+	}
+
 	///テクスチャバッファ
 	//テクスチャバッファ生成
 	CreateTextureBuffer();
