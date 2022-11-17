@@ -258,6 +258,9 @@ void DrawBasis::CreateGraphicsPipeline(DirectXBasis* dXBas) {
 
 	//デスクリプタヒープ生成
 	CreateDescriptorHeap();
+
+	//シェーダリソースビュー生成
+	CreateShagerResourceView();
 }
 
 void DrawBasis::SettingGraphicsPipelineDesc() {
@@ -420,6 +423,10 @@ void DrawBasis::initializeTexture() {
 	CreateTextureBuffer();
 	//テクスチャバッファ転送
 	TransferTextureBuffer();
+
+	//元データ解放
+	delete[] imageData_;
+	imageData_ = nullptr;
 }
 
 void DrawBasis::CreateTextureBuffer() {
@@ -463,9 +470,6 @@ void DrawBasis::TransferTextureBuffer() {
 		static_cast<UINT>(sizeof(Vector4) * imageDataCount)//一枚サイズ
 	);
 	assert(SUCCEEDED(result));
-
-	//元データ解放
-	delete[] imageData_;
 }
 
 void DrawBasis::CreateDescriptorHeap() {
