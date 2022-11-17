@@ -465,9 +465,6 @@ void DrawBasis::TransferTextureBuffer() {
 void DrawBasis::CreateDescriptorHeap() {
 	HRESULT result;
 
-	//SRVの最大個数
-	const size_t kMaxSRVCount = 2056;
-
 	//デスクリプタヒープの設定
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
@@ -475,12 +472,11 @@ void DrawBasis::CreateDescriptorHeap() {
 	srvHeapDesc.NumDescriptors = kMaxSRVCount;
 
 	//設定を基にSRV用デスクリプタヒープを生成
-	ID3D12DescriptorHeap* srvHeap = nullptr;
-	result = dXBas_->GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
+	result = dXBas_->GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap_));
 	assert(SUCCEEDED(result));
 
 	//SRVヒープの先頭ハンドルを取得
-	srvHandle_ = srvHeap->GetCPUDescriptorHandleForHeapStart();
+	srvHandle_ = srvHeap_->GetCPUDescriptorHandleForHeapStart();
 }
 
 void DrawBasis::CreateShagerResourceView() {
@@ -516,6 +512,15 @@ void DrawBasis::PrepareDraw() {
 	// 定数バッファビュー(CBV)の設定コマンド
 	dXBas_->GetCommandList()->SetGraphicsRootConstantBufferView(
 		0, constBuffMaterial_->GetGPUVirtualAddress());
+
+	//SRVヒープの設定コマンド
+	dXBas_->GetCommandList()->SetDescriptorHeaps(1, &srvHeap_);
+
+	//SRVヒープの先頭ハンドルを取得(SRVを指しているはず)
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap_->GetGPUDescriptorHandleForHeapStart();
+
+	//SRVヒープの先頭にあるSRVをルートパラメータ1番に設定
+	dXBas_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 }
 
 void DrawBasis::PostDraw() {

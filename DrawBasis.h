@@ -79,6 +79,9 @@ private:
 	//配列の要素数
 	const size_t imageDataCount = textureWidth * textureHeight;
 
+	//SRVの最大個数
+	const size_t kMaxSRVCount = 2056;
+
 	DirectXBasis* dXBas_ = nullptr; //DirectX基盤
 
 	ComPtr<ID3D12Resource> vertBuff = nullptr;//頂点バッファ
@@ -104,6 +107,7 @@ private:
 	Vector4* imageData_ = nullptr; //画像イメージデータ配列
 	ComPtr<ID3D12Resource> texBuff_ = nullptr; //テクスチャバッファ
 	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle_; //SRVハンドル
+	ID3D12DescriptorHeap* srvHeap_ = nullptr; //SRVヒープ
 
 	D3D12_DESCRIPTOR_RANGE descriptorRange_{};//デスクリプタレンジ
 };
