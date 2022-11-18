@@ -427,15 +427,16 @@ void DrawBasis::CreateConstBuffer() {
 		assert(SUCCEEDED(result));
 
 		//定数バッファのマッピング
-		result = constBuffMaterial_->Map(0, nullptr,
+		result = constBuffTransform_->Map(0, nullptr,
 			(void**)&constMapTransform_); //マッピング
 		assert(SUCCEEDED(result));
 
 		//単位行列を代入
 		constMapTransform_->mat = MatIdentity();
 
-		constMapTransform_->mat.m[0][0] = 2.0 / WinApp::WinWidth;
-		constMapTransform_->mat.m[1][1] = 2.0 / WinApp::WinHeight;
+		constMapTransform_->mat.m[0][0] = 2.0f / WinApp::WinWidth;
+		constMapTransform_->mat.m[1][1] = 2.0f / WinApp::WinHeight;
+
 	}
 }
 
