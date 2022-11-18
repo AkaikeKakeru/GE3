@@ -426,6 +426,8 @@ void DrawBasis::CreateConstBuffer() {
 			(void**)&constMapTransform_); //マッピング
 		assert(SUCCEEDED(result));
 
+		//単位行列を代入
+		constMapTransform_->mat = MatIdentity();
 	}
 }
 
