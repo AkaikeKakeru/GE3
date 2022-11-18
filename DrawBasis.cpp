@@ -440,6 +440,8 @@ void DrawBasis::CreateConstBuffer() {
 		constMapTransform_->mat.m[3][0] = -1.0f;
 		constMapTransform_->mat.m[3][1] = 1.0f;
 	}
+
+
 }
 
 void DrawBasis::initializeTexture() {
@@ -568,6 +570,13 @@ void DrawBasis::SettingTextureSampler() {
 	samplerDesc_.MinLOD = 0.0f;
 	samplerDesc_.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
 	samplerDesc_.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+}
+
+void DrawBasis::CreateMatWorld(){
+	Matrix4 matWorld;
+	matWorld = MatIdentity();
+
+
 }
 
 void DrawBasis::PrepareDraw() {

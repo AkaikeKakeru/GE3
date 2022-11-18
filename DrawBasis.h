@@ -74,6 +74,9 @@ private: //固有のメンバ関数
 	//テクスチャサンプラーの設定
 	void SettingTextureSampler();
 
+	//ワールド変換行列の作成
+	void CreateMatWorld();
+
 public: //ゲッター
 	DirectXBasis* GetDXBasis() const { return dXBas_; }
 	D3D12_VERTEX_BUFFER_VIEW GetVBView() const { return vbView_; }
