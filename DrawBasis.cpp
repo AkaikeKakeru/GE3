@@ -58,12 +58,6 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 	float top = +0.7f;//上
 	float bottom = -0.7f;//下
 
-	/*初期タイプ*/
-	//float left = -0.5f;//左
-	//float right = +0.5f;//右
-	//float top = +0.5f;//上
-	//float bottom = -0.5f;//下
-
 	float uvLeft = 0.0f;//uv左
 	float uvRight = 1.0f;//uv右
 	float uvTop = 0.0f;//uv上
@@ -305,7 +299,6 @@ void DrawBasis::SettingGraphicsPipelineDesc() {
 	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA; //ソースの値をアルファ値
 	blenddesc.DestBlend = D3D12_BLEND_SRC_ALPHA; //1.0f-ソースのアルファ値
 
-
 //頂点レイアウトの設定
 	pipelineDesc_.InputLayout.pInputElementDescs = inputLayout_;
 	pipelineDesc_.InputLayout.NumElements = _countof(inputLayout_);
@@ -430,10 +423,6 @@ void DrawBasis::initializeTexture() {
 	CreateTextureBuffer();
 	//テクスチャバッファ転送
 	TransferTextureBuffer();
-
-	////元データ解放
-	//delete[] imageData_;
-	//imageData_ = nullptr;
 }
 
 void DrawBasis::CreateTextureBuffer() {
@@ -470,7 +459,6 @@ void DrawBasis::TransferTextureBuffer() {
 
 	//全ミップマップについて
 	for (size_t i = 0; i < metadata_.mipLevels; i++) {
-
 		//ミップマップレベルを指定してイメージを取得
 		const Image* img = scratchImg_.GetImage(i, 0, 0);
 		//テクスチャバッファにデータ転送
