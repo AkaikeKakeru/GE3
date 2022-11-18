@@ -436,6 +436,9 @@ void DrawBasis::CreateConstBuffer() {
 
 		constMapTransform_->mat.m[0][0] = 2.0f / WinApp::WinWidth;
 		constMapTransform_->mat.m[1][1] = 2.0f / WinApp::WinHeight;
+
+		constMapTransform_->mat.m[3][0] = -1.0f;
+		constMapTransform_->mat.m[3][1] = 1.0f;
 	}
 }
 
