@@ -8,18 +8,24 @@ struct Matrix4{
 };
 
 // 単位行列を求める
-Matrix4 MatIdentity();
+Matrix4 Mat4Identity();
 
 //拡大縮小行列の設定
-Matrix4 MatScale(const Vector3& s);
+Matrix4 Mat4Scale(const Vector3& s);
 
 // 回転行列の設定
-Matrix4 MatRotationX(float angle);
-Matrix4 MatRotationY(float angle);
-Matrix4 MatRotationZ(float angle);
+Matrix4 Mat4RotationX(float angle);
+Matrix4 Mat4RotationY(float angle);
+Matrix4 Mat4RotationZ(float angle);
 
 //平行移動行列の設定
-Matrix4 MatTranslation(const Vector3& t);
+Matrix4 Mat4Translation(const Vector3& t);
+
+//転置行列を求める
+Matrix4 Mat4Transposed(const Matrix4& m);
+
+//逆行列を求める
+Matrix4 Mat4Inverse(const Matrix4& m);
 
 // 座標変換 (ベクトルと行列の掛け算をする)
 Vector3 Vec3Transform(const Vector3& v, const Matrix4& m);
