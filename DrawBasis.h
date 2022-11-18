@@ -83,7 +83,7 @@ public: //ゲッター
 private:
 	static const int ElementDescNum = 2;//inputLayout_のエレメント数
 	static const int VerticesNum = 4;//verticesの頂点数
-	static const int RootParamsNum = 2;//rootparamsのパラメータ数
+	static const int RootParamsNum = 3;//rootparamsのパラメータ数
 
 	//横方向ピクセル
 	const size_t textureWidth = 256;
