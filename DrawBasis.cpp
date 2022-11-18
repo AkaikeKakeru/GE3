@@ -275,8 +275,8 @@ void DrawBasis::SettingGraphicsPipelineDesc() {
 
 	//アルファ値共通設定
 	blenddesc.BlendEnable = true; // ブレンド有効にする
-	blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD; //ブレンドを有効にする
-	blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE; //加算
+	blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD; //加算
+	blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE; //ソースの値を100%使う
 	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO; //デストの値を 0%使う　
 
 	//加算合成
@@ -297,7 +297,7 @@ void DrawBasis::SettingGraphicsPipelineDesc() {
 	//半透明合成
 	blenddesc.BlendOp = D3D12_BLEND_OP_ADD; //加算
 	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA; //ソースの値をアルファ値
-	blenddesc.DestBlend = D3D12_BLEND_SRC_ALPHA; //1.0f-ソースのアルファ値
+	blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA; //1.0f-ソースのアルファ値
 
 //頂点レイアウトの設定
 	pipelineDesc_.InputLayout.pInputElementDescs = inputLayout_;
@@ -393,7 +393,7 @@ void DrawBasis::CreateConstBuffer() {
 	assert(SUCCEEDED(result));
 
 	//値を書き込むと自動的に転送される
-	constMapMaterial_->color = Vector4(1, 0, 0, 0.5f);
+	constMapMaterial_->color = Vector4(1, 1, 1, 1.0f);
 }
 
 void DrawBasis::initializeTexture() {
