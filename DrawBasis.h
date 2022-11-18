@@ -1,6 +1,7 @@
 #pragma once
 #include <DirectXTex.h>
 #include "DirectXBasis.h"
+#include "Matrix4.h"
 #include "Vector4.h"
 
 using namespace DirectX;
@@ -14,6 +15,11 @@ public: //構造体
 	//定数バッファ用データ構造体(マテリアル)
 	struct ConstBufferDataMaterial {
 		Vector4 color; //色(RGBA)
+	};
+
+	//定数バッファ用データ構造体(3D変換行列)
+	struct ConstBufferDataTransform {
+		Matrix4 mat; //3D変換行列
 	};
 
 public: //基本的なメンバ関数
