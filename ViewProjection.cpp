@@ -20,7 +20,10 @@ void ViewProjection::Initialize() {
 	axisY_ = { 0,0,0 };
 	axisZ_ = { 0,0,0 };
 
-	cameraMoveVal_ = { 0,0,0 };
+	angle_ = 0;
+	aspect_ = 0;
+	far_ = 0;
+	near_ = 0;
 
 #pragma region ìäéëìäâeïœä∑çsóÒÇÃåvéZ
 	xmMatPro =
@@ -91,7 +94,7 @@ void ViewProjection::UpdateMatWorld() {
 }
 
 void ViewProjection::CreateMatView() {
-	cameraMoveVal_ = {
+	Vector3 cameraMoveVal_ = {
 		Vec3Dot(cameraStatus_.eye_,axisX_),
 		Vec3Dot(cameraStatus_.eye_,axisY_),
 		Vec3Dot(cameraStatus_.eye_,axisZ_)
@@ -103,4 +106,7 @@ void ViewProjection::CreateMatView() {
 		axisZ_.x,axisZ_.y,axisZ_.z,0,
 		-cameraMoveVal_.x,-cameraMoveVal_.y,-cameraMoveVal_.z,1
 	};
+}
+
+void ViewProjection::CreateMatProjection(){
 }
