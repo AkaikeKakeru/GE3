@@ -432,7 +432,7 @@ void DrawBasis::CreateConstBuffer() {
 		assert(SUCCEEDED(result));
 
 		//’PˆÊs—ñ‚ð‘ã“ü
-		constMapTransform_->mat = MatIdentity();
+		constMapTransform_->mat = Mat4Identity();
 
 		constMapTransform_->mat.m[0][0] = 2.0f / WinApp::WinWidth;
 		constMapTransform_->mat.m[1][1] = 2.0f / WinApp::WinHeight;
@@ -574,7 +574,7 @@ void DrawBasis::SettingTextureSampler() {
 
 void DrawBasis::CreateMatWorld(){
 	Matrix4 matWorld;
-	matWorld = MatIdentity();
+	matWorld = Mat4Identity();
 
 
 }
