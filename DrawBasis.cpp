@@ -53,10 +53,10 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 
 	//各初期位置関係
 	/*アスペクト比を考慮したうえで正方形っぽくする*/
-	float left = -0.4f;//左
-	float right = +0.4f;//右
-	float top = +0.7f;//上
-	float bottom = -0.7f;//下
+	float left = 0.0f;//左
+	float right = +100.0f;//右
+	float top = 0.0f;//上
+	float bottom = -100.0f;//下
 
 	float uvLeft = 0.0f;//uv左
 	float uvRight = 1.0f;//uv右
@@ -436,7 +436,6 @@ void DrawBasis::CreateConstBuffer() {
 
 		constMapTransform_->mat.m[0][0] = 2.0f / WinApp::WinWidth;
 		constMapTransform_->mat.m[1][1] = 2.0f / WinApp::WinHeight;
-
 	}
 }
 
