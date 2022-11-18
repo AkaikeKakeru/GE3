@@ -585,6 +585,10 @@ void DrawBasis::PrepareDraw() {
 
 	//SRVヒープの先頭にあるSRVをルートパラメータ1番に設定
 	dXBas_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+
+	//定数バッファビュー(CRV)の設定コマンド
+	dXBas_->GetCommandList()->SetGraphicsRootConstantBufferView(
+		2, constBuffTransform_->GetGPUVirtualAddress());
 }
 
 void DrawBasis::PostDraw() {
