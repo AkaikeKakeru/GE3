@@ -117,6 +117,8 @@ private:
 
 	ComPtr<ID3D12Resource> constBuffMaterial_ = nullptr;//マテリアル定数バッファ
 	ConstBufferDataMaterial* constMapMaterial_ = nullptr;//マテリアル定数マップ
+	ComPtr<ID3D12Resource> constBuffTransform_ = nullptr;//3D変換定数バッファ
+	ConstBufferDataTransform* constMapTransform_ = nullptr;//3D変換定数マップ
 
 	TexMetadata metadata_;
 	ScratchImage scratchImg_;
