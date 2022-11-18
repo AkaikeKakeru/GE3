@@ -14,8 +14,6 @@
 
 #pragma comment(lib, "d3dcompiler.lib")//シェーダ用コンパイラ
 
-using namespace DirectX;
-
 void DrawBasis::Initialize(DirectXBasis* dXBas) {
 	assert(dXBas);
 	dXBas_ = dXBas;
@@ -408,17 +406,6 @@ void DrawBasis::CreateConstBuffer() {
 void DrawBasis::initializeTexture() {
 	HRESULT result;
 
-	/////初期化
-	//imageData_ = new Vector4[imageDataCount]; //※必ず開放する
-
-	////全ピクセルの色を初期化
-	//for (size_t i = 0; i < imageDataCount; i++) {
-	//	imageData_[i].x = 1.0f;	//R
-	//	imageData_[i].y = 0.0f;	//G
-	//	imageData_[i].z = 0.0f;	//B
-	//	imageData_[i].w = 1.0f;	//A
-	//}
-
 	//WICテクスチャのロード
 	result = LoadFromWICFile(
 		L"Resources/smile.png",
@@ -444,9 +431,9 @@ void DrawBasis::initializeTexture() {
 	//テクスチャバッファ転送
 	TransferTextureBuffer();
 
-	//元データ解放
-	delete[] imageData_;
-	imageData_ = nullptr;
+	////元データ解放
+	//delete[] imageData_;
+	//imageData_ = nullptr;
 }
 
 void DrawBasis::CreateTextureBuffer() {
@@ -481,15 +468,21 @@ void DrawBasis::CreateTextureBuffer() {
 void DrawBasis::TransferTextureBuffer() {
 	HRESULT result;
 
-	//テクスチャバッファにデータ転送
-	result = texBuff_->WriteToSubresource(
-		0,
-		nullptr,//全領域へコピー
-		imageData_,//元データアドレス
-		static_cast<UINT>(sizeof(Vector4) * textureWidth),//1ラインサイズ
-		static_cast<UINT>(sizeof(Vector4) * imageDataCount)//一枚サイズ
-	);
-	assert(SUCCEEDED(result));
+	//全ミップマップについて
+	for (size_t i = 0; i < metadata_.mipLevels; i++) {
+
+		//ミップマップレベルを指定してイメージを取得
+		const Image* img = scratchImg_.GetImage(i, 0, 0);
+		//テクスチャバッファにデータ転送
+		result = texBuff_->WriteToSubresource(
+			(UINT)i,
+			nullptr,//全領域へコピー
+			img->pixels,//元データアドレス
+			(UINT)img->rowPitch,//1ラインサイズ
+			(UINT)img->slicePitch//一枚サイズ
+		);
+		assert(SUCCEEDED(result));
+	}
 }
 
 void DrawBasis::CreateDescriptorHeap() {
@@ -530,7 +523,7 @@ void DrawBasis::SettingDescriptorRange() {
 	descriptorRange_.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 }
 
-void DrawBasis::SettingTextureSampler(){
+void DrawBasis::SettingTextureSampler() {
 	//テクスチャサンプラーの設定
 	samplerDesc_.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	samplerDesc_.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;

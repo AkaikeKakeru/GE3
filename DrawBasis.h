@@ -3,6 +3,8 @@
 #include "DirectXBasis.h"
 #include "Vector4.h"
 
+using namespace DirectX;
+
 class DrawBasis {
 private:
 	template <class Type>
@@ -110,10 +112,10 @@ private:
 	ComPtr<ID3D12Resource> constBuffMaterial_ = nullptr;//マテリアル定数バッファ
 	ConstBufferDataMaterial* constMapMaterial_ = nullptr;//マテリアル定数マップ
 
-	Vector4* imageData_ = nullptr; //画像イメージデータ配列
+	//Vector4* imageData_ = nullptr; //画像イメージデータ配列
 
-	TexMetadata metadata_{};
-	ScratchImage scratchImg_{};
+	TexMetadata metadata_;
+	ScratchImage scratchImg_;
 
 	ComPtr<ID3D12Resource> texBuff_ = nullptr; //テクスチャバッファ
 	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle_; //SRVハンドル
