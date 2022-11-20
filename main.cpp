@@ -1203,7 +1203,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	DrawBasis* drawBas = nullptr;
 	//DrawBasis初期化
 	drawBas = new DrawBasis();
-	drawBas->Initialize(dXBas,viewPro);
+	drawBas->Initialize(dXBas);
 #pragma endregion
 #pragma endregion
 #pragma endregion
@@ -1224,7 +1224,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma region ビュープロ使用
 
-	drawBas->SetViewProjection(viewPro);
+	//drawBas->SetViewProjection(viewPro);
 #pragma endregion
 
 

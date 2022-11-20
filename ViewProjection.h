@@ -33,10 +33,6 @@ private: //固有のメンバ関数
 	//プロジェクション行列作成
 	void CreateMatProjection();
 
-public: //ゲッター
-		//ビュープロのゲッター
-	ConstBufferDataViewProjection GetViewProjection() const { return viewPro_; };
-
 public: //セッター
 		//視点セッター
 	void SetCameraEye(Vector3 eye) { cameraStatus_.eye_ = eye; };

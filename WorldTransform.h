@@ -16,7 +16,7 @@ public:
 	//ワールド行列再計算
 	void RecalculationMatWorld();
 	//ワールド行列転送
-	void TransferMatWorld();
+	//void TransferMatWorld();
 
 public:
 	///アフィン変換情報

@@ -32,9 +32,9 @@ void WorldTransform::RecalculationMatWorld(){
 	matWorld_ *= matTrans;	//ワールド行列に平行移動を反映
 }
 
-void WorldTransform::TransferMatWorld(){
-	//定数バッファへデータ転送
-	constMapTransform_->mat = matWorld_ *
-		viewPro_->GetViewProjection().matView_*
-		viewPro_->GetViewProjection().matPro_;
-}
+//void WorldTransform::TransferMatWorld(){
+//	//定数バッファへデータ転送
+//	constMapTransform_->mat = matWorld_ *
+//		viewPro_->GetViewProjection().matView_*
+//		viewPro_->GetViewProjection().matPro_;
+//}
