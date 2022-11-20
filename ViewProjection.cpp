@@ -109,4 +109,18 @@ void ViewProjection::CreateMatView() {
 }
 
 void ViewProjection::CreateMatProjection(){
+	Vector3 proScale = {
+		1 / (tan(angle_ / 2)) / aspect_,
+		1 / (tan(angle_ / 2)),
+		1 / (far_ - near_) * far_
+	};
+
+	float transZ = -near_ / (far_ - near_) * far_;
+
+	viewPro_.matPro_ = {
+		proScale.x,0,0,0,
+		0,proScale.y,0,0,
+		0,0,proScale.z,0,
+		0,0,transZ,0
+	};
 }
