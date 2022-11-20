@@ -4,7 +4,6 @@
 #include "Matrix4.h"
 #include "Vector4.h"
 
-#include "ViewProjection.h"
 #include "WorldTransform.h"
 
 using namespace DirectX;
@@ -26,7 +25,7 @@ public: //構造体
 	};
 
 public: //基本的なメンバ関数
-	void Initialize(DirectXBasis* dXBas,ViewProjection* viewPro);
+	void Initialize(DirectXBasis* dXBas);
 
 	//描画準備
 	void PrepareDraw();
@@ -86,9 +85,6 @@ public: //ゲッター
 	ComPtr<ID3D12PipelineState> GetPipelineState() const { return pipelineState_; }
 	ComPtr<ID3D12RootSignature> GetRootSignature() const { return rootSignature_; }
 
-public: //セッター
-	void SetViewProjection(ViewProjection* viewPro) { viewPro_ = viewPro; }
-
 private:
 	static const int ElementDescNum = 2;//inputLayout_のエレメント数
 	static const int VerticesNum = 4;//verticesの頂点数
@@ -143,6 +139,5 @@ private:
 	D3D12_STATIC_SAMPLER_DESC samplerDesc_{}; //テクスチャサンプラー
 
 	/*座標*/
-	ViewProjection* viewPro_ = nullptr;
 	WorldTransform worldTransform_{};
 };
