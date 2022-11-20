@@ -4,9 +4,6 @@
 using namespace DirectX;
 
 void ViewProjection::Initialize() {
-	//今だけは致し方なく宣言(後々なくしたい)
-	XMMATRIX xmMatPro; //xmプロジェクション行列
-
 	//初期化
 	cameraStatus_.eye_ = { 0, 0, -100 };	//視点座標
 	cameraStatus_.target_ = { 0, 0, 0 };	//注視点座標
