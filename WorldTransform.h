@@ -11,15 +11,18 @@ public:
 	};
 
 public:
+	//初期化
 	void Initialize();
+	//ワールド行列再計算
 	void RecalculationMatWorld();
+	//ワールド行列転送
 	void TransferMatWorld();
-		
+
 private:
-	//アフィン変換情報
-	Vector3 scale_{};
-	Vector3 rotation_{};
-	Vector3 position_{};
+	///アフィン変換情報
+	Vector3 scale_;//スケール
+	Vector3 rotation_;//回転
+	Vector3 position_;//位置
 
 	//ワールド変換行列
 	Matrix4 matWorld_{};
