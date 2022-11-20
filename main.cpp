@@ -3,6 +3,7 @@
 #include "DirectXBasis.h"
 #include "DrawBasis.h"
 #include "Sprite.h"
+#include "ViewProjection.h"
 
 #include <DirectXMath.h>
 #include <DirectXTex.h>
@@ -279,8 +280,8 @@ void UpdateObjectControll(Object3d* object, Input* input) {
 	if (input->ifKeyRelease(DIK_RETURN)) { object->position_.y += 20.0f; }
 }
 
+//本命
 #pragma region 本命
-//
 //int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 //	HRESULT result;
 //#pragma region 基盤初期化
@@ -307,16 +308,25 @@ void UpdateObjectControll(Object3d* object, Input* input) {
 //	dXBas->Initialize(winApp);
 //#pragma endregion
 //#pragma region Draw基盤
-//
+//	////ポインタ
+//	//DrawBasis* drawBas = nullptr;
+//	////DrawBasis初期化
+//	//drawBas = new DrawBasis();
+//	//drawBas->Initialize();
 //#pragma endregion
 //#pragma endregion
 //#pragma endregion
 //#pragma region ゲームシーンの初期設定
+//	//ポインタ
+//	ViewProjection* viewPro = nullptr;
+//	//ViewProjection初期化
+//	viewPro = new ViewProjection();
 //
-//#pragma region ここからコメントアウト
-//
+//	////ポインタ
+//	//Sprite* sprite = new Sprite();
+//	////Sprite初期化
+//	//sprite->Initialize();
 //#pragma region 描画情報初期設定
-//
 //	float angle = 0.0f; //カメラの回転角
 //
 //	//拡縮倍率
@@ -472,7 +482,7 @@ void UpdateObjectControll(Object3d* object, Input* input) {
 //
 //										 //頂点シェーダの読み込みとコンパイル
 //	result = D3DCompileFromFile(
-//		L"Resources/shaders/BasicVS.hlsl",//シェーダファイル名
+//		L"SpriteVS.hlsl",//シェーダファイル名
 //		nullptr,
 //		D3D_COMPILE_STANDARD_FILE_INCLUDE,//インクルード可能にする
 //		"main", "vs_5_0",//エントリーポイント名、シェーダ―モデル指定
@@ -497,7 +507,7 @@ void UpdateObjectControll(Object3d* object, Input* input) {
 //
 //	//ピクセルシェーダの読み込みとコンパイル
 //	result = D3DCompileFromFile(
-//		L"Resources/shaders/BasicPS.hlsl",//シェーダファイル名
+//		L"SpritePS.hlsl",//シェーダファイル名
 //		nullptr,
 //		D3D_COMPILE_STANDARD_FILE_INCLUDE,//インクルード可能にする
 //		"main", "ps_5_0",//エントリーポイント名、シェーダーモデル指定
@@ -837,68 +847,15 @@ void UpdateObjectControll(Object3d* object, Input* input) {
 //	//	0.0f, 1.0f);//前端、奥端
 //#pragma endregion
 //
-//#pragma region 投資投影変換行列の計算
+//#pragma region ビュープロ使用
+//	//ビュープロジェクション初期化
+//	viewPro->Initialize();
 //
-//	ConstBufferDataViewProjection viewProjection;
-//	XMMATRIX matPro;
-//	matPro =
-//		XMMatrixPerspectiveFovLH(
-//			XMConvertToRadians(45.0f),//上下画角45度
-//			(float)WinApp::WinWidth / WinApp::WinHeight,//アスペクト比(画面横幅/画面縦幅)
-//			0.1f, 1000.0f
-//		);//前端、奥端
-//
-//
-//#pragma region ビュー行列の作成
-//	XMMATRIX matView;
-//	//Vector3 eye(0, 0, -100);	//視点座標
-//	//Vector3 target(0, 0, 0);	//注視点座標
-//	//Vector3 up(0, 1, 0);		//上方向ベクトル
-//
-//	XMFLOAT3 eye(0, 0, -100);	//視点座標
-//	XMFLOAT3 target(0, 0, 0);	//注視点座標
-//	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
-//
-//
-//	matView = XMMatrixLookAtLH(
-//		XMLoadFloat3(&eye),
-//		XMLoadFloat3(&target),
-//		XMLoadFloat3(&up));
-//
-//	for (int i = 0; i < 4; i++) {
-//		viewProjection.projection.m[i][0] = XMVectorGetX(matPro.r[i]);
-//		viewProjection.projection.m[i][1] = XMVectorGetY(matPro.r[i]);
-//		viewProjection.projection.m[i][2] = XMVectorGetZ(matPro.r[i]);
-//		viewProjection.projection.m[i][3] = XMVectorGetW(matPro.r[i]);
-//
-//		viewProjection.view.m[i][0] = XMVectorGetX(matView.r[i]);
-//		viewProjection.view.m[i][1] = XMVectorGetY(matView.r[i]);
-//		viewProjection.view.m[i][2] = XMVectorGetZ(matView.r[i]);
-//		viewProjection.view.m[i][3] = XMVectorGetW(matView.r[i]);
-//	}
 //	//配列内の全オブジェクトに対して
 //	for (int i = 0; i < _countof(object3ds); i++) {
-//		object3ds[i].viewProjection_ = viewProjection;
+//		object3ds[i].viewProjection_.projection = viewPro->GetViewProjection().matPro_;
+//		object3ds[i].viewProjection_.view = viewPro->GetViewProjection().matView_;
 //	}
-//#pragma endregion
-//
-//#pragma endregion
-//
-//#pragma region ワールド変換行列
-//
-//	//Matrix4 matWorld;
-//	//matWorld = MatIdentity();
-//
-//	//Matrix4 matScale; //スケーリング行列
-//
-//	//Matrix4 matRot; //回転行列
-//	//matRot = MatIdentity();
-//
-//	//Matrix4 matTrans; //平行移動行列
-//	//matTrans = MatTranslation(0, 0, 0);
-//
-//	//matWorld *= matTrans; //ワールド行列に平行移動を反映
-//
 //#pragma endregion
 //
 //#pragma endregion
@@ -1023,8 +980,6 @@ void UpdateObjectControll(Object3d* object, Input* input) {
 //
 //#pragma endregion
 //
-//#pragma endregion
-//
 //#pragma region ゲームループ
 //
 //	while (true) {
@@ -1047,22 +1002,19 @@ void UpdateObjectControll(Object3d* object, Input* input) {
 //			else if (input->ifKeyPress(DIK_A)) { angle -= XMConvertToRadians(1.0f); }
 //
 //			//angleラジアンだけY軸周りに回転、半径は-100
-//			eye.x = -100 * sinf(angle);
-//			eye.z = -100 * cosf(angle);
-//			matView = XMMatrixLookAtLH(XMLoadFloat3(&eye),
-//				XMLoadFloat3(&target), XMLoadFloat3(&up));
+//			viewPro->SetCameraEye(Vector3(-100 * sinf(angle), 0, -100 * cosf(angle)));
 //
-//			for (int i = 0; i < 4; i++) {
-//				viewProjection.view.m[i][0] = XMVectorGetX(matView.r[i]);
-//				viewProjection.view.m[i][1] = XMVectorGetY(matView.r[i]);
-//				viewProjection.view.m[i][2] = XMVectorGetZ(matView.r[i]);
-//				viewProjection.view.m[i][3] = XMVectorGetW(matView.r[i]);
+//			//ビュープロジェクション更新
+//			viewPro->Update();
+//
+//			//配列内の全オブジェクトに対して
+//			for (int i = 0; i < _countof(object3ds); i++) {
+//				object3ds[i].viewProjection_.view = viewPro->GetViewProjection().matView_;
+//
+//				object3ds[i].constMapTransform_->mat =
+//					object3ds[i].viewProjection_.view * object3ds[i].viewProjection_.projection;
+//
 //			}
-//
-//			object3ds[0].viewProjection_ = viewProjection;
-//
-//			object3ds[0].constMapTransform_->mat =
-//				object3ds[0].viewProjection_.view * object3ds[0].viewProjection_.projection;
 //		}
 //#pragma endregion
 //
@@ -1074,6 +1026,11 @@ void UpdateObjectControll(Object3d* object, Input* input) {
 //			UpdateObject3d(&object3ds[i]);
 //		}
 //
+//		Matrix4 debugMat = {
+//			1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+//		};
+//
+//		debugMat = Mat4Transposed(debugMat);
 //#pragma endregion
 //
 //#pragma endregion
@@ -1176,10 +1133,17 @@ void UpdateObjectControll(Object3d* object, Input* input) {
 //	//WindowsAPI終了処理
 //	winApp->Finalize();
 //
-//	//Spriteの解放
+//	//ViewProjectionの解放
+//	delete viewPro;
+//	viewPro = nullptr;
 //
+//	//Spriteの解放
+//	//delete sprite;
+//	//sprite = nullptr;
 //
 //	//DrawBasis基盤の解放
+//	//delete drawBas;
+//	//drawBas = nullptr;
 //
 //	//入力の解放
 //	delete input;
@@ -1197,13 +1161,10 @@ void UpdateObjectControll(Object3d* object, Input* input) {
 //
 //	return 0;
 //}
-
 #pragma endregion
 
-#pragma region デバッグ用
-
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
-	//HRESULT result;
+	HRESULT result;
 #pragma region 基盤初期化
 #pragma region WindowsAPI
 	//ポインタ
@@ -1237,10 +1198,31 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 #pragma endregion
 #pragma region ゲームシーンの初期設定
+
+#pragma region 描画情報初期設定
 	//ポインタ
-	Sprite* sprite = new Sprite();
+	ViewProjection* viewPro = nullptr;
+	//ViewProjection初期化
+	viewPro = new ViewProjection();
+
+	//ポインタ
+	Sprite* sprite1 = new Sprite();
 	//Sprite初期化
-	sprite->Initialize(drawBas);
+	sprite1->Initialize(drawBas);
+
+	Sprite* sprite2 = new Sprite();
+	//Sprite初期化
+	sprite2->Initialize(drawBas);
+#pragma endregion
+
+#pragma region ビュープロ使用
+	//ビュープロジェクション初期化
+	viewPro->Initialize();
+
+#pragma endregion
+
+
+#pragma endregion
 
 #pragma endregion
 
@@ -1258,11 +1240,47 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		input->Update();
 #pragma endregion
 
+#pragma region ゲームシーンの更新
+
+#pragma region ターゲットの周りを回るカメラ
+		//if (input->ifKeyPress(DIK_D) || input->ifKeyPress(DIK_A)) {
+		//	if (input->ifKeyPress(DIK_D)) { angle += XMConvertToRadians(1.0f); }
+		//	else if (input->ifKeyPress(DIK_A)) { angle -= XMConvertToRadians(1.0f); }
+
+		//	//angleラジアンだけY軸周りに回転、半径は-100
+		//	viewPro->SetCameraEye(Vector3(-100 * sinf(angle), 0, -100 * cosf(angle)));
+
+		//	//ビュープロジェクション更新
+		//	viewPro->Update();
+
+		//	//配列内の全オブジェクトに対して
+		//	for (int i = 0; i < _countof(object3ds); i++) {
+		//		object3ds[i].viewProjection_.view = viewPro->GetViewProjection().matView_;
+
+		//		object3ds[i].constMapTransform_->mat =
+		//			object3ds[i].viewProjection_.view * object3ds[i].viewProjection_.projection;
+
+		//	}
+		//}
+#pragma endregion
+
+#pragma endregion
+
+
+#pragma region ゲームシーンの描画
 		//描画の準備
 		dXBas->PrepareDraw();
+
+#pragma region 設定コマンド
 		drawBas->PrepareDraw();
-		//描画本体
-		sprite->Draw();
+
+		sprite1->Draw();
+		//sprite2->Draw();
+
+		drawBas->PostDraw();
+#pragma endregion
+
+#pragma endregion
 
 		//描画後処理
 		dXBas->PostDraw();
@@ -1279,9 +1297,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//WindowsAPI終了処理
 	winApp->Finalize();
 
+	//ViewProjectionの解放
+	delete viewPro;
+	viewPro = nullptr;
+
 	//Spriteの解放
-	delete sprite;
-	sprite = nullptr;
+	delete sprite1;
+	sprite1 = nullptr;
+	delete sprite2;
+	sprite2 = nullptr;
 
 	//DrawBasis基盤の解放
 	delete drawBas;
@@ -1303,343 +1327,3 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	return 0;
 }
-
-#pragma endregion
-
-#pragma region 確認用
-//
-//int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
-//	//HRESULT result;
-//#pragma region 基盤初期化
-//#pragma region WindowsAPI
-//	//ポインタ
-//	WinApp* winApp = nullptr;
-//	//WinApp初期化
-//	winApp = new WinApp();
-//	winApp->Initialize();
-//#pragma endregion
-//#pragma region DirectX基盤
-//#pragma region 入力機
-//	//ポインタ
-//	Input* input = nullptr;
-//	//入力の初期化
-//	input = new Input();
-//	input->Initialize(winApp);
-//#pragma endregion
-//#pragma region DX基盤
-//	//ポインタ
-//	DirectXBasis* dXBas = nullptr;
-//	//DirectXBasis初期化
-//	dXBas = new DirectXBasis();
-//	dXBas->Initialize(winApp);
-//#pragma endregion
-//#pragma region Draw基盤
-//	//ポインタ
-//	//DrawBasis* drawBas = nullptr;
-//	//DrawBasis初期化
-//	//drawBas = new DrawBasis();
-//	//drawBas->Initialize(dXBas);
-//
-//	HRESULT result;
-//	static const int ElementDescNum = 1;//inputLayout_のエレメント数
-//	static const int VerticesNum = 3;//verticesの頂点数
-//
-//	D3D12_VERTEX_BUFFER_VIEW vbView_{};//頂点バッファビュー
-//
-//	ComPtr<ID3DBlob> vsBlob_ = nullptr;//頂点シェーダオブジェクト
-//	ComPtr<ID3DBlob> psBlob_ = nullptr;//ピクセルシェーダオブジェクト
-//	ComPtr<ID3DBlob> errorBlob_ = nullptr;//エラーオブジェクト
-//
-//	D3D12_INPUT_ELEMENT_DESC inputLayout_[ElementDescNum]{};//頂点レイアウト
-//
-//	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_{};//グラフィックスパイプラインデスク
-//
-//	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;//ルートシグネチャ
-//
-//	ComPtr<ID3D12PipelineState> pipelineState_ = nullptr;//パイプラインステート
-//
-//	typedef enum VerticesParts {
-//		LeftBottom,
-//		LeftTop,
-//		RightBottom,
-//	}VerticesParts;
-//
-//	float left = -5.0f;
-//	float right = +5.0f;
-//	float top = +5.0f;
-//	float bottom = -5.0f;
-//
-//	//頂点データ
-//	Vector3 vertices[VerticesNum];
-//
-//	vertices[LeftBottom] = Vector3( left,bottom,0 );
-//	vertices[LeftTop] = Vector3( left,top,0 );
-//	vertices[RightBottom] = Vector3( right,bottom,0 );
-//	//AssembleVetices();
-//
-//	//頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
-//	UINT sizeVB = static_cast<UINT>(sizeof(Vector3) * _countof(vertices));
-//
-//	//頂点バッファの設定
-//	//ヒープ設定
-//	D3D12_HEAP_PROPERTIES heapProp{};
-//	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUの転送用
-//										   //リソース設定
-//	D3D12_RESOURCE_DESC resDesc{};
-//	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-//	resDesc.Width = sizeVB;//頂点データ全体のサイズ
-//	resDesc.Height = 1;
-//	resDesc.DepthOrArraySize = 1;
-//	resDesc.MipLevels = 1;
-//	resDesc.SampleDesc.Count = 1;
-//	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-//
-//	//頂点バッファの生成
-//	ComPtr<ID3D12Resource> vertBuff = nullptr;
-//	result = dXBas->GetDevice()->CreateCommittedResource(
-//		&heapProp,//ヒープ設定
-//		D3D12_HEAP_FLAG_NONE,
-//		&resDesc,//リソース設定
-//		D3D12_RESOURCE_STATE_GENERIC_READ,
-//		nullptr,
-//		IID_PPV_ARGS(&vertBuff));
-//	assert(SUCCEEDED(result));
-//
-//	//GPU上のバッファに対応仮想メモリ(メインメモリ上)を取得
-//	Vector3* vertMap = nullptr;
-//	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-//	assert(SUCCEEDED(result));
-//
-//	//全頂点に対して
-//	for (int i = 0; i < _countof(vertices); i++) {
-//		vertMap[i] = vertices[i];//座標をコピー
-//	}
-//
-//	//繋がりを解除
-//	vertBuff->Unmap(0, nullptr);
-//
-//	//頂点バッファビューの作成
-//	/*D3D12_VERTEX_BUFFER_VIEW vbView{};*/
-//	//GPU仮想アドレス
-//	vbView_.BufferLocation = vertBuff->GetGPUVirtualAddress();
-//	//頂点バッファのサイズ
-//	vbView_.SizeInBytes = sizeVB;
-//	//頂点１つ分のデータサイズ
-//	vbView_.StrideInBytes = sizeof(Vector3);
-//
-//	//頂点シェーダの読み込みとコンパイル
-//	result = D3DCompileFromFile(
-//		L"Resources/shaders/SpriteVS.hlsl",//シェーダファイル名
-//		nullptr,
-//		D3D_COMPILE_STANDARD_FILE_INCLUDE,//インクルード可能にする
-//		"main", "vs_5_0",//エントリーポイント名、シェーダ―モデル指定
-//		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,//デバッグ用設定
-//		0,
-//		&vsBlob_, &errorBlob_);
-//
-//	//エラーなら
-//	if (FAILED(result)) {
-//		//errorBlobからエラー内容をstring型にコピー
-//		std::string error;
-//		error.resize(errorBlob_->GetBufferSize());
-//
-//		std::copy_n((char*)errorBlob_->GetBufferPointer(),
-//			errorBlob_->GetBufferSize(),
-//			error.begin());
-//		error += "\n";
-//		//エラー内容を出力ウィンドウに表示
-//		OutputDebugStringA(error.c_str());
-//		assert(0);
-//	}
-//
-//	//ピクセルシェーダの読み込みとコンパイル
-//	result = D3DCompileFromFile(
-//		L"Resources/shaders/SpritePS.hlsl",//シェーダファイル名
-//		nullptr,
-//		D3D_COMPILE_STANDARD_FILE_INCLUDE,//インクルード可能にする
-//		"main", "ps_5_0",//エントリーポイント名、シェーダーモデル指定
-//		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,//デバッグ用設定
-//		0,
-//		&psBlob_, &errorBlob_);
-//
-//	//エラーなら
-//	if (FAILED(result)) {
-//		//errorBlobからエラー内容をstring型にコピー
-//		std::string error;
-//		error.resize(errorBlob_->GetBufferSize());
-//
-//		std::copy_n((char*)errorBlob_->GetBufferPointer(),
-//			errorBlob_->GetBufferSize(),
-//			error.begin());
-//		error += "\n";
-//		//エラー内容を出力ウィンドウに表示
-//		OutputDebugStringA(error.c_str());
-//		assert(0);
-//	}
-//
-//	typedef enum ElementName {
-//		Position,
-//	}ElementName;
-//
-//	//頂点レイアウト
-//	inputLayout_[ElementName::Position] = {
-//		//xyz座標
-//		"POSITION",									//セマンティック名
-//		0,											//同じセマンティック名が複数あるときに使うインデックス(0でよい)
-//		DXGI_FORMAT_R32G32B32_FLOAT,				//要素数とビット数を表す　(XYZの3つでfloat型なのでR32G32B32_FLOAT
-//		0,											//入力スロットインデックス(0でよい)
-//		D3D12_APPEND_ALIGNED_ELEMENT,				//データのオフセット値　(D3D12_APPEND_ALIGNED_ELEMENTだと自動設定)
-//		D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,	//入力データ種別　(標準はD3D12_INPUT_CLASSIFICATION_PER_VERTEX_DAT
-//		0											//一度に描画するインスタンス数(0でよい)
-//	};
-//
-//	//シェーダーの設定
-//	pipelineDesc_.VS.pShaderBytecode = vsBlob_->GetBufferPointer();
-//	pipelineDesc_.VS.BytecodeLength = vsBlob_->GetBufferSize();
-//	pipelineDesc_.PS.pShaderBytecode = psBlob_->GetBufferPointer();
-//	pipelineDesc_.PS.BytecodeLength = psBlob_->GetBufferSize();
-//
-//	//サンプルマスクの設定
-//	pipelineDesc_.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;//標準設定
-//
-//														 //ラスタライザの設定
-//	pipelineDesc_.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;//カリングしない
-//	pipelineDesc_.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;//ポリゴン内塗りつぶし
-//	pipelineDesc_.RasterizerState.DepthClipEnable = true;//深度クリッピングを有効に
-//
-//														 //ブレンドステート
-//	pipelineDesc_.BlendState.RenderTarget[0].RenderTargetWriteMask
-//		= D3D12_COLOR_WRITE_ENABLE_ALL;//RGB全てのチャネルを描画
-//
-//									   //頂点レイアウトの設定
-//	pipelineDesc_.InputLayout.pInputElementDescs = inputLayout_;
-//	pipelineDesc_.InputLayout.NumElements = _countof(inputLayout_);//_countof(inputLayout_);
-//
-//																   //図形の形状設定
-//	pipelineDesc_.PrimitiveTopologyType
-//		= D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-//
-//	//その他の設定
-//	pipelineDesc_.NumRenderTargets = 1;//描画対象は1つ
-//	pipelineDesc_.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;//0～255指定のRGBA
-//	pipelineDesc_.SampleDesc.Count = 1;//1ピクセルにつき1回サンプリング
-//
-//									   //ルートシグネチャ
-//									   //ComPtr<ID3D12RootSignature> rootSignature;
-//
-//									   //ルートシグネチャの設定
-//	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
-//	rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-//
-//	//ルートシグネチャのシリアライズ
-//	ComPtr<ID3DBlob> rootSigBlob;
-//	result = D3D12SerializeRootSignature(
-//		&rootSignatureDesc,
-//		D3D_ROOT_SIGNATURE_VERSION_1_0,
-//		&rootSigBlob,
-//		&errorBlob_);
-//	assert(SUCCEEDED(result));
-//
-//	//ルートシグネチャの生成
-//	result = dXBas->GetDevice()->CreateRootSignature(
-//		0,
-//		rootSigBlob->GetBufferPointer(),
-//		rootSigBlob->GetBufferSize(),
-//		IID_PPV_ARGS(&rootSignature_));
-//	assert(SUCCEEDED(result));
-//
-//	//パイプラインにルートシグネイチャをセット
-//	pipelineDesc_.pRootSignature = rootSignature_.Get();
-//
-//	//パイプラインステートの生成
-//	/*ComPtr<ID3D12PipelineState> pipelineState = nullptr;*/
-//	result = dXBas->GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_,
-//		IID_PPV_ARGS(&pipelineState_));
-//	assert(SUCCEEDED(result));
-//#pragma endregion
-//#pragma endregion
-//#pragma endregion
-//#pragma region ゲームシーンの初期設定
-//	//ポインタ
-//	//Sprite* sprite = new Sprite();
-//	//Sprite初期化
-//	//sprite->Initialize();
-//
-//#pragma endregion
-//
-//#pragma region ゲームループ
-//
-//	while (true) {
-//#pragma region 基盤更新
-//		//windowsのメッセージ処理
-//		if (winApp->ProcessMessage()) {
-//			//ループを抜ける
-//			break;
-//		}
-//
-//		//入力更新
-//		input->Update();
-//#pragma endregion
-//
-//		//描画の準備
-//		dXBas->PrepareDraw();
-//
-//		//描画本体
-//		//drawBas->Draw(dXBas);
-//		//パイプラインステートとルートシグネチャの設定コマンド
-//		dXBas->GetCommandList()->SetPipelineState(pipelineState_.Get());
-//		dXBas->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
-//
-//		//プリミティブ形状の設定コマンド
-//		dXBas->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
-//
-//																							 //頂点バッファビューの設定コマンド
-//		dXBas->GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);
-//
-//		//描画コマンド
-//		dXBas->GetCommandList()->DrawInstanced(
-//			//_countof(vertices)
-//			VerticesNum, 1, 0, 0);
-//
-//
-//		//描画後処理
-//		dXBas->PostDraw();
-//	}
-//
-//#pragma endregion
-//
-//#pragma region ゲームシーンの破棄
-//
-//#pragma endregion
-//
-//#pragma region 基盤終了処理
-//
-//	//WindowsAPI終了処理
-//	winApp->Finalize();
-//
-//	//Spriteの解放
-//	//delete sprite;
-//	//sprite = nullptr;
-//
-//	//DrawBasis基盤の解放
-//	//delete drawBas;
-//	//drawBas = nullptr;
-//
-//	//入力の解放
-//	delete input;
-//	input = nullptr;
-//
-//	//DirectX基盤の解放
-//	delete dXBas;
-//	dXBas = nullptr;
-//
-//	//WinAppの解放
-//	delete winApp;
-//	winApp = nullptr;
-//
-//#pragma endregion
-//
-//	return 0;
-//}
-
-#pragma endregion
