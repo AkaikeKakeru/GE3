@@ -4,6 +4,8 @@
 #include "Matrix4.h"
 #include "Vector4.h"
 
+#include "ViewProjection.h"
+
 using namespace DirectX;
 
 class DrawBasis {
@@ -23,7 +25,7 @@ public: //構造体
 	};
 
 public: //基本的なメンバ関数
-	void Initialize(DirectXBasis* dXBas);
+	void Initialize(DirectXBasis* dXBas,ViewProjection* viewPro);
 
 	//描画準備
 	void PrepareDraw();
@@ -83,6 +85,9 @@ public: //ゲッター
 	ComPtr<ID3D12PipelineState> GetPipelineState() const { return pipelineState_; }
 	ComPtr<ID3D12RootSignature> GetRootSignature() const { return rootSignature_; }
 
+public: //セッター
+	void SetViewProjection(ViewProjection* viewPro) { viewPro_ = viewPro; }
+
 private:
 	static const int ElementDescNum = 2;//inputLayout_のエレメント数
 	static const int VerticesNum = 4;//verticesの頂点数
@@ -123,14 +128,19 @@ private:
 	ComPtr<ID3D12Resource> constBuffTransform_ = nullptr;//3D変換定数バッファ
 	ConstBufferDataTransform* constMapTransform_ = nullptr;//3D変換定数マップ
 
+
+	/*テクスチャ*/
 	TexMetadata metadata_;
 	ScratchImage scratchImg_;
 
 	ComPtr<ID3D12Resource> texBuff_ = nullptr; //テクスチャバッファ
-	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle_; //SRVハンドル
+	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle_{}; //SRVハンドル
 	ID3D12DescriptorHeap* srvHeap_ = nullptr; //SRVヒープ
 
 	D3D12_DESCRIPTOR_RANGE descriptorRange_{};//デスクリプタレンジ
 
 	D3D12_STATIC_SAMPLER_DESC samplerDesc_{}; //テクスチャサンプラー
+
+	/*座標*/
+	ViewProjection* viewPro_ = nullptr;
 };

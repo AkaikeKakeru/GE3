@@ -14,9 +14,12 @@
 
 #pragma comment(lib, "d3dcompiler.lib")//シェーダ用コンパイラ
 
-void DrawBasis::Initialize(DirectXBasis* dXBas) {
+void DrawBasis::Initialize(DirectXBasis* dXBas,ViewProjection* viewPro) {
 	assert(dXBas);
 	dXBas_ = dXBas;
+
+	assert(viewPro);
+	viewPro_ = viewPro;
 
 	//頂点バッファビューの作成
 	CreateVertexBufferView(dXBas_);
@@ -439,6 +442,8 @@ void DrawBasis::CreateConstBuffer() {
 
 		constMapTransform_->mat.m[3][0] = -1.0f;
 		constMapTransform_->mat.m[3][1] = 1.0f;
+
+		CreateMatWorld();
 	}
 
 
@@ -573,10 +578,14 @@ void DrawBasis::SettingTextureSampler() {
 }
 
 void DrawBasis::CreateMatWorld(){
+	//ワールド変換行列
 	Matrix4 matWorld;
 	matWorld = Mat4Identity();
 
-
+	constMapTransform_->mat =
+		matWorld *
+		viewPro_->GetViewProjection().matView_ *
+		viewPro_->GetViewProjection().matPro_;
 }
 
 void DrawBasis::PrepareDraw() {

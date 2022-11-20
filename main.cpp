@@ -1188,22 +1188,29 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	dXBas = new DirectXBasis();
 	dXBas->Initialize(winApp);
 #pragma endregion
+
+#pragma region ビュープロ
+	//ポインタ
+	ViewProjection* viewPro = nullptr;
+	//ViewProjection初期化
+	viewPro = new ViewProjection();
+	//ビュープロジェクション初期化
+	viewPro->Initialize();
+#pragma endregion
+
 #pragma region Draw基盤
 	//ポインタ
 	DrawBasis* drawBas = nullptr;
 	//DrawBasis初期化
 	drawBas = new DrawBasis();
-	drawBas->Initialize(dXBas);
+	drawBas->Initialize(dXBas,viewPro);
 #pragma endregion
 #pragma endregion
 #pragma endregion
 #pragma region ゲームシーンの初期設定
 
 #pragma region 描画情報初期設定
-	//ポインタ
-	ViewProjection* viewPro = nullptr;
-	//ViewProjection初期化
-	viewPro = new ViewProjection();
+
 
 	//ポインタ
 	Sprite* sprite1 = new Sprite();
@@ -1216,9 +1223,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region ビュープロ使用
-	//ビュープロジェクション初期化
-	viewPro->Initialize();
 
+	drawBas->SetViewProjection(viewPro);
 #pragma endregion
 
 
