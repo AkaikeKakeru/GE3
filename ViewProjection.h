@@ -30,6 +30,8 @@ private: //固有のメンバ関数
 	void UpdateMatWorld();
 	//ビュー行列作成
 	void CreateMatView();
+	//プロジェクション行列作成
+	void CreateMatProjection();
 
 public: //ゲッター
 		//ビュープロのゲッター
@@ -60,12 +62,23 @@ private: //メンバ変数
 	//ワールド変換行列
 	Matrix4 matWorld_ = {};
 
+	///ビュー行列要素
 	//カメラX軸
 	Vector3 axisX_ = {};
 	//カメラY軸
 	Vector3 axisY_ = {};
 	//カメラZ軸
 	Vector3 axisZ_ = {};
-	//カメラ移動値
-	Vector3 cameraMoveVal_ = {};
+	////カメラ移動値
+	//Vector3 cameraMoveVal_ = {};
+
+	///プロジェクション行列要素
+	//視野角
+	float angle_;
+	//アスペクト比
+	float aspect_;
+	//farクリップ値
+	float far_;
+	//nearクリップ値
+	float near_;
 };
