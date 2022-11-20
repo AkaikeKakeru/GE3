@@ -18,7 +18,7 @@ public:
 	//ワールド行列転送
 	void TransferMatWorld();
 
-private:
+public:
 	///アフィン変換情報
 	Vector3 scale_;//スケール
 	Vector3 rotation_;//回転
@@ -27,6 +27,7 @@ private:
 	//ワールド変換行列
 	Matrix4 matWorld_{};
 
+private:
 	//ビュープロジェクション
 	ViewProjection* viewPro_{};
 

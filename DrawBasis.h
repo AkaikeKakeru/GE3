@@ -5,6 +5,7 @@
 #include "Vector4.h"
 
 #include "ViewProjection.h"
+#include "WorldTransform.h"
 
 using namespace DirectX;
 
@@ -143,4 +144,5 @@ private:
 
 	/*ç¿ïW*/
 	ViewProjection* viewPro_ = nullptr;
+	WorldTransform worldTransform_{};
 };
