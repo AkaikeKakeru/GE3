@@ -20,26 +20,10 @@ void ViewProjection::Initialize() {
 	axisY_ = { 0,0,0 };
 	axisZ_ = { 0,0,0 };
 
-	angle_ = 0;
-	aspect_ = 0;
-	far_ = 0;
-	near_ = 0;
-
-#pragma region 投資投影変換行列の計算
-	xmMatPro =
-		XMMatrixPerspectiveFovLH(
-			XMConvertToRadians(45.0f),//上下画角45度
-			(float)WinApp::WinWidth / WinApp::WinHeight,//アスペクト比(画面横幅/画面縦幅)
-			0.1f, 1000.0f
-		);//前端、奥端
-
-#pragma region ビュー行列の作成
-	for (int i = 0; i < 4; i++) {
-		viewPro_.matPro_.m[i][0] = XMVectorGetX(xmMatPro.r[i]);
-		viewPro_.matPro_.m[i][1] = XMVectorGetY(xmMatPro.r[i]);
-		viewPro_.matPro_.m[i][2] = XMVectorGetZ(xmMatPro.r[i]);
-		viewPro_.matPro_.m[i][3] = XMVectorGetW(xmMatPro.r[i]);
-	}
+	angle_ = XMConvertToRadians(45.0f);
+	aspect_ = (float)WinApp::WinWidth / WinApp::WinHeight;
+	far_ = 0.1f;
+	near_ = 1000.0f;
 
 	CreateCameraCoordinateAxis(
 		cameraStatus_.eye_,
@@ -47,7 +31,9 @@ void ViewProjection::Initialize() {
 		cameraStatus_.up_
 	);
 
+	CreateMatProjection();
 	CreateMatView();
+
 #pragma endregion
 }
 
@@ -110,8 +96,8 @@ void ViewProjection::CreateMatView() {
 
 void ViewProjection::CreateMatProjection(){
 	Vector3 proScale = {
-		1 / (tan(angle_ / 2)) / aspect_,
-		1 / (tan(angle_ / 2)),
+		1 / (static_cast<float>(tan(angle_ / 2))) / aspect_,
+		1 / (static_cast<float>(tan(angle_ / 2))),
 		1 / (far_ - near_) * far_
 	};
 
@@ -120,7 +106,7 @@ void ViewProjection::CreateMatProjection(){
 	viewPro_.matPro_ = {
 		proScale.x,0,0,0,
 		0,proScale.y,0,0,
-		0,0,proScale.z,0,
+		0,0,proScale.z,1,
 		0,0,transZ,0
 	};
 }
