@@ -436,12 +436,6 @@ void DrawBasis::CreateConstBuffer() {
 		//単位行列を代入
 		constMapTransform_->mat = Mat4Identity();
 
-		matWorld.m[0][0] = 2.0f / WinApp::WinWidth;
-		matWorld.m[1][1] = 2.0f / WinApp::WinHeight;
-
-		matWorld.m[3][0] = -1.0f;
-		matWorld.m[3][1] = 1.0f;
-
 		CreateMatWorld();
 	}
 
@@ -578,12 +572,15 @@ void DrawBasis::SettingTextureSampler() {
 
 void DrawBasis::CreateMatWorld(){
 	//ワールド変換行列
-	Matrix4 matWorld;
-	matWorld = Mat4Identity();
-
 	worldTransform_.RecalculationMatWorld();
 
-	constMapTransform_->mat = matWorld ;
+	worldTransform_. matWorld_.m[0][0] = 2.0f / WinApp::WinWidth;
+	worldTransform_. matWorld_.m[1][1] = 2.0f / WinApp::WinHeight;
+
+	worldTransform_. matWorld_.m[3][0] = -1.0f;
+	worldTransform_. matWorld_.m[3][1] = 1.0f;
+
+	constMapTransform_->mat = worldTransform_. matWorld_;
 }
 
 void DrawBasis::PrepareDraw() {
