@@ -14,12 +14,12 @@
 
 #pragma comment(lib, "d3dcompiler.lib")//シェーダ用コンパイラ
 
-void DrawBasis::Initialize(DirectXBasis* dXBas,ViewProjection* viewPro) {
+void DrawBasis::Initialize(DirectXBasis* dXBas) {
 	assert(dXBas);
 	dXBas_ = dXBas;
 
-	assert(viewPro);
-	viewPro_ = viewPro;
+	worldTransform_.Initialize();
+	worldTransform_.RecalculationMatWorld();
 
 	//頂点バッファビューの作成
 	CreateVertexBufferView(dXBas_);
@@ -437,16 +437,8 @@ void DrawBasis::CreateConstBuffer() {
 		//単位行列を代入
 		constMapTransform_->mat = Mat4Identity();
 
-		constMapTransform_->mat.m[0][0] = 2.0f / WinApp::WinWidth;
-		constMapTransform_->mat.m[1][1] = 2.0f / WinApp::WinHeight;
-
-		constMapTransform_->mat.m[3][0] = -1.0f;
-		constMapTransform_->mat.m[3][1] = 1.0f;
-
 		CreateMatWorld();
 	}
-
-
 }
 
 void DrawBasis::initializeTexture() {
@@ -579,13 +571,16 @@ void DrawBasis::SettingTextureSampler() {
 
 void DrawBasis::CreateMatWorld(){
 	//ワールド変換行列
-	Matrix4 matWorld;
-	matWorld = Mat4Identity();
 
-	constMapTransform_->mat =
-		matWorld *
-		viewPro_->GetViewProjection().matView_ *
-		viewPro_->GetViewProjection().matPro_;
+	worldTransform_.RecalculationMatWorld();
+
+	worldTransform_.matWorld_.m[0][0] = 2.0f / WinApp::WinWidth;
+	worldTransform_.matWorld_.m[1][1] = 2.0f / WinApp::WinHeight;
+
+	worldTransform_.matWorld_.m[3][0] = -1.0f;
+	worldTransform_.matWorld_.m[3][1] = 1.0f;
+
+	constMapTransform_->mat = worldTransform_.matWorld_;
 }
 
 void DrawBasis::PrepareDraw() {
