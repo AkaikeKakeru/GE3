@@ -148,6 +148,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix4.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ObjectBasis.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="Matrix4.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="ObjectBasis.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Struct.h" />
     <ClInclude Include="Vector2.h" />
@@ -191,7 +193,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\ObjectVShlsl.hlsl">
+    <FxCompile Include="Resources\shaders\ObjectVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
