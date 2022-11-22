@@ -1,10 +1,13 @@
 #pragma once
 #include "Vector4.h"
+#include "Vector3.h"
+#include "Vector2.h"
 #include "Matrix4.h"
 #include <d3d12.h>
 #include <DirectXTex.h>
 #include <wrl.h>
 
+#include "DirectXBasis.h"
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 
@@ -16,7 +19,7 @@ private:
 	using ComPtr = Microsoft::WRL::ComPtr<Type>;
 
 public: // 構造体
-		//定数バッファ用データ構造体(マテリアル)
+	//定数バッファ用データ構造体(マテリアル)
 	struct ConstBufferDataMaterial {
 		Vector4 color; //色(RGBA)
 	};
@@ -40,35 +43,70 @@ public: // 構造体
 		ComPtr<ID3D12Resource> texBuff = nullptr;
 	};
 
-public://メンバ関数
-	void Initialize( ObjectBasis* model, ID3D12Device* device);
-	void InitializeTexture(TextureData* textureData, const wchar_t* szFile);
-	void TransferTextureBuffer(TextureData* textureData, ID3D12Device* device);
-	void SetInitialize( ObjectBasis* model, ID3D12Device* device, int objectNum);
-	void Update( ObjectBasis* model);
+	//頂点データ構造体
+	struct Vertex {
+		Vector3 pos;		//xyz座標
+		Vector3 normal;	//法線ベクトル
+		Vector2 uv;		//uv座標
+	};
 
-	void Draw( ObjectBasis* model, ID3D12GraphicsCommandList* commandList, D3D12_VERTEX_BUFFER_VIEW& vbView,
-		D3D12_INDEX_BUFFER_VIEW& ibView, UINT numIndices);
+public://メンバ関数
+	void Initialize(DirectXBasis* dXBas);
+	void InitializeTexture(const wchar_t* szFile);
+	void TransferTextureBuffer();
+	//void SetInitialize( ObjectBasis* model, ID3D12Device* device, int objectNum);
+	void Update();
+
+	void Draw( UINT numIndices);
 
 	void copyInit();
 	void copyUp();
 	void copyDraw();
 
+public:// 定数
+	static const int SurfaceNum = 6;
+	static const int VertexNum = 4;
+	static const int VeticesNum = SurfaceNum * VertexNum;
+
+	static const int IndexNum = SurfaceNum * 2 * 3;
+private://static
+	//頂点データ
+	static std::vector<Vertex> vertices_;
+	//インデックス
+	static std::vector<unsigned short> indices_;
+
 private://メンバ変数
+	DirectXBasis* dXBas_ = nullptr;
 
-		//定数バッファ(行列用)
+	Vertex* vertMap_ = nullptr;
+	unsigned short* indexMap_ = nullptr;
+
+	D3D12_VERTEX_BUFFER_VIEW vbView_{};
+	D3D12_INDEX_BUFFER_VIEW ibView_{};
+
+	ComPtr<ID3D12PipelineState> pipelineState_ = nullptr;
+	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
+
+	//定数バッファ(行列用)
+	ComPtr<ID3D12Resource> constBuffMaterial_ = {};
+	//定数バッファマップ(行列用)
+	ConstBufferDataMaterial* constMapMaterial_ = {};
+
+	//定数バッファ(行列用)
 	ComPtr<ID3D12Resource> constBuffTransform_ = {};
-
 	//定数バッファマップ(行列用)
 	ConstBufferDataTransform* constMapTransform_ = {};
 
-	//定数バッファ(ビュープロジェクション)
-	ViewProjection* viewProjection_ = nullptr;
+	ComPtr<ID3D12DescriptorHeap> srvHeap_ = nullptr;
 
+	//定数バッファ(ビュープロジェクション)
+	ViewProjection* viewPro_ = nullptr;
 	//ワールド変換
 	//アフィン変換情報
 	WorldTransform worldTransform_{};
 
 	//親オブジェクトへのポインタ
 	ObjectBasis* parent_ = nullptr;
+
+	TextureData textureData_;
 };
