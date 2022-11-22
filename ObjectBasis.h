@@ -51,17 +51,19 @@ public: // 構造体
 	};
 
 public://メンバ関数
-	void Initialize(DirectXBasis* dXBas);
+	void Initialize(ComPtr<ID3D12Device> device);
 	void InitializeTexture(const wchar_t* szFile);
 	void TransferTextureBuffer();
-	//void SetInitialize( ObjectBasis* model, ID3D12Device* device, int objectNum);
 	void Update();
 
-	void Draw( UINT numIndices);
+	void Draw( /*UINT numIndices*/);
 
-	void copyInit();
+	void copyInit(DirectXBasis*dXBas);
 	void copyUp();
 	void copyDraw();
+
+	void PrepareDraw(ComPtr<ID3D12GraphicsCommandList> cmdList);
+	void PostDraw();
 
 public:// 定数
 	static const int SurfaceNum = 6;
@@ -75,8 +77,16 @@ private://static
 	//インデックス
 	static std::vector<unsigned short> indices_;
 
+	//デバイス
+	static ComPtr<ID3D12Device> device_;
+
+	//コマンドリスト
+	static ComPtr<ID3D12GraphicsCommandList> cmdList_;
+
 private://メンバ変数
 	DirectXBasis* dXBas_ = nullptr;
+
+	D3D12_RESOURCE_DESC resDesc_{};
 
 	Vertex* vertMap_ = nullptr;
 	unsigned short* indexMap_ = nullptr;
@@ -86,6 +96,10 @@ private://メンバ変数
 
 	ComPtr<ID3D12PipelineState> pipelineState_ = nullptr;
 	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
+
+	ComPtr<ID3DBlob> vsBlob_ = nullptr;//頂点シェーダオブジェクト
+	ComPtr<ID3DBlob> psBlob_ = nullptr;//ピクセルシェーダオブジェクト
+	ComPtr<ID3DBlob> errorBlob_ = nullptr;//エラーオブジェクト
 
 	//定数バッファ(行列用)
 	ComPtr<ID3D12Resource> constBuffMaterial_ = {};

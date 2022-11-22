@@ -2,6 +2,7 @@
 #include "Input.h"
 #include "DirectXBasis.h"
 #include "DrawBasis.h"
+#include "ObjectBasis.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
 
@@ -1205,6 +1206,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	drawBas = new DrawBasis();
 	drawBas->Initialize(dXBas);
 #pragma endregion
+#pragma region オブジェクト基盤
+	//ポインタ
+	ObjectBasis* objBas = nullptr;
+	//ObjectBasis初期化
+	objBas = new ObjectBasis();
+	objBas->Initialize(dXBas->GetDevice());
+		//copyInit(dXBas);//Initialize(dXBas);
+#pragma endregion
+
 #pragma endregion
 #pragma endregion
 #pragma region ゲームシーンの初期設定
@@ -1277,6 +1287,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		dXBas->PrepareDraw();
 
 #pragma region 設定コマンド
+		objBas->copyDraw();
+		objBas->PrepareDraw(dXBas->GetCommandList());
+		objBas->Draw();
+		objBas->PostDraw();
+
 		drawBas->PrepareDraw();
 
 		sprite1->Draw();
@@ -1312,7 +1327,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	delete sprite2;
 	sprite2 = nullptr;
 
-	//DrawBasis基盤の解放
+	//Object基盤の解放
+	delete objBas;
+	objBas = nullptr;
+
+	//Draw基盤の解放
 	delete drawBas;
 	drawBas = nullptr;
 
