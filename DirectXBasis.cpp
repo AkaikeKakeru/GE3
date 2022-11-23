@@ -5,7 +5,7 @@ void DirectXBasis::Initialize(WinApp* winApp) {
 	//nullチェック
 	assert(winApp);
 	winApp_ = winApp;
-	
+
 	//FPS固定初期化
 	fixFPS_ = new FixFPS();
 	fixFPS_->Initialize();
@@ -240,7 +240,7 @@ void DirectXBasis::InitFence() {
 	result = device_->CreateFence(fenceVal_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
 }
 
-void DirectXBasis::PrepareDraw(){
+void DirectXBasis::PrepareDraw() {
 #pragma region リソースバリアを描画可能状態に
 	//バックバッファの番号を取得(0番か1番)
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
@@ -281,7 +281,7 @@ void DirectXBasis::PrepareDraw(){
 	viewport.TopLeftY = 0;						//左上y
 	viewport.MinDepth = 0.0f;					//最小深度(0でよい)
 	viewport.MaxDepth = 1.0f;					//最大深度(1でよい)
-	
+
 	//ビューポート設定コマンドを、コマンドリストに積む
 	commandList_->RSSetViewports(1, &viewport);
 #pragma endregion
@@ -299,10 +299,10 @@ void DirectXBasis::PrepareDraw(){
 #pragma endregion
 }
 
-void DirectXBasis::PostDraw(){
+void DirectXBasis::PostDraw() {
 	HRESULT result;
 	//4.ここまで、描画コマンド
-	
+
 	//バックバッファの番号を取得(0番か1番)
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 
@@ -360,7 +360,7 @@ void DirectXBasis::PostDraw(){
 #pragma endregion
 }
 
-DirectXBasis::~DirectXBasis(){
+DirectXBasis::~DirectXBasis() {
 	delete fixFPS_;
 	fixFPS_ = nullptr;
 }

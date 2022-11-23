@@ -3,6 +3,8 @@
 #include "DirectXBasis.h"
 #include "Matrix4.h"
 #include "Vector4.h"
+#include "Vector3.h"
+#include "Vector2.h"
 
 #include "WorldTransform.h"
 
@@ -24,17 +26,24 @@ public: //構造体
 		Matrix4 mat; //3D変換行列
 	};
 
-public: //基本的なメンバ関数
-	void Initialize(DirectXBasis* dXBas);
+	//頂点データ構造体
+	struct Vertex {
+		Vector3 pos;//xyz座標
+		Vector2 uv;//uv座標
+	};
 
+public: //基本的なメンバ関数
+	/*void Initialize(DirectXBasis* dXBas);*/
+	void Initialize(ID3D12Device * device);
+	
 	//描画準備
-	void PrepareDraw();
+	void PrepareDraw(ID3D12GraphicsCommandList * cmdList);
 	//描画後処理
 	void PostDraw();
 private: //固有のメンバ関数
 
 	//頂点バッファビューの作成
-	void CreateVertexBufferView(DirectXBasis* dXBas);
+	void CreateVertexBufferView(/*DirectXBasis* dXBas*/);
 
 	//シェーダファイルを読み込み、コンパイルする
 	void CompileShaderFile();
@@ -43,20 +52,20 @@ private: //固有のメンバ関数
 	void AssembleVertexLayout();
 
 	//グラフィックスパイプラインを生成
-	void CreateGraphicsPipeline(DirectXBasis* dXBas);
+	void CreateGraphicsPipeline(/*DirectXBasis* dXBas*/);
 	//グラフィックスパイプラインデスクの中身を設定
 	void SettingGraphicsPipelineDesc();
 	//ルートパラメータの設定
 	void SettingRootParameter();
 
 	//ルートシグネチャを生成
-	void CreateRootSignature(DirectXBasis* dXBas);
+	void CreateRootSignature(/*DirectXBasis* dXBas*/);
 
 	//定数バッファの生成
 	void CreateConstBuffer();
 
 	//テクスチャ初期化
-	void initializeTexture();
+	void InitializeTexture();
 
 	///テクスチャバッファ
 	//テクスチャバッファ生成
@@ -80,10 +89,27 @@ private: //固有のメンバ関数
 	void CreateMatWorld();
 
 public: //ゲッター
-	DirectXBasis* GetDXBasis() const { return dXBas_; }
+	//DirectXBasis* GetDXBasis() const { return dXBas_; }
 	D3D12_VERTEX_BUFFER_VIEW GetVBView() const { return vbView_; }
 	ComPtr<ID3D12PipelineState> GetPipelineState() const { return pipelineState_; }
 	ComPtr<ID3D12RootSignature> GetRootSignature() const { return rootSignature_; }
+
+	//ComPtr<ID3D12GraphicsCommandList> GetCommandList() const { return cmdList_; }
+	ID3D12GraphicsCommandList* GetCommandList() const { return cmdList_; }
+
+
+private://static
+	//頂点データ
+	static std::vector<Vertex> vertices_;
+	//デバイス
+	//static ComPtr<ID3D12Device> device_;
+	////コマンドリスト
+	//static ComPtr<ID3D12GraphicsCommandList> cmdList_;
+
+	//デバイス
+	static ID3D12Device* device_;
+	//コマンドリスト
+	static ID3D12GraphicsCommandList* cmdList_;
 
 private:
 	static const int ElementDescNum = 2;//inputLayout_のエレメント数
@@ -100,7 +126,7 @@ private:
 	//SRVの最大個数
 	const size_t kMaxSRVCount = 2056;
 
-	DirectXBasis* dXBas_ = nullptr; //DirectX基盤
+	//DirectXBasis* dXBas_ = nullptr; //DirectX基盤
 
 	ComPtr<ID3D12Resource> vertBuff = nullptr;//頂点バッファ
 	D3D12_VERTEX_BUFFER_VIEW vbView_{};//頂点バッファビュー

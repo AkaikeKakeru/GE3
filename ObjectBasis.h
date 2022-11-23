@@ -51,7 +51,8 @@ public: // 構造体
 	};
 
 public://メンバ関数
-	void Initialize(ComPtr<ID3D12Device> device);
+	//void Initialize(ComPtr<ID3D12Device> device);
+	void Initialize(ID3D12Device* device);
 	void InitializeTexture(const wchar_t* szFile);
 	void TransferTextureBuffer();
 	void Update();
@@ -62,7 +63,8 @@ public://メンバ関数
 	void copyUp();
 	void copyDraw();
 
-	void PrepareDraw(ComPtr<ID3D12GraphicsCommandList> cmdList);
+	//void PrepareDraw(ComPtr<ID3D12GraphicsCommandList> cmdList);
+	void PrepareDraw(ID3D12GraphicsCommandList* cmdList);
 	void PostDraw();
 
 public:// 定数
@@ -78,10 +80,14 @@ private://static
 	static std::vector<unsigned short> indices_;
 
 	//デバイス
-	static ComPtr<ID3D12Device> device_;
+	//static ComPtr<ID3D12Device> device_;
+	////コマンドリスト
+	//static ComPtr<ID3D12GraphicsCommandList> cmdList_;
 
+	//デバイス
+	static ID3D12Device* device_;
 	//コマンドリスト
-	static ComPtr<ID3D12GraphicsCommandList> cmdList_;
+	static ID3D12GraphicsCommandList* cmdList_;
 
 private://メンバ変数
 	DirectXBasis* dXBas_ = nullptr;
@@ -90,6 +96,7 @@ private://メンバ変数
 
 	Vertex* vertMap_ = nullptr;
 	unsigned short* indexMap_ = nullptr;
+	ComPtr<ID3D12Resource> indexBuff_ = nullptr;
 
 	D3D12_VERTEX_BUFFER_VIEW vbView_{};
 	D3D12_INDEX_BUFFER_VIEW ibView_{};

@@ -14,15 +14,30 @@
 
 #pragma comment(lib, "d3dcompiler.lib")//シェーダ用コンパイラ
 
-void DrawBasis::Initialize(DirectXBasis* dXBas) {
-	assert(dXBas);
-	dXBas_ = dXBas;
+template <class Type>
+using ComPtr = Microsoft::WRL::ComPtr<Type>;
+
+//ComPtr<ID3D12Device> DrawBasis::device_ = nullptr;
+//ComPtr<ID3D12GraphicsCommandList> DrawBasis::cmdList_ = nullptr;
+
+ID3D12Device* DrawBasis::device_ = nullptr;
+ID3D12GraphicsCommandList* DrawBasis::cmdList_ = nullptr;
+
+std::vector<DrawBasis::Vertex> DrawBasis::vertices_;
+
+void DrawBasis::Initialize(/*ComPtr<ID3D12Device> */
+	ID3D12Device * device) {
+	//assert(dXBas);
+	//dXBas_ = dXBas;
+
+	assert(device);
+	device_ = device;
 
 	worldTransform_.Initialize();
 	worldTransform_.RecalculationMatWorld();
 
 	//頂点バッファビューの作成
-	CreateVertexBufferView(dXBas_);
+	CreateVertexBufferView();
 
 	//シェーダファイルを読み込み、コンパイルする
 	CompileShaderFile();
@@ -31,17 +46,17 @@ void DrawBasis::Initialize(DirectXBasis* dXBas) {
 	AssembleVertexLayout();
 
 	//グラフィックスパイプラインを生成
-	CreateGraphicsPipeline(dXBas_);
+	CreateGraphicsPipeline();
 }
 
-void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
+void DrawBasis::CreateVertexBufferView(/*DirectXBasis* dXBas*/) {
 	HRESULT result;
 
-	//頂点データ構造体
-	struct Vertex {
-		Vector3 pos;//xyz座標
-		Vector2 uv;//uv座標
-	};
+	////頂点データ構造体
+	//struct Vertex {
+	//	Vector3 pos;//xyz座標
+	//	Vector2 uv;//uv座標
+	//};
 
 	//頂点データ
 	Vertex vertices[VerticesNum];
@@ -77,8 +92,13 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 	vertices[RightBottom].uv = Vector2(uvRight, uvBottom);
 	vertices[RightTop].uv = Vector2(uvRight, uvTop);
 
+	for (size_t i = 0; i < _countof(vertices); i++) {
+		vertices_.emplace_back(vertices[i]);
+	}
+
 	//頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
-	UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
+	//UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
+	UINT sizeVB = static_cast<UINT>(sizeof(Vertex) * vertices_.size());
 
 	//頂点バッファの設定
 	//ヒープ設定
@@ -94,7 +114,7 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 	resDesc_.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
 	//頂点バッファの生成
-	result = dXBas->GetDevice()->CreateCommittedResource(
+	result = device_->CreateCommittedResource(
 		&heapProp,//ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
 		&resDesc_,//リソース設定
@@ -106,15 +126,17 @@ void DrawBasis::CreateVertexBufferView(DirectXBasis* dXBas) {
 	//GPU上のバッファに対応仮想メモリ(メインメモリ上)を取得
 	Vertex* vertMap = nullptr;
 	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	assert(SUCCEEDED(result));
-
-	//全頂点に対して
-	for (int i = 0; i < _countof(vertices); i++) {
-		vertMap[i] = vertices[i];//座標をコピー
+	if (SUCCEEDED(result)) {
+		std::copy(vertices_.begin(), vertices_.end(), vertMap);
+		//繋がりを解除
+		vertBuff->Unmap(0, nullptr);
 	}
 
-	//繋がりを解除
-	vertBuff->Unmap(0, nullptr);
+	////全頂点に対して
+	//for (int i = 0; i < _countof(vertices); i++) {
+	//	vertMap[i] = vertices[i];//座標をコピー
+	//}
+
 
 	//頂点バッファビューの作成
 	//GPU仮想アドレス
@@ -221,7 +243,7 @@ void DrawBasis::AssembleVertexLayout() {
 	}
 }
 
-void DrawBasis::CreateGraphicsPipeline(DirectXBasis* dXBas) {
+void DrawBasis::CreateGraphicsPipeline(/*DirectXBasis* dXBas*/) {
 	HRESULT result;
 
 	//グラフィックスパイプラインデスクの中身を設定
@@ -237,10 +259,10 @@ void DrawBasis::CreateGraphicsPipeline(DirectXBasis* dXBas) {
 	SettingTextureSampler();
 
 	//ルートシグネチャを生成
-	CreateRootSignature(dXBas_);
+	CreateRootSignature();
 
 	//パイプラインステートの生成
-	result = dXBas->GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_,
+	result = device_->CreateGraphicsPipelineState(&pipelineDesc_,
 		IID_PPV_ARGS(&pipelineState_));
 	assert(SUCCEEDED(result));
 
@@ -248,7 +270,7 @@ void DrawBasis::CreateGraphicsPipeline(DirectXBasis* dXBas) {
 	CreateConstBuffer();
 
 	//テクスチャ初期化
-	initializeTexture();
+	InitializeTexture();
 
 	//デスクリプタヒープ生成
 	CreateDescriptorHeap();
@@ -335,7 +357,7 @@ void DrawBasis::SettingRootParameter() {
 	rootParams_[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//全てのシェーダから見える
 }
 
-void DrawBasis::CreateRootSignature(DirectXBasis* dXBas) {
+void DrawBasis::CreateRootSignature(/*DirectXBasis* dXBas*/) {
 	HRESULT result;
 
 	//ルートシグネチャの設定
@@ -358,7 +380,7 @@ void DrawBasis::CreateRootSignature(DirectXBasis* dXBas) {
 	assert(SUCCEEDED(result));
 
 	//ルートシグネチャの生成
-	result = dXBas->GetDevice()->CreateRootSignature(
+	result = device_->CreateRootSignature(
 		0,
 		rootSigBlob->GetBufferPointer(),
 		rootSigBlob->GetBufferSize(),
@@ -387,7 +409,7 @@ void DrawBasis::CreateConstBuffer() {
 		cbResDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
 		//定数バッファの生成
-		result = dXBas_->GetDevice()->CreateCommittedResource(
+		result = device_->CreateCommittedResource(
 			&cbHeapProp, //ヒープ設定
 			D3D12_HEAP_FLAG_NONE,
 			&cbResDesc, //リソース設定
@@ -420,7 +442,7 @@ void DrawBasis::CreateConstBuffer() {
 		cbResDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
 		//定数バッファの生成
-		result = dXBas_->GetDevice()->CreateCommittedResource(
+		result = device_->CreateCommittedResource(
 			&cbHeapProp, //ヒープ設定
 			D3D12_HEAP_FLAG_NONE,
 			&cbResDesc, //リソース設定
@@ -441,7 +463,7 @@ void DrawBasis::CreateConstBuffer() {
 	}
 }
 
-void DrawBasis::initializeTexture() {
+void DrawBasis::InitializeTexture() {
 	HRESULT result;
 
 	//WICテクスチャのロード
@@ -490,7 +512,7 @@ void DrawBasis::CreateTextureBuffer() {
 	textureResourceDesc.MipLevels = (UINT16)metadata_.mipLevels;
 	textureResourceDesc.SampleDesc.Count = 1;
 
-	result = dXBas_->GetDevice()->CreateCommittedResource(
+	result = device_->CreateCommittedResource(
 		&textureHeapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc,
@@ -528,7 +550,7 @@ void DrawBasis::CreateDescriptorHeap() {
 	srvHeapDesc.NumDescriptors = static_cast<UINT>(kMaxSRVCount);
 
 	//設定を基にSRV用デスクリプタヒープを生成
-	result = dXBas_->GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap_));
+	result = device_->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap_));
 	assert(SUCCEEDED(result));
 
 	//SRVヒープの先頭ハンドルを取得
@@ -545,7 +567,7 @@ void DrawBasis::CreateShagerResourceView() {
 	srvDesc.Texture2D.MipLevels = resDesc_.MipLevels;
 
 	//ハンドルの指す位置にシェーダーリソースビュー作成
-	dXBas_->GetDevice()->CreateShaderResourceView(texBuff_.Get(), &srvDesc, srvHandle_);
+	device_->CreateShaderResourceView(texBuff_.Get(), &srvDesc, srvHandle_);
 }
 
 void DrawBasis::SettingDescriptorRange() {
@@ -583,33 +605,37 @@ void DrawBasis::CreateMatWorld(){
 	constMapTransform_->mat = worldTransform_.matWorld_;
 }
 
-void DrawBasis::PrepareDraw() {
+void DrawBasis::PrepareDraw(/*ComPtr<ID3D12GraphicsCommandList>*/ 
+	ID3D12GraphicsCommandList * cmdList) {
+	assert(DrawBasis::cmdList_ == nullptr);
+	DrawBasis::cmdList_ = cmdList;
+	
 	//パイプラインステートとルートシグネチャの設定コマンド
-	dXBas_->GetCommandList()->SetPipelineState(pipelineState_.Get());
-	dXBas_->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
+	cmdList_->SetPipelineState(pipelineState_.Get());
+	cmdList_->SetGraphicsRootSignature(rootSignature_.Get());
 
 	//プリミティブ形状の設定コマンド
-	//dXBas_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
-	dXBas_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);//三角形リスト
+	cmdList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//三角形リスト
+	cmdList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);//三角形リスト
 
 	// 定数バッファビュー(CBV)の設定コマンド
-	dXBas_->GetCommandList()->SetGraphicsRootConstantBufferView(
+	cmdList_->SetGraphicsRootConstantBufferView(
 		0, constBuffMaterial_->GetGPUVirtualAddress());
 
 	//SRVヒープの設定コマンド
-	dXBas_->GetCommandList()->SetDescriptorHeaps(1, &srvHeap_);
+	cmdList_->SetDescriptorHeaps(1, &srvHeap_);
 
 	//SRVヒープの先頭ハンドルを取得(SRVを指しているはず)
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap_->GetGPUDescriptorHandleForHeapStart();
 
 	//SRVヒープの先頭にあるSRVをルートパラメータ1番に設定
-	dXBas_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+	cmdList_->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 
 	//定数バッファビュー(CRV)の設定コマンド
-	dXBas_->GetCommandList()->SetGraphicsRootConstantBufferView(
+	cmdList_->SetGraphicsRootConstantBufferView(
 		2, constBuffTransform_->GetGPUVirtualAddress());
 }
 
 void DrawBasis::PostDraw() {
-
+	DrawBasis::cmdList_ = nullptr;
 }

@@ -1165,7 +1165,7 @@ void UpdateObjectControll(Object3d* object, Input* input) {
 #pragma endregion
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
-	HRESULT result;
+	//HRESULT result;
 #pragma region 基盤初期化
 #pragma region WindowsAPI
 	//ポインタ
@@ -1204,7 +1204,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	DrawBasis* drawBas = nullptr;
 	//DrawBasis初期化
 	drawBas = new DrawBasis();
-	drawBas->Initialize(dXBas);
+	drawBas->Initialize(dXBas->GetDevice());
 #pragma endregion
 #pragma region オブジェクト基盤
 	//ポインタ
@@ -1225,11 +1225,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//ポインタ
 	Sprite* sprite1 = new Sprite();
 	//Sprite初期化
-	sprite1->Initialize(drawBas);
+	//sprite1->Initialize(drawBas);
 
 	Sprite* sprite2 = new Sprite();
 	//Sprite初期化
-	sprite2->Initialize(drawBas);
+	//sprite2->Initialize(drawBas);
 #pragma endregion
 
 #pragma region ビュープロ使用
@@ -1288,22 +1288,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma region 設定コマンド
 		objBas->copyDraw();
+
 		objBas->PrepareDraw(dXBas->GetCommandList());
 		objBas->Draw();
 		objBas->PostDraw();
 
-		drawBas->PrepareDraw();
+		//drawBas->PrepareDraw(dXBas->GetCommandList());
 
-		sprite1->Draw();
+		//sprite1->Draw();
 		//sprite2->Draw();
 
-		drawBas->PostDraw();
+		//drawBas->PostDraw();
 #pragma endregion
 
 #pragma endregion
 
 		//描画後処理
-		dXBas->PostDraw();
+		//dXBas->PostDraw();
 	}
 
 #pragma endregion

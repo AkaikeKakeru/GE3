@@ -15,10 +15,14 @@ public: //基本的なメンバ関数
 	//描画後処理
 	void PostDraw();
 
+private://static
+	//コマンドリスト
+	static ID3D12GraphicsCommandList* cmdList_;
+
 private: //メンバ変数
 	static const int VerticesNum = 4;//verticesの頂点数
 
-	DirectXBasis* dXBas_ = nullptr; //DirectX基盤
+	//DirectXBasis* dXBas_ = nullptr; //DirectX基盤
 
 	DrawBasis* drawBas_ = nullptr; //描画基盤
 
